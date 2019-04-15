@@ -1,0 +1,318 @@
+do
+   d2 $
+      every 4 (0.125 ~>) $
+      every 3 (palindrome) $
+      whenmod 8 7 (# fshift (range 300 1200 saw)).(every 2 (# fshiftnote (range 0.5 2 saw))) $
+      whenmod 6 4 (stut' 3 (0.0625*2) (spread ($)[(# krush 1).(# kcutoff (segment 16 $ range 160 3000 saw)),(# accelerate "1.5")])) $
+      whenmod 5 2 (# ring (range 0.4 0.6 tri)).(# ringf (range 20 300 cosine)) $
+      whenmod 7 6 (# accelerate "0.5") $
+      every 2(spread ($)[brak, (slow 2)]) $
+      s "cyclo(<3 3.5>,8,<0 1>)" # note "<-12 -36 -24>"
+      |- note (every 4 (palindrome) $ every 4 (fast 2) $ every 2 (0.25 <~) $ "1 1 5 12 4")
+      # cut "-1"
+      # shape 0.3
+
+hush
+
+
+d2 $ silence
+
+   d2 $
+     whenmod 5 3 (# coarse (run 3)).(|* gain 0.85) $
+     whenmod 15 10 (slowspread ($)[
+     (superimpose (slow 2 . rev ).(zoom (0.25,0.75)).(stut 4 0.25 0.125).(every 2 (|+| accelerate "<0.1 -0.25 0.3 -1>"))),
+     (jux(every 2(gap 8)).(chunk 4 (hurry 1.25))),
+     (superimpose (slow 2).(striate "<16 8 4>").(every 2 (jux (rev)).(|* speed "-1")).(density 2)),
+     (superimpose (slow 2 . rev ).(zoom (0.25,0.75)).(stut 4 0.25 0.125).(every 2 (|+| accelerate "<0.1 -0.25 0.3 -1>")))
+     ]) $
+      every 6 (density 2) $
+      every 3 (palindrome).(every 2 (|* speed "-1")) $
+      every 2 (slow 2) $ stack [
+        every 4 (# s "~") $
+          foldEvery [3,5] (sometimes (jux(striate' "<36 12 24>" "<1/64 1/32 1/16>").(slow 2))).(every 2(|* speed 0.5).(slow "<2 0.5>").(every 2 (density 2)))
+          $ every 1 (superimpose (every 2(# accelerate "<0.5 1 2 -1 -2>").(slow 2)).(# up "<0 -5 -7 -12 12?>").(# speed (slow 2 $ segment 16 $ range 0.75 1.25 saw)).(# loop "<12 24>").(# begin "<0.075 0.085 0.65>").(# end "<0.13 0.14 0.145 0.135>").(# cut "-1"))
+          $ slow 4 $ s "tv:1*2 ~ "
+          +| speed "0.75 0.65 0.68 0.71"
+        , whenmod 8 5 (# ring (segment 4 $ range 0.8 0.6 saw)).(# ringf (slow 2 $ segment 32 $ range 230 500 cosine)).(# cut 2).(# triode (range 0.1 0.3 tri)).(# fshift (range 200 40 saw)).(# fshiftnote (range 1 2 isaw)) $
+          s "[grprc:13*2, tn ugslam*1 ]"
+          # speed 0.75 # cut 2 # ring 0.6 # ringf (slow 2 $ segment 32 $ range 1500 800 saw)
+        , s "xk(<3 3.5 5>,8)" # cut "-1" # shape (range 0.35 0.5 saw) # lpf 1200 # triode (range 0.3 0.6 tri)
+      ]
+      # n (every 2 (density 1.25) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 1 0 12 8")
+
+
+d2 $
+seqPLoop $ [
+      (0,7, every 6 (density (8/3)) $
+        every 3 (palindrome) $
+        whenmod 5 3 (# coarse (run 3)) $
+        slow 2 $ s "~ tv*2 <tcp ugslam>:2*2 crow*1 "
+        +| n (every 2 (density 1.25) $ every 3 (0.25 <~) $ every 1 (rev) $ "1 1 0 12 8")
+        # cut "-1"
+        -| note (every 2 (0.25 <~) $ "0 4 5 0")) ,
+      (7,8, s "~") ,
+      (9,17,  whenmod 5 2 (density 2) $
+        whenmod 5 3 (# coarse (scan 8)) $
+        every 5 (((# delay "0.71 0.3") . (# delaytime "0.2 0.001") . (# delayfeedback "0.4"))) $
+        every 4 (0.25 <~) $
+        every 2 (slow 2) $
+        fix (# triode (range 0.2 0.5 saw)) (s "tp" # n "0") $
+        stack [
+          s "tp*<2 4> tv*2",
+          slow 2 $ s "<ugslam tcp>:3*4 ~"
+        ]
+        # n (every 2 (0.25 <~) $ "0 4 5 0")
+        # note (every 2 (density 1.25) $ every 3 (0.25 <~) $ every 4 (rev) $ "-1 1 8 0 -12 -8 1 12")
+        # cut "-1") ,
+      (17,19, s "~"),
+      (21,31,whenmod 9 7 (density 2) $
+        every 5 (((# delay "0.1 0.3") . (# delaytime "0.2 0.001") . (# delayfeedback "0.4"))) $
+        whenmod 6 2 (spread ($) [every 2 (slow 2), every 4 (slow 2), slow 2, slow 4, hurry 0.5, chunk 4(hurry 0.5)]) $
+        whenmod 5 3 (# coarse (scan 8)) $
+         stack [
+           s "~ tf*<8 2>" # lpf (range 5000 400 saw) # lpq (slow 4 $ range 0 0.3 isaw),
+           s "tv*2 ugslam*4 "
+         ]
+        # n (every 2 (0.25 <~) $ "0 4 5 0")
+        # note (every 2 (density 1.25) $ every 3 (0.25 <~) $ every 1 (rev) $ "1 -1 0 12 -5 7 -3 8")
+        # cut (-1)) ,
+      (32,33, s "~") ,
+    (34,48,  whenmod 5 2 (palindrome) $
+        every 2 (0.125 <~) $
+        every 4 (rev) $
+        every 5 (((# delay "0.1 0.3") . (# delaytime "0.2 0.001") . (# delayfeedback "0.4"))) $
+        slow 2 $ s "~ tp*8 tv*4 ugslam*4 "
+        # note (every 2 (density 1.25) $ every 3 (0.25 <~) $ every 4 (rev) $ "1 -1 0 12 -5 7 -3 8")
+        # n (every 3 (rev) $ run 7)
+        # cut (-1)) ,
+      (49,50, s "~") ,
+      (51,67,whenmod 5 2 (palindrome) $
+        every 5 (((# delay "0.1 0.3") . (# delaytime "0.2 0.001") . (# delayfeedback "0.4"))) $
+        every 2 (# coarse "2 8") $
+        every 4 (0.25 <~) $
+        whenmod 5 2 (+| up "10 -5 -7 12") $
+        slow 2 $ stack [
+          s "pp*2 stab*2",
+          every 4 (stut' "<8 16>" 0.025 (# fshift (segment 16 $ range 0.3 0.5 tri)).(# fshiftnote (segment 8 $ slow 2 $ range 0.1 0.6 cosine)).(>| cut 1)) $ every 2 (slow 2) $ s"tv*8 r1*2 " |+| note (every 3 (0.25 ~>) $ every 2 (rev) $ every 5 (0.25 <~) $ every 4 (slow 1.25) $ run 9)
+        ]
+        # n (every 3 (0.25 ~>) $ every 2 (rev) $ every 5 (0.25 <~) $ every 4 (slow 1.25) $ run 9)) ,
+      (69,80,whenmod 5 2 (spread ($)[iter 4, slowstripe 3, within (0,0.5)(density 2), linger 0.25 ]) $
+        every 4 (0.25 <~) $
+        every 3 (# coarse "2 8") $
+        whenmod 8 6 (# krush (slow 2 $ segment 16 $ range 0 2 $ tri)).(# kcutoff (fast 2 $ segment 8 $ range 300 1200 isaw)).(# ring (segment 8 $ range 0.2 0.8 cosine)).(# ringf (segment 16 $ range 30 400 tri)) $
+        every 2 (slow 2) $
+        stack [
+          s "pp*2 stab*2",
+          every 4 (every 2 (slow 2).(stut' "<8 12 16>" 0.0125 (# fshift (range 0.3 0.6 sine)).(# fshiftnote (range 0.2 2 cosine)))).(# up "<-12 0 -7 -5 3 7>").(# delay 0.7).(# delaytime 0.0125).(# delayfeedback 0.3) $ every 2 (slow 2) $ s "tv*8 basss*4 " # speed "<1 0.75>" # cut 2 # note (every 3 (rev) $ run 7)
+        ]
+        # n (every 3 (0.25 ~>) $ every 2 (rev) $ every 1 (0.25 <~) $ every 4 (slow 1.25) $ run 9)) ,
+      (81,82, s "~")
+      ]
+
+
+  d1 $
+      seqPLoop [
+      (0,14, whenmod 5 2 (palindrome) $
+        whenmod 7 5 (slow 2) $
+        every 4 (# coarse "2 8") $
+        every 5 (0.125 ~>) $
+        slow 2 $ s "808*8 rave2*4 ts*2 xcp*2 "
+        # n (every 4 (slow 4) $ "9 6 6 1")) ,
+      (14,15, s "~"),
+      (16,30,every 4 (# speed "0.5") $
+        whenmod 7 5 (slow 2) $
+        every 6 (# accelerate "-0.5") $
+        whenmod 5 3 (spread ($) [ chunk 4 (hurry 2), iter 4, chunk 4 (hurry 2), (#  accelerate "< 0.3 0.4 -1 -2>"),(trunc (3/8))]) $
+        every 5 (0.125 ~>) $
+        every 2 (slow 2) $ s "808*8 hats*1 v5*4 xcp*2 "
+        # n (every 4 (0.25 <~) $ every 2 (density 3) $ every 3 (density 1.5) $ "5 6")
+        # cut "-1"),
+      (31,32, slow 2 $ s "~") ,
+      (33,44,every 4 (# shape "0.3").(0.25 <~) $
+        whenmod 7 5 (density 2) $
+        every 6 (# accelerate "-0.5") $
+        whenmod 5 3 (spread ($) [ chunk 4 (hurry 2), iter 4, chunk 4 (hurry 2), (#  accelerate "< 0.3 0.4 -1 -2>"),(trunc (3/8))]) $
+        whenmod 8 6 (chop 4) $
+        slow 2 $ s "808*2 hats*1 v5*4 hhh*2 "
+        # n (every 4 (0.25 <~) $ every 3 (density 3) $ every 2 (density 1.5) $ "5 6")),
+      (45,46, slow 2 $ s "~")
+      ]
+      # note (every 6 (palindrome) $ every 5 (density 2) $ every 4 (rev) $ every 3 (rev) $ every 2 (slow 1.5) $ "-6 12 -1 -3")
+
+hush
+
+do
+
+
+  d2 $
+    seqPLoop [
+      (0,12, every 4 (# shape "0.3").(0.25 <~) $
+        whenmod 5 3 (density 2) $
+        whenmod 6 4 (spread ($) [ chunk 4 (hurry 2), iter 4, chunk 4 (hurry 2), (#  accelerate "< 0.3 0.4 -1 -2>"),(0.5 <~)]) $
+        every 4 (spin 4) $
+        whenmod 8 6 (chop 4) $
+        every 2 (slow 2) $ s "v3*2 ~ v5*2 <stomp bs>*4 "
+        # n (every 2 (0.25 ~>) $ every 4 (0.5 ~>) $ "5 4 9 0 6 6 4 7 4 7 8 8 9")) ,
+      (13,14, s "~") ,
+      (15,32,every 4 (# shape "0.3").(every 2 (spin 4)) $
+        whenmod 5 3 (density 2) $
+        whenmod 5 2 (slow 2).(slowspread ($) [ chunk 4 (hurry 2), iter 4, chunk 4 (hurry 2), (#  accelerate "< 0.3 0.4 -1 -2>"),(# speed "-1")]) $
+        every 3 (stut' 6 (0.0625) (slowspread ($)[(# triode (slow 2 $ segment 16 $ range 0.2 0.8 tri)) ,(|*| speed "1.5")])) $
+        whenmod 8 6 (chop 4) $
+        slow 2 $ s "v3*2 ~ v5*8 <stomp bs>*4 "
+        # n (every 2 (0.25 ~>) $ every 4 (0.25 ~>) $ "5 4 9 0 6 6 4 7 4 7 8 8 9")) ,
+      (33,34, s "~") ,
+      (35,50,every 4 (# shape "0.3") $
+        every 6 (density 1.5) $
+        whenmod 12 9 (# leslie (segment 8 $ range 0.35 0.85 tri)).(# lrate (segment 16 $ range 6 1 isaw)).(# lsize (slow 2 $ segment 32 $ range 2 0.5 tri)) $
+        every 3 (stut' 6 (0.0625) (slowspread ($)[off 0.125 (# krush 1).(# kcutoff (range 200 600 saw)), (# fshiftnote (range 0.5 2 saw)).(# fshift (range 200 60 tri)),(# squiz (run 4))])) $
+        whenmod 8 6 (chop 4) $
+        every 2 (slow 2) $ s "v3*8 stomp*2 v5*8 stomp*4 "
+        # n (every 1 (0.25 <~) $ every 3 (0.25 ~>) $ run 2)
+        # cut "-1") ,
+       (51,52, s "~") ,
+      (53,72,every 6 (0.25 <~) $
+        every 3 (stut' 6 (0.0625) (|*| speed "1.5")) $
+        whenmod 8 6 (striate 4) $
+        every 4 (slow 2) $ s "psr*4 stomp*2 v5*8 notif*1 "
+        # n (every 1 (0.25 <~) $ every 3 (0.25 ~>) $ run 2)
+        # cut "-1") ,
+      (73,74, slow 2 $ s "~")
+      ]
+
+hush
+
+
+  d2 $
+  every 4 (chop 8) $
+    seqPLoop $ [
+      (0,14, 
+        whenmod 5 3 (chunk 4 (# leslie (segment 4 $ range 0.6 1 tri)).(# lrate (segment 32 $ range 2.5 5 saw)).(# lsize (segment 8 $ range 0.9 3 cosine)).(every 2 (stripe "<2 3>")))  $
+        whenmod 7 4 (chop 4) $
+        whenmod 8 6 (0.5 ~>) $
+        every 2 (slow 2) $stack [
+          s "psr*4 brop*8 v5*8 notif*1 "
+        ]
+        # note (every 4 (0.25 <~) $ "-2 6 -9") 
+        # speed "<0.75 1 >"
+        # n (every 2 (density 2) $ "0 11") ) ,
+      (15,16, s "~") ,
+      (17,31, whenmod 3 2 (zoom (0.25,0.75)).(density 2).(# coarse (fast 2 $ segment 16 $ irand 6)) $
+        whenmod 6 3 (within (0,0.5) (density 2).(slow 2).(>| speed (slow 2 $ segment 16 $ range 0.75 1.25 tri)).(# cut 1)) $
+        whenmod 8 6 (0.5 ~>) $
+        slow 2 $stack [
+          s "psr*4 brop*8 tempp*1 notif*1 "
+        ]
+        # note (every 2 (0.25 <~) $ "2 -6 9") 
+        # speed "<0.75 1 >"
+        # n (every 2 (density 4) $ "0 11") ) ,
+      (32,33, s "~") ,
+      (34,48,whenmod 5 3 (iter 4).(# bpf (slow 2 $ segment 16 $ range 300 1200 isaw)).(# bpq (segment 8 $ range 0.3 0.5 cosine)) $
+        every 4 (jux (rev)).(# fshift (slow 2 $ segment 16 $ range 30 500 cosine )).(# fshiftnote (segment 8 $ range 0.25 0.75 cosine)) $
+        whenmod 8 6 (linger "<1/4 1/2 3/4>") $
+        every 3 (# up "7") $
+        every 2 (slow 2) $stack [
+          s "psr*<4 2> brop*8 tempp*1 notif*1 "
+        ]
+        # note (every 4 (0.25 <~) $ "-2 6 -9") 
+        # speed "<0.75 1 >"
+        # n (every 3 (density 2) $ "0 11") ) ,
+      (48,64, s "~") ,
+      (50,65, whenmod 5 3 (linger 0.25).(# delay 0.7).(# delaytime (fast 3 $ segment 4 $ range 0.05 0.125 sine)).(# delayfeedback (fast 2 $ segment 8 $ range 0.5 0.75 cosine)) $
+        every 4 (jux (rev)).(0.25 <~) $
+        whenmod 8 6 (# fshift (fast 2 $ segment 64 $ "<200 300 400 800>")).(# fshiftnote "<0.1 0.5 0.25>").(every 2 (>| fshiftphase (fast 4 $ segment 128 $ range 0.01 0.2 tri))).(# cut "-1") $
+        every 6 (density 1.5) $
+        every 3 (# up "7") $
+        every 4 (slow 2) $ every 2 (density 2) $ stack [
+          s "psr*<4 8> brop*8 tempp*1 notif*1 "
+        ]
+        # note (every 2 (0.25 <~) $ "2 -6 9") 
+        # speed "<0.75 1>"
+        # n (every 2 (density 4) $ "0 11") ) ,
+      (66,67, s "~") 
+      ]
+
+d1 $
+  seqPLoop [
+      (0,14,whenmod 5 3 (trunc (3/8)) $
+        every 3 (jux (rev)) $
+        whenmod 5 2 (slow (8/3)) $
+        every 6 (density 1.5) $
+        every 3 (# up "7") $
+        every 2 (slow 2) $ stack [
+        s "[tk*2 ugclap*4, ughat*<4 8> ]", 
+        s "tf*8 ugslam*2 " # cut (-1) # gain (slow 4 $ segment 16 $ range 0.5 0.76 saw), 
+        s "~ donk*<1 2>" # note (every 4 (0.25 ~>) $ every 2 (rev) $ scan 12)
+        ]
+        # n (every 1 (0.25 ~>) $ every 4 (rev) $ run 12)),
+      (15,16, s "~"),
+      (17,31,every 6 (# speed "0.5") $
+        every 5 (# pan (sine)) $
+        every 8 (density 2) $
+        every 4 (0.5 <~) $
+        whenmod 5 2 (# shape "0.3 0.3 0.5") $
+        every 2 (slow 2) $ stack [
+        s "[tk*2 ugclap*4, ughat*<4 8> ]", 
+        s "tf*8 ugslam*2 " # cut (-1) # gain (slow 4 $ segment 16 $ range 0.5 0.76 saw), 
+        s "~ donk*<1 2>" # note (every 4 (0.25 ~>) $ every 2 (rev) $ scan 12)
+        ]
+        # n (every 2 (0.25 ~>) $ every 4 (rev) $ run 12)),
+      (32,33,s "~"),
+      (34,48,every 2 (density (4/3)) $
+        every 4 (density 3) $
+        every 5 (# pan (sine)) $
+        whenmod 5 2 (# shape "0.3 0.3 0.5") $
+        every 2 (slow 2) $ stack [
+        s "[tk*2 ugclap*4, ughat*<4 8> ]", 
+        s "tf*8 ugslam*2 " # cut (-1) # gain (slow 4 $ segment 16 $ range 0.5 0.76 saw), 
+        slow 2 $ s "temph*8 grcp*2 ~ birds*4 ",
+        s "~ donk*<1 2>" # note (every 4 (0.25 ~>) $ every 2 (rev) $ scan 12)
+        ]
+        # n (every 1 (0.25 ~>) $ every 4 (rev) $ run 12)),
+      (49,50, s "~"),
+      (51,63,every 2 (density (4/3)) $
+        every 4 (density 3) $
+        every 5 (# pan (sine)) $
+        whenmod 5 2 (# shape "0.3 0.3 0.5") $
+        every 2 (slow 2) $ stack [
+        s "[tk*2 ugclap*4, ughat*<4 8> ]", 
+        s "tf*8 ugslam*2 " # cut (-1) # gain (slow 4 $ segment 16 $ range 0.5 0.76 saw), 
+        slow 2 $ s "temph*8 brop*2 tf*4 birds*8 " ,
+        s "~ donk*<1 2>" # note (every 4 (0.25 ~>) $ every 2 (rev) $ scan 12)
+        ]
+        # n (every 3 (density 1.5) $ every 1 (0.25 ~>) $ every 3 (0.25 ~>) $ every 3 (rev) $ "7 4")),
+      (64,65, s "~"),
+      (66,80,every 4 (degrade) $
+        whenmod 7 4 (slow (4/3)) $
+        every 2 (# speed "-1") $
+        whenmod 6 4 (0.125 <~) $
+        every 2 (slow 2) $ stack [
+        s "[tk*2 ugclap*4, ughat*<4 8> ]", 
+        s "tf*8 ugslam*2 " # cut (-1) # gain (slow 4 $ segment 16 $ range 0.5 0.76 saw), 
+        slow 2 $ s "ughat*2 brop*2 tf*4 moto*2 " ,
+        s "~ donk*<1 2>" # note (every 4 (0.25 ~>) $ every 2 (rev) $ scan 12)
+      ]
+      # n (every 3 (density 1.5) $ every 1 (0.25 ~>) $ every 3 (0.25 ~>) $ every 3 (rev) $ "7 4")),
+      (81,82, s "~"),
+      (83,97,every 4 (degrade) $
+        whenmod 7 4 (slow (4/3)) $
+        whenmod 8 6 (# up "-5 5") $
+        whenmod 6 3 (trunc (3/8)) $
+        every 2 (slow 2) $ stack [
+        s "[tk*2 ugclap*4, ughat*<4 8> ]", 
+        s "tf*8 ugslam*2 " # cut (-1) # gain (slow 4 $ segment 16 $ range 0.5 0.76 saw), 
+        slow 2 $ s "ughat*2 brop*2 tf*4 moto*2 " ,
+        s "~ donk*<1 2>" # note (every 4 (0.25 ~>) $ every 2 (rev) $ scan 12)
+        ]
+        # n (every 3 (palindrome) $ every 2 (palindrome) $ every 3 (palindrome) $ every 3 (rev) $ run 3)),
+      (98,99, s "~")]
+      # cut "-1"
+
+do
+   d1 $ 
+      every 4 (0.25 <~) $
+      every 3 (chop 8) $
+      whenmod 8 6 (jux (rev)) $
+      whenmod 6 4 (slow 2) $
+      every 4 (slow 2) $ s "ulgab*8 grprc*4 ugclap*1 donk*2 "
+      # n (every 3 (density 1.5) $ "1 12 7 12 10 7")
