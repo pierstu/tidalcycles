@@ -15,7 +15,7 @@ SynthDef(\plastickystrings,{ |out= 0, freq = 440, amp = 0.1, gate=1, lforate = 5
 	env = EnvGen.ar(Env.adsr(0.4,0.0,1.0,1.0),gate,doneAction:2);
 
 	//Out.ar(out,Pan2.ar(filter*env*amp,pan));
-	OffsetOut.ar(out, DirtPan.ar(filter, ~dirt.numChannels, pan, env));
+	OffsetOut.ar(out, DirtPan.ar((filter * env * amp), ~dirt.numChannels, pan));
 }).add;
 
 SynthDef(\plucking, { | out=0, amp = 0.1, freq = 440, decay = 5, coef = 0.1, pan=0.0 |
