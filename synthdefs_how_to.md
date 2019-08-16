@@ -64,6 +64,7 @@ Out.ar(out,Pan2.ar(sig,pan));
 
 _(Synthdef stops here)_
 
+Make sure `pan` is declared in the args pipe in the beginning, this is mandatory ! Default is `pan=0.0`. 
 
 You'll have to comment and rewrite, or edit the `Out.ar(out, etc(arg,arg));` line to SuperDirt. 
 
@@ -120,8 +121,27 @@ Evaluate the following block in your `.tidal` file , we're about to grab our syn
       
       # x0 "0.3 0.4 0.5 0.1"      
       
-      # x1 "0.2 0.1 0.6 0.3 0.2"</code></p>
+      # x1 "0.2 0.1 0.6 0.3 0.2" 
+      </code></p>
 
 Done. 
+
+## More examples
+
+- For this output `Out.ar(out, Pan2.ar(BPF.ar(BrownNoise.ar,SinOsc.kr(LFNoise2.kr(50,50,50),0,100,2000),0.001,10)* amp, pan));`, 
+
+we change the output(`Out.ar`) to an offset output,
+
+we change the pan declaration to its own arg at the very end, and since we use SuperDirt's panner, and all we have to do is take the args in between. 
+
+SuperDirt : `OffsetOut.ar(out, DirtPan.ar( BPF.ar(BrownNoise.ar,SinOsc.kr(LFNoise2.kr(50,50,50),0,100,2000),0.001,10)* amp , ~dirt.numChannels, pan));`
+
+- For this output `Out.ar(out, Pan2.ar(snare * amp * 10, pan));` ,
+
+SuperDirt : `OffsetOut.ar(out, DirtPan.ar(snare * amp * 10, ~dirt.numChannels, pan));`
+
+- For this output `OffsetOut.ar( 0, [ signalOut * kenv2, signalOut * kenv2 ] );` ,
+
+SuperDirt : `OffsetOut.ar(0, DirtPan.ar( [ signalOut * kenv2, signalOut * kenv2 ] , ~dirt.numChannels, pan));`
 
 Feel free to help yourself in this repo !
