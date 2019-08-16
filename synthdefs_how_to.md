@@ -4,7 +4,9 @@
 
 Say you have this synthdef, in a .scd file :
 
-`/*
+_(Cannot markup, synthdef starts here)_
+
+/*
 henonN: using the non-interpolated Henon Ugen as a synth
 Contains a LeakDC Ugen to stop any DC bias in the signal from disturbing the rest of the mix
 Arguments for a, b, x0 and x1 are at their default values which gives a periodic signal, and only slight deviation will change the properties of the signal a LOT.
@@ -36,7 +38,10 @@ SynthDef(\henon,
 		sig = LeakDC.ar(sig);
 		sig = sig*env;
 		Out.ar(out,Pan2.ar(sig,pan));
-}).add;`
+}).add;
+
+_(Synthdef stops here)_
+
 
 You'll have to comment and rewrite, or edit the `Out.ar(out, etc(arg,arg));` line to SuperDirt. 
 The audio output will be parsed to OffsetOut as it seems to be the convention for SD.
@@ -51,20 +56,22 @@ Our synthdef has been kindly commented in the beginning, so we're lucky, otherwi
 We won't touch any enveloppe setting, since there are native control fucntions about it in Tidalcycles. But we still have a few args to mess with.
 
 Evaluate the following block in your `.tidal` file , we're about to grab our synthdef args and pass them as control funcs :
-`let
+
+
+_let
   a = pF "a"
   b = pF "b"
   x0 = pF "x0"
   x1 = pF "x1"
-  ts = pF "ts"
-  `
+  ts = pF "ts"_
+  
   Do Control + Enter (or whatever combination you're used to validate with). This syntax allows us to evaluate a stack at once.
   
   ## Testing
   
   Write a pattern with the synthdef we want to test:
   
-  `do
+  _do
    d1 $ 
       n (every 2 (0.25 ~>) $ "1 [2 [~ -4]] -7 [[~ -2] 6]") #
       s "henon "
@@ -74,6 +81,6 @@ Evaluate the following block in your `.tidal` file , we're about to grab our syn
       # ts "0.5 1 0.2 1 0.5"
       # x0 "0.3 0.4 0.5 0.1"
       # x1 "0.2 0.1 0.6 0.3 0.2"
-`
+_
 Done. 
 Feel free to help yourself in this repo !
