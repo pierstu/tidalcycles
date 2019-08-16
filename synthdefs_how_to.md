@@ -6,48 +6,48 @@ Say you have this synthdef, in a .scd file :
 
 _(Cannot markup, synthdef starts here)_
 
-`
-/*
-henonN: using the non-interpolated Henon Ugen as a synth
+``
+	/*
+	henonN: using the non-interpolated Henon Ugen as a synth
 
-Contains a LeakDC Ugen to stop any DC bias in the signal from disturbing the rest of the mix
+	Contains a LeakDC Ugen to stop any DC bias in the signal from disturbing the rest of the mix
 
-Arguments for a, b, x0 and x1 are at their default values which gives a periodic signal, and only slight deviation will change the properties of the signal a LOT.
+	Arguments for a, b, x0 and x1 are at their default values which gives a periodic signal, and only slight deviation will change the properties of the signal a LOT.
 
-The non-interpolated version gives the most 'harsh' signal
+	The non-interpolated version gives the most 'harsh' signal 
+	
+	it uses the equation x(n+2) = 1 - a * x(n+1)^2 + b * x(n)
 
-it uses the equation x(n+2) = 1 - a * x(n+1)^2 + b * x(n)
+	freq = frequency
 
-freq = frequency
+	a = a
 
-a = a
+	b = b
 
-b = b
+	x0 = first value of x
 
-x0 = first value of x
+	x1 = second value of x
 
-x1 = second value of x
+	atk = attack
 
-atk = attack
+	sus = sustain
 
-sus = sustain
+	rel = release
 
-rel = release
+	ts = timescale
 
-ts = timescale
+	out = channels out
 
-out = channels out
+	pan = panning in stereo
 
-pan = panning in stereo
-
-amp = volume
+	amp = volume
 
 
-*/
+	*/
 
-(
+	(
 
-SynthDef(\henon,
+	SynthDef(\henon,
 
 	{arg freq=440,a=1.3,b=0.3,x0=0.30501993062401,x1=0.20938865431933,atk=0.01,sus=1,rel=1,ts=1,out=0,pan=0,amp=0.3;
 	
@@ -63,8 +63,8 @@ SynthDef(\henon,
 		
 		Out.ar(out,Pan2.ar(sig,pan));
 
-}).add; 
-`
+	}).add; 
+``
 
 
 _(Synthdef stops here)_
