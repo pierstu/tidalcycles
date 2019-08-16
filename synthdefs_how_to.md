@@ -5,28 +5,19 @@
 Say you have this synthdef, in a .scd file :
 
 <p><code>/*
-henonN: using the non-interpolated Henon Ugen as a synth
-	
-Contains a LeakDC Ugen to stop any DC bias in the signal from disturbing the rest of the mix
+	henonN: using the non-interpolated Henon Ugen as a synth	
+	Contains a LeakDC Ugen to stop any DC bias in the signal from disturbing the rest of the mix
+	Arguments for a, b, x0 and x1 are at their default values which gives a periodic signal, and only slight deviation will change the properties of the signal a LOT.
+	The non-interpolated version gives the most 'harsh' signal
 
-Arguments for a, b, x0 and x1 are at their default values which gives a periodic signal, and only slight deviation will change the properties of the signal a LOT.
+	it uses the equation x(n+2) = 1 - a * x(n+1)^2 + b * x(n)
 
-The non-interpolated version gives the most 'harsh' signal
-
-it uses the equation x(n+2) = 1 - a * x(n+1)^2 + b * x(n)
-
-freq = frequency
-
-a = a
-
-b = b
-
-x0 = first value of x
-
-x1 = second value of x
-
-atk = attack
-
+	freq = frequency
+	a = a
+	b = b
+	x0 = first value of x
+	x1 = second value of x
+	atk = attack
 sus = sustain
 
 rel = release
