@@ -3,8 +3,8 @@
 ## Changing output args to Offset.Out 
 
 Say you have this synthdef, in a .scd file :
-`
-/*
+
+`/*
 henonN: using the non-interpolated Henon Ugen as a synth
 Contains a LeakDC Ugen to stop any DC bias in the signal from disturbing the rest of the mix
 Arguments for a, b, x0 and x1 are at their default values which gives a periodic signal, and only slight deviation will change the properties of the signal a LOT.
@@ -36,8 +36,8 @@ SynthDef(\henon,
 		sig = LeakDC.ar(sig);
 		sig = sig*env;
 		Out.ar(out,Pan2.ar(sig,pan));
-}).add;
-`
+}).add;`
+
 You'll have to comment and rewrite, or edit the `Out.ar(out, etc(arg,arg));` line to SuperDirt. 
 The audio output will be parsed to OffsetOut as it seems to be the convention for SD.
 We have to replace the out argument straight on the first arg, and put the var(s) in the right place and in the right order, which is DirtPan's args array. Here it will be:
