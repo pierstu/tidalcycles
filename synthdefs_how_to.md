@@ -85,10 +85,15 @@ Evaluate the following block in your `.tidal` file , we're about to grab our syn
 
 
 <p><code>let 
+	
   a = pF "a"  
+  
   b = pF "b"  
+  
   x0 = pF "x0"  
+  
   x1 = pF "x1"  
+  
   ts = pF "ts"</code></p>
   
   Do Control + Enter (or whatever combination you're used to validate with). This syntax allows us to evaluate a stack at once.
@@ -98,14 +103,23 @@ Evaluate the following block in your `.tidal` file , we're about to grab our syn
   Write a pattern with the synthdef we want to test, with some control functions with the variables we just validated:
   
   <p><code>do
-   d1 $   
+	
+   d1 $ 
+   
       n (every 2 (0.25 ~>) $ "1 [2 [~ -4]] -7 [[~ -2] 6]") #      
+      
       s "henon "      
+      
       # cut "-1"      
+      
       # a "1.3 1.5 0.3"      
+      
       # b "0.5 0.3 0.4 0.3 0.2"      
+      
       # ts "0.5 1 0.2 1 0.5"      
+      
       # x0 "0.3 0.4 0.5 0.1"      
+      
       # x1 "0.2 0.1 0.6 0.3 0.2"</code></p>
 
 Done. 
