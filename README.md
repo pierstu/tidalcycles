@@ -7,7 +7,7 @@ tidalcyles patterns for 2Mo &amp; other projects
 The startup conf I use
 
 # synthdefs
-Some synthdefs I came across. Here's the list of args. Any `arg=value` is a default value for this arg.
+Some synthdefs I came across. Here's the list of args by file and by synthdef. Any `arg=value` is a default value for this arg.
 
 # `bgold-tidal5.scd` = bgold synthdefs
 are synthdefs that were already written for SuperDirt, i'm just mirroring them.
