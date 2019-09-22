@@ -9,7 +9,7 @@ The startup conf I use
 # synthdefs
 Some synthdefs I came across. Here's the list of args. Any `arg=value` is a default value for this arg.
 
-# bgold synthdefs
+# `bgold-tidal5.scd` = bgold synthdefs
 are synthdefs that were already written for SuperDirt, i'm just mirroring them.
 
 ## superclassic
@@ -362,7 +362,7 @@ are synthdefs that were already written for SuperDirt, i'm just mirroring them.
 - pan
 - freq
 
-# coopt synthdefs
+# `coopt-synthdefs.scd` = coopt synthdefs
 taken from [https://github.com/theseanco/howto_co34pt_liveCode](https://github.com/theseanco/howto_co34pt_liveCode), ported to SD
 ## henon
 - freq = frequency
@@ -410,7 +410,7 @@ taken from [https://github.com/theseanco/howto_co34pt_liveCode](https://github.c
 - amp = overall volume
 - out = channels out
 
-# everythingwillbetakenaway synthdef pool
+# `synthdefs_extra.scd` = everythingwillbetakenaway synthdef pool
 taken form [https://github.com/everythingwillbetakenaway/Synthdefs](https://github.com/everythingwillbetakenaway/Synthdefs), ported to SD
 
 ## plastickystrings
