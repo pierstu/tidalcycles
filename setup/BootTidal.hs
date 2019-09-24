@@ -1,3 +1,6 @@
+-- This file is to be put in the same directory as your .tidal files for more simplicity, 
+-- don't forget to explicit its location in the Atom plugin prefs
+
 :set -XOverloadedStrings
 :set prompt ""
 :set prompt-cont ""
