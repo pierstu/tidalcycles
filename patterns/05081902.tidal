@@ -1,0 +1,286 @@
+do
+   d2 $
+      stack [
+         whenmod 4 2 (0.125 <~) $
+         every 2 (zoom (0.25,0.75)) $
+         s "ck:5({3 7 6 1}%3,8)"
+         ,
+         every 5 (0.25 ~>) $
+         whenmod 6 3 (striate 32) . (slow 4) $
+         every 3 (slow 2) $
+         every 4 (chunk 4 (hurry 2)) $
+         every 2 (bite 4 "0 1*2 2*2 [~ 3]") $
+         n "0 .. 7" #
+         s "ch:5*4 cp:5*2"
+         #  unit "r c"
+         ,
+         whenmod 7 5 (stutWith 4 0.0125 (juxBy 0.4 (# delay "0.8") . (# delaytime "{0.01 0.025}%3") . (# delayfeedback "0.7") . (every 2 (|* speed "-1")))) $
+         slow 2 $
+         s "ps:2(<15 17 12 1>,<4 8 16>,<0 1>)"
+         # unit "c s"
+         |- up (every 3 (0.25 ~>) $ run 10)
+         |+ n (every 3 (0.25 ~>) $ run 10)
+      ]
+      # cut "-1"
+
+
+do
+   clutchIn 1 2 $
+      whenmod 7 5 (0.25 <~) $
+      whenmod 5 3 (0.5 <~) $
+      every 2 (0.125 <~) $
+      stack [
+        every 4 (density 2) $
+        s "ck:3({5 7 2 1}%3,8,<0 1>)"
+        # shape 0.3
+        # distort 0.06
+        ,
+        every 2 (slow 4) $
+        s "[~ t:3*8] bm:2*1"
+        |- up (every 3 (0.25 ~>) $ run 8)
+        ,
+        whenmod 3 2 (chunk 4 (hurry (8/3))) $
+        every 2 (slow 2) $
+        s "bf:2*<1 2 1 0>/2 bc:2*<2 1 2>/4 "
+        |+ coarse (every 3 (0.25 ~>) $ run 8)
+        # comb (slow 5 $ range 2.6 5.3 tri)
+        #ring 2
+        #ringf (fast 2 $ range 180 400 tri)
+        #ringdf (fast 3 $ range 1.9 2.3 cosine)
+        #fshift (fast 5 $ range 4 20 saw)
+        #fshiftnote (fast 2 $ range 0.2 0.8 tri)
+        #fshiftphase (fast 3 $ range 0.7 0.2 isaw)
+      ]
+      # cut "-1 -1 1 4"
+      # delay 0
+      # crush 16
+
+xfadeIn 2 8 $ silence
+
+
+do
+   d1 $
+      every 8 (# s "~") $
+      stack [
+        -- whenmod 7 4 (# speed "-0.5") $
+        -- s "bk:3(<3 7 10>,10,<1 2 0 1>)"
+        -- # shape 0.3
+        -- # lpf 4200
+        -- # gain 0.8
+        -- ,
+        whenmod 4 2 (stutWith 3 (0.0625/2) (|*| speed "1.5")) $
+        whenmod 8 6 (# s "~") $
+        spin "<0 1 2>" $
+        whenmod 6 4 (stutWith 4 0.0125 (striate 4)) $
+        -- slow 2 $
+        s "~ bh:3*<2 3 1> bf:3*<1 2> ~ ~"
+        -- ,
+        -- whenmod 9 7 (# s "~") $
+        -- whenmod 6 3 (juxBy 0.4 (stutWith 6 0.0625 (# vowel "{a e u o i o a o u}%2"))) $
+        -- rot "<2 3 4>" $
+        -- slow 2 $
+        -- s "bp:3*<4 2 3> ~ ~ bc:3*<3 2> ~ "
+        |+ up (every 2 (0.25 ~>) $ "1 1 6 7 6 0 4 6")
+        # cut 2
+        -- # up 24
+      ]
+      # cut "-1"
+
+do
+   d1 $
+      every 8 (# s "~") $
+      every 4 (0.25 <~) $
+      whenmod 6 3 (zoom (0.25, 0.75)) . (every 2 (chunk 4 (hurry 2))) $
+      every 3 (juxBy 0.6 (chunk 4 (zoom (0.25,0.75)) . density 2)) $
+      stack [
+      -- s "ak:4(<3 4 6 1>,9,<0 1>)"
+      -- # cut "-1"
+      -- ,
+      whenmod 8 6 (stut' 3 (0.0625/2) (juxBy 0.4 (# octer (fast 2 $ range 0.2 0.6 tri)) . (# octersub (fast 3 $ range 0.3 0.5 cosine)) . (|*| speed "1.5"))) $
+      slow 2 $ s "ap:4*<3 6 7> ac:4*<3 4 1> ~"
+      |+ up (every 4 (0.25 ~>) $ "2 11 10 8 5 5 2")
+      -- ,
+      -- slow 4 $ s "af:4*6 ~ ah:4*12 "
+      # gain (slow 8 $ range 0.1 0.9 isaw)
+      ]
+      # cut "3"
+      # octer 0
+
+do
+   d1 $
+      every 6 (# coarse (every 4 (density 2) $ run 5)) $
+      every 3 (trunc (3/8) . (density "<(4/3) (2/3) 2>") $
+      every 2 (chunk 4 (hurry (4/3))) $
+      whenmod 8 6 (chop 16) $
+      stack [
+        s "bk:4({12 8 6 3 1 9 16 7}%3,8,<0 1>)"
+        ,
+        slow "<2 4>" $ s "bc:4*2 ~ bh:4*8 bp:4"
+        ,
+        every 4 (loopAt 2)$
+        every 2 (slow 2) $
+        s "[~ bm:4*2] bf:4*4 "
+        |+ up (every 4 (0.25 ~>) $ "2 11 10 8 5 5 2")
+        # cut 1
+      ]
+      # cut "-1"
+
+d1 $ silence
+
+do
+   d1 $
+      every 8 (# s "~") $
+      whenmod 5 3 (chunk 3 (hurry (5/3))) $
+      every 6 (# coarse (every 4 (density 2) $ run 5)) $
+      -- every 3 (trunc (3/8) . (density "<(4/3) (2/3) 2>") $
+      every 2 (chunk 4 (hurry (4/3))) $
+      whenmod 8 6 (chop 16) $
+      every 6 (# coarse "12") $
+      stack [
+        every 3 (trunc (3/8)) $
+        s "ck:5(<7 5 1 4>,8,<0 1>)"
+        # octer (range 0.1 0.8 tri)
+        # octersub 0.7
+        ,
+        whenmod 8 6 (chop 16) $
+        slow 2 $ s "cf:5*<2 3> ch:5*<8 6>"
+        # cut 1
+        -- ,
+        -- every 2 (slow 2) $
+        -- s "~ [~ cs:5*<2 3 1>] d:5*<4 3> ~"
+        |+ up (every 3 (rev) $ every 4 (palindrome) $ "-1 2 7 -4")
+        -- # cut 2
+      ]
+      # cut "-1"
+
+hush
+
+do
+   d1 $
+      -- slow 2  $
+      whenmod 4 2 (spin 3) $
+      whenmod 5 3 (trunc (3/8)) $
+      every 5 (# coarse "0 1 12 3 4 16") $
+      stack [
+        -- s "grk:3*4" # cut 1 # gain 0.5
+        -- ,
+        s "ak:6({1 0 7 6 3 1 9 1 7}%3,<7 9>,<0 1>)"
+        ,
+        whenmod 7 4 (every 2 (chop 16)) $
+        slow 2 $ s "ag:6*<2 5> af:6*<8 3>"
+        # unit "s c"
+        ,
+        every 3 (rot 3) $
+        s "~ ap:6*<8 6> "
+        |+ up (every 5 (rev) $ every 4 (palindrome) $ every 4 (0.25 ~>) $ run 8)
+        # unit "r c"
+      ]
+      # cut "4"
+
+do
+   d1 $
+      every 8 (# s "~") $
+      whenmod 4 2 (0.125 <~) $
+      whenmod 8 6 (0.25 ~>) $
+      stack [
+        whenmod 4 2 (rot 2) $
+        whenmod 5 3 (trunc (3/8)) $
+        -- s "bk:6(<7 5 3>,8,<0 1>)"
+        -- ,
+        -- whenmod 7 4 (juxBy 0.6 (# leslie 0.8) . (# lrate (fast 5 $ range 6 0.5 isaw)) . (# lsize "{0.3 0.6 0.9 0.1}%5")) $
+        -- slow 2 $ s "~ bc:6*2 bm:6*2 bin:6*4  "
+        -- |+ up (every 3 (rev) $ every 4 (density 1.25) $ "0 2 4 9")
+      ]
+      # cut "2 3"
+
+do
+   d1 $
+      whenmod 8 7 (# s "~") $
+      whenmod 7 4 (stut' 4 (0.0625) (|*| speed "1.5")) $
+      every 5 (density 1.5) $
+      whenmod 6 3 (0.5 ~>) $
+      stack [
+        -- s "ck:6(<7 5 10 2>,8,<0 1>)"
+        -- ,
+        -- every 3 (stutWith 4 0.025 (superimpose (# delay "0.4") . (# delaytime "0.01") . (# delayfeedback "0.7 0.5 0.2"))) $
+        -- slow 2 $ s "clic:6(<2 5 7>,8,<0 1>)"
+        -- |+ up (every 3 (rev) $ every 4 (density 1.25) $ "0 2 4 9")
+        -- ,
+        s "cf:6({3 7 1 9 0 1}%2,<8 4 8>,<0 1>)"
+        # cut "-1"
+      ]
+      # cut "1"
+
+
+hush
+
+do
+   d1 $
+      slow 5 $
+      whenmod 6 3 (# accelerate "-2 -2 -3 -4 -5") $
+      whenmod 5 3 (0.5 <~) $
+      stack [
+        -- s "ak:7({4 7 10 6 2}%2,8,<0 1>)"
+        -- ,
+        every 3 (striate 16) $
+        slow 2 $ s "<ag:7 ah:7>(<4 7 5 3>,4,<0 1>)"
+        -- ,
+        -- s "ap*<0 1 2 4> as*<2 3 1>"
+        |+ up (every 2 (0.25 ~>) $ every 4 (palindrome) $ every 3 (0.25 ~>) $ "10 3 -2 7 -1 6 2 -1")
+      ]
+      # cut "-1"
+
+do
+   d1 $
+      whenmod 8 6 (0.5 <~) $
+      whenmod 5 2 (density (8/3)) $
+      whenmod 6 4 (spin 2) $
+      stack [
+      s "bk:7(<3 5 7 1>,8,<0 1 2>)"
+      ,
+      every 2 (slow 2) $
+      s "~ [~ bc:7]"
+      ,
+      slow "<2 4>" $
+      s "bin:7*8 bf:7*2 bp:7*2 "
+      |+ up (run 11)
+      ]
+      # cut "4 1 -1"
+
+do
+   d1 $
+      whenmod 8 6 (0.5 <~) $
+      every 4 (0.25 <~) . (# coarse (slow 2 $ run 3)) $
+      every 3 (chunk 4 (density 4)) . (zoom (0.25, 0.75)) $
+      every 2 (slow 4) . (striate 32) $
+      stack [
+      whenmod 7 4 (# speed "0.5") $
+      every 3 (0.125 ~>) $
+      s "ck:7({2 5 9 14 1}%3,8,<0 1 2>)"
+      ,
+      whenmod 7 5 (density 1.5) $
+      foldEvery [3,5] (# shape "0.1 0.4") $
+      slow 2 $ s "ch:7*2 cp:7*8"
+      ,
+      s "cf:7*2 cs*8 "
+      |+ up (every 1 (0.25 ~>) $ every 3 (slow 2) $ every 1 (palindrome) $ "9 8 2")
+      ]
+      # cut "4 1 -1"
+
+do
+   d1 $
+      whenmod 8 6 (0.5 <~) $
+      every 4 (stutWith 4 0.025 (juxBy 0.4 (# phasr (fast 5 $ range 0.01 0.2 tri)) . (# phasdp (fast 2 $ range 0.4 0.7 cosine)))) $
+      every 3 ((1/3) <~) $
+      every 2 (rot 2) $
+      stack [
+        every 4 (trunc (3/8)) $
+        every 5 (0.125 ~>) $
+        s "ak:8(<3 11 7 5 1>*2,8,<0 1 2 -2>)"
+        ,
+        whenmod 7 5 (density 1.5) $
+        every 3 (# shape "0.1 0.4") $
+        slow 2 $ s "ac:8*2 af:8*8 ~ ag:8*2 "
+        |+ up (every 1 (0.25 ~>) $ every 3 (slow 2) $ every 1 (palindrome) $ "9 8 2")
+      ]
+      # cut "4 4 3"

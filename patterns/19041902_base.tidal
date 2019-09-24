@@ -1,0 +1,49 @@
+setcps 0.55
+
+-- faire une copie avant edition
+
+do
+  d1 $
+    whenmod 8 6 (slowspread ($)[(# s "~"),(fast "1 2 1")]) $
+   stack [
+    s "vk:8(3 3.5 7,11)"
+    ,
+    whenmod 8 6 (slowspread ($)[slow 2, (# s"~")]) $
+      foldEvery [3,5](# squiz "2 4 8") $
+      s " hats(<7 10 11>,11)" # n 2 # up 12
+    , s " ~ claps"
+    ]
+    # cut "-1"
+    -- # n (run 15)
+
+do
+  d1 $
+    whenmod 8 6 (slowspread ($)[(# accelerate "0.5 1"),(jux(rev)), (# s "~"), density 2]) $
+   stack [
+    s "vk:8(3 3.5 7,11)"
+    ,
+    whenmod 8 6 (jux (slowspread ($)[density 2, (# s"~")])) $
+      foldEvery [3,5](# squiz "2 4 8") $
+      s " hats(<7 10 11>,11)" # n 2 # up 12
+    , every 4 (jux (# room (range 0.4 0.6 cosine)).(# size (run 2)).(# gain 0.9).(# shape 0.3)) $  s " ~ claps" # gain 1
+    ]
+    # cut "-1"
+
+    -- # n (run 15)
+hush
+
+
+
+-- deuxieme break apres silence
+do
+  setcps 0.7
+  d1 $
+    every 8 (# s "~") $
+    stack [
+      -- every 2 (density 2) $
+      -- every 4 (# s "tk:8(4,5)") $
+      s "tk:5(3,5)"  # cut "1" # triode 0.1 # ring 0.2 # ringf 50 # shape (slow 8 $ range 0.2 0.4 cosine) # lpf (slow 4 $ range 800 1200 tri)
+      , s "tc(6,10,<1 2>)"
+      , loopAt 4 $ s "sphere" # cut "-10"
+      , slow 8 $ note "10 15 2 1 2 5 17 18 10 1 2 3" # s "supernoise" # cut "<2 1>" # attack (run 8) # lpf (slow 8 $ range 8000 300 sine)
+    ]

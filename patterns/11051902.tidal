@@ -1,0 +1,190 @@
+do
+   d2 $
+      whenmod 5 3 (slow 1.5) $
+      whenmod 9 6 (((# delay "0.1") . (# delaytime "0.2") . (# delayfeedback "0.1"))) $
+      whenmod 6 4 (0.5 ~>) $
+      every 3 (jux(rev)) $
+      slow 2 $ s "if:2*2 amencutup*8 909*1 ~ "
+      # n (every 2 (0.25 ~>) $ run 3)
+
+hush
+
+do
+   d2 $
+      whenmod 5 3 (slow 1.5) $
+      whenmod 9 6 (((# delay "0.2") . (# delaytime "0.2") . (# delayfeedback "0.1"))) $
+      every 3 (jux(rev)) $
+      slow 2 $ s "if:2*2 amencutup*8 909*1 ~"
+      # n (every 2 (0.25 ~>) $ run 3)
+
+do
+   d1 $
+      whenmod 5 3 (slow 1.5) $
+      whenmod 9 6 (stutWith 4 0.0125 (jux (# delay "0.8") . (# delaytime "0.02") . (# delayfeedback "0.9"))) $
+      every 3 (jux(rev)) $
+      slow 2 $ s "if:2*2 amencutup*8 ~ 909*1  "
+      # n (every 2 (0.25 ~>) $ run 4)
+
+hush
+
+do
+   d2 $
+      whenmod 9 7 (slowspread ($)[slow 2, (# s "~")]) $
+      whenmod 16 14 (slowspread ($) [slow 2, (# s "~")]) $
+      -- whenmod 13 11 (stutWith "<4 6 8>" "0.0125*<2 4 6>"(jux(# delay "0.6") . (# delaytime "0.0025") . (# delayfeedback "0.71") . (|* gain 0.4))) $
+      whenmod 13 11 (juxBy 0.4
+        (# ring (fast 4 $ range 0.4 0.8 tri))
+        .(# ringf (fast 6 $ range 400 2000 saw))
+        .(# krush (fast 3 $ range 0.4 0.8 tri))
+        .(# kcutoff (fast 4 $ range 2000 30 tri))
+        .(|* gain (fast 5 $ range 0.4 0.7 sine))
+        .(every 4 (# room (slow 2 $ range 0.1 0.6 saw)).(# size (slow 5 $ range 0.3 0.5 isaw)))
+        .(every 2 (# delay 0.8).(# delaytime 0.05).(# delayfeedback (fast 4 $ range 0.3 0.7 tri)))
+        .(every 6 (jux (loopAt 2).(# bpf (fast 2 $ range 20 200 tri)).(# bpq (fast 5 $ range 0.1 0.6 sine)).(# hpf (fast 3 $ range 20 200 saw)))) $
+      ) $
+      every 4 (slow 2) $
+      s "[brb*<2 4> [brb [brb ~]]][brb*<2 4> ~]"
+      -- |+ n (fast 2 $ run 16)
+      # up (every 2 (0.25 ~>) $ run 4)
+      # n 1
+
+do
+  xfadeIn 1 4 $ silence
+  xfadeIn 2 4 $ silence
+
+do
+   d1 $
+    every 4 (loopAt 2) $
+    seqPLoop [
+      (0,7, whenmod 5 3 (|* speed 1.5) $
+      whenmod 9 6 (((# delay "0.6") . (# delaytime "0.002") . (# delayfeedback "0.31"))) $
+      fix (# cut 1) (s "el") $
+      slow 2 $ s "el*2 brf*8 909*1 ~ "
+      # n (every 2 (0.25 ~>) $ run 5))
+      , (8,15,whenmod 5 3 (slow 1.5) $
+      whenmod 9 6 (((# delay "0.7") . (# delaytime "0.002") . (# delayfeedback "0.41"))) $
+      fix (# cut 1) (s "el") $
+      slow 2 $ s "el*2 ~ kicks*2 909*1  "
+      # n (every 2 (0.25 ~>) $ run 5))
+      , (16, 23, whenmod 5 3 (|* speed 1.5) $
+      fix (# cut 1) (s "el") $
+      whenmod 5 3 (((# delay "0.8") . (# delaytime "0.02") . (# delayfeedback "0.51"))) $
+      slow 2 $ s "el*2 ~ kicks*2 hardcore*2  "
+      # n (every 2 (0.25 ~>) $ run 3))
+      , (24, 31, whenmod 5 3 (slow 1.5) $
+      whenmod 8 6 (juxBy 0.4 (stutWith 4 "0.0625*<2 4 6 8>" (# delay "0.7") . (# delaytime "0.02") . (# delayfeedback "0.61"))) $
+      fix ((# cut "1 0").(every 2 (|* speed "-1"))) (s "el") $
+      slow 2 $ s "[el*2, ps*2] ~ ps*2 clic*8 "
+      # n (every 2 (0.25 ~>) $ run 5))
+      ]
+      # cut 1
+
+do
+   d1 $
+      whenmod 5 3 (slow 1.5) $
+      whenmod 9 6 (((# delay "0.1 0.8 0.3") . (# delaytime "0.2 0.02 0.1") . (# delayfeedback "<0.1 0.06 0.4 0.6>"))) $
+      fix (# cut 1) (s "el") $
+      slow 2 $ s "el*2 kicks*2 hardcore*2 clic*8 "
+      # n (every 2 (density 4) $ "1 11 7 1 8")
+      # cut "-1"
+
+do
+   d1 $
+      every 2 (0.125 <~) $
+      every 6 (0.25 <~) $
+      whenmod 5 3 (((# delay "0.1") . (# delaytime "0.2") . (# delayfeedback "0.1"))) $
+      fix (# cut 1) (s "el") $
+      slow 2 $ s "el*2 kicks*2 hardcore*2 clic*8 "
+      # n (every 2 (density 4) $ "1 11 7 1 8")
+      # cut "-1"
+
+do
+   d1 $
+      every 6 (0.25 <~) $
+      every 5 (palindrome) $
+      every 2 (jux (rev)) $
+      every 4 (0.25 ~>) $
+      fix (# cut 1) (s "el") $
+      loopAt 2 $
+      s "el*4 kicks*2 hardcore*2 clic*8 "
+      # n (every 2 (density 4) $ "1 11 7 1 8")
+      # cut "-1"
+
+
+xfadeIn 1 16 $ silence
+
+do
+   -- d1 $
+   xfadeIn 2 4 $
+      every 6 (0.25 <~) $
+      every 5 (palindrome) $
+      every 2 (jux (rev)) $
+      every 4 (0.25 ~>) $
+      slow 2 $ s "grk*2 drumtraks*4 hardcore*2 clic*8 "
+      # n (every 2 (density 4) $ "1 11 7 1 8")
+      # cut "-1"
+
+do
+   -- d1 $
+   xfadeIn 2 4 $
+      every 6 (0.25 <~) $
+      every 5 (palindrome) $
+      every 2 (jux (rev)) $
+      every 4 (0.25 ~>) $
+      slow 2 $ s "grk*2 drumtraks*4 [r1*1,hardcore*2] clic*8 "
+      # n (every 2 (density 4) $ "1 11 7 1 8")
+      # cut "-1"
+
+do
+   -- d1 $
+  xfadeIn 2 4 $
+      loopAt 4 $
+      every 6 (0.25 <~) $
+      every 5 (palindrome) $
+      every 2 (jux (rev)) $
+      every 4 (0.25 ~>) $
+      slow 2 $ s "grk*2 drumtraks*4 [r1*1,hardcore*2] [grcm*2,clic*8] "
+      # n (every 3 (0.25 <~) $ every 2 (0.25 <~) $ "5 4 8 0 5 7 6 3")
+      # cut "-1"
+      # gain 0.35
+      # shape (slow 7 $ range 0.1 0.65 tri)
+
+do
+   xfadeIn 3 16 $
+      fix (# triode (slow 3 $ range 0.1 0.7 tri)) (s "clic") $
+      fix (juxBy 0.4(# ring (range 0.4 0.8 cosine)).(# ringf (slow 2 $ range 90 600 tri))) (s "v5") $
+      loopAt 4 $
+      every 3 (stut' 4 (0.0625*2) (# ring (range 0.4 0.8 tri)).(# ringf (range 40 700 tri)).(|*| speed (range 1.5 2.5 cosine))) $
+      every 2 (stut' 4 (0.0625/2) (|*| speed "1.5")) $
+      every 4 (# coarse "4 12 6") $
+      slow 2 $ s "31*4 ~ sequential*2 [31*1, clic*8] "
+      |+ n (every 3 (0.25 <~) $ every 2 (0.5 ~>) $ "5 4 8 0 5 7 6 3")
+      # cut "-1"
+      # gain 0.35
+
+
+d1 $ silence
+ --  autre choose
+
+ do
+   d2 $
+      every 5 (jux (rev)) $
+      stack [
+      loopAt 2 $
+      every 3 (zoom (0.25,0.75)) $
+      s "bs*8 ps*8"
+      |+ note (every 4 (0.25 <~) $ run 8)
+      ,
+      loopAt 4 $
+      s"tv*1 sfx*2 "
+      |+ up (every 4 (0.25 <~) $ run 10)
+      ,
+      every 6 (slow 4) $
+      whenmod 7 5 (density 3) $
+      loopAt 2 $
+      s "kusa:1*2 ~"
+      ]
+      # cut "-1"
+
+
+hush

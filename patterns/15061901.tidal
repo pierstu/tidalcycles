@@ -1,0 +1,45 @@
+do
+  d1 $
+
+
+d1 $ stack [
+  whenmod 8 6 (every 2 (|* speed "-1")) $
+  every 4 (# s "~") $
+  ghost $ sound "~ grsn"
+  ,
+  whenmod 9 7 (# s "~") $
+  whenmod 15 11 (ghost) $
+  every 3 (linger 0.5) $
+  every 2 (0.125 <~) $
+  every 4 (density 2) $
+  every 6 (jux (|* triode 2).(|* distort 2) . (|* shape 2) . (|* gain 0.75) . (ghost)) $
+  sound "k:*2 [~ grh*<1 2>]"
+  # triode (slow 2 $ range 0.15 0.3 tri)
+  # distort (slow 4 $ range 0.05 0.15 saw)
+  # lpf 1800
+  # lpq 0.1
+  # shape (slow 16 $ range 0.05 0.15 saw)
+  # gain 1.15
+  ,
+  whenmod 5 3 (# triode (fast 2 $ range 0 0.3 tri)) $
+  whenmod 4 2 (# shape (fast 2 $ range 0 0.15 saw)) $
+  every 2 (zoom (0.5,1)) $
+  every 4 (0.25 <~) $
+  every 3 (chunk 4 (density 2)) $
+  s "~ [~ grh:9*<1 2>]"
+  # attack (slow 4 $ range 0.01 0.05 tri)
+  # hpf 400
+  ,
+  whenmod 7 5 (0.25 ~>) $
+  whenmod 5 3 (jux (# ring 0.9).(# ringf (slow 2 $ range 300 600 tri)).(|- gain 0.1)) $
+  every 5 (# coarse "10") $
+  every 3 (# up "7 0 -5 7") $
+  whenmod 8 6 (# s "~") $
+  whenmod 6 4 (# accelerate "-0.25") $
+  every 4 (loopAt 2) $
+  s "eau*<2 2 4 1> ~"
+  # n "1 2"
+  # cut 1
+  ]
+
+hush

@@ -1,0 +1,7 @@
+do
+   d3 $ 
+      whenmod 8 6 (# speed "0.5") $
+      whenmod 6 3 (rev) $
+      slow 2 $ s "[~ sd*2 ]xcp*8 r0*8 foleyperc*4 "
+      # n (every 4 (rev) $ every 3 (slow 2) $ every 4 (0.25 ~>) $ every 1 (rev) $ run 1)
+      d3 $ silence

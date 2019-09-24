@@ -1,0 +1,295 @@
+do
+  clutchIn 1 8 $
+    slow "[1,8]" $
+    -- slow "[4,8]" $
+    slow "{[2 4 1 1] [2 2 1 4] [2 2 1 8]}" $
+    up ( (run 12)
+    + "3 5 7 9 10 11 12 [[-27, -36] [[-24, -27] [-27, [-29, -24]]]]"
+    )
+    #
+    stack [
+      s "~"
+      ,
+      slow "<1 2 3 1>/4" $
+      foldEvery [9,15] (# s "~") $
+      every 5 (# s "~") $
+      every 3 (ghost) $
+      s "b:4"
+      # speed "{0.24 [0.5,4]}"
+      |+ up "<3 4 5 7 8 10 11 12>"
+      # pan (sine)
+      -- # gain 0.9
+      # cut "-1"
+      ,
+      foldEvery [7,10] (# s "~") $
+      whenmod 4 2 (# waveloss "{0 1 2 1 0}%4") $
+      every 4 (rot 2) $
+      every 3 (scramble "<1 2 1>/6") $
+      s "b:5*2"
+      # speed "{0.24 [0.5,4]}"
+      |+ up "<3 4 5 7 8 10 11 12>"
+      # pan (sine)
+      -- # gain 0.77
+      # cut 2
+      ,
+      every 3 (density 2) $
+      foldEvery [3,7] (chunk 4 (hurry 2)) $
+      slow 2 $
+      s "as:3(3,<8 4 16>,<0 2>)"
+      # shape "<0.14 0.05 0.14>"
+      |+ up "<3 4 5 7 8 10 11 12>"
+      |+ up "{3 5 5 9 12 [[-27, -36] [[-24, -27] [-27, [-29, -24]]]]}%24"
+      # pan 0.35
+      # gain 0.75
+      # cut 1
+      ,
+      foldEvery [3,5] (rot 2) $
+      every 4 (0.25 <~) $
+      s "ugkick:5(4,<4 8>,<0 1>)"
+      # shape 0.4
+      # triode 0.3
+      # distort 0.05
+      # gain 0.75
+      |- up "3 4 5 7 8 10 11 12"
+      |+ up "{3 5 7 9 12 [[-27, -36] [[-27,-36] [-24, [-29 -12] ] ] ] }%8"
+    ]
+    # up ((density 2 $ run 12) + "3 5 7 12 9 [[-27,-36] [[-24, -27] [-27, [-29, -24] ] ] ]")
+
+xfadeIn 1 16 $ silence
+
+  d2 $
+    every 8 (loopAt 2) $
+    every 4 (slow 2) $
+    s "ex:1(<6 5>,8)"
+    |- up "{2 4 8 18 24}"
+    # gain "({0.4 0.5 0.6 0.45 0.55}%8)*1.7"
+    # shape 0.6
+    # distort 0.05
+    # cut "<1 2 3>"
+
+anticipateIn 3 8 $ silence
+
+clutchIn 1 16 $ silence
+
+do
+  d1 $
+    scramble "<2 3 4>" $
+    trunc "<1 0.5 0.75 0.8 1 0.9>" $
+    -- whenmod 8 5 (slowspread ($) [spin 2, (slow 4).(striate 3), scramble 2, smash 3 [2,3,4], chunk 4 (hurry 2), slow 2 . chop 3 , iter 4, rot 2, fast 2, striate' 32 (1/16)]) $
+    stack [
+      fix ((|- up "1 3 7 5 3 1").(# cut "2")) (s "sub")  $
+      every 3 (density 2) $
+      every 4 (0.25 <~) $
+      whenmod 8 6 (# s "~") $
+      s "[ak,sub:3](<3 5 4 3>,8)"
+      # shape 0.2
+      # lpf 1200
+      # cut "-1"
+      ,
+      slow 3 $
+      s "af:1"
+      # speed "[-0.8 0.9 1.2]/4"
+      # cut "-1"
+      ,
+      whenmod 8 6 (juxBy 0.4 (# room (fast 2 $ range 0.1 0.8 saw)) . (# size (fast 3 $ range 0.1 0.3 tri))) $
+      whenmod 5 3 (# s "~") $
+      every 6 (slow 2) $
+      every 3 (# s "cp:2*16") $
+      s "cs:1*{12 16 8}%4"
+      # cut "<1 2 3 0>/8"
+      -- # gain 0.8
+      # up "{-12 -5 0 3}%3"
+      ,
+      n (run "<10 3 7 4>")
+      # s "cp"
+      # lpf "2000 1200 800 3000 7000 6000"
+      # cut 1
+    ]
+    # room 0
+    # size 0
+
+xfadeIn 3 8 $ silence
+
+
+d1 $
+  stack [
+    foldEvery [7,8] (# s "~") $
+    every 4 (juxBy 0.4 (rev . (# gain 0.7))) $
+    every 2 (|+ up (run 4)) $
+    spin "<2 3 4>/6" $
+    s "~ ac:2;2"
+    # gain 0.8
+    ,
+    whenmod 9 8 (# s "~") $
+    foldEvery [15,31] (0.25 <~) $
+    every 4 (density 2) $
+    every 2 (chunk 4 (density 2)) $
+    spin "2 4 6 8" $
+    s "[ak:4,sub:3?,comb/3]"
+    # distort (slow 4 $ range 0 0.03 saw)
+    # shape 0.5
+    # triode 0.4
+    # gain 0.8
+    # cut "{ -1 2 3 -1}%2"
+    ,
+    whenmod 8 6 (# s "~") $
+    every 4 (juxBy 0.6 ((|* speed "-1") . (# gain 0.7))) $
+    every 2 (chop $ choose [2,4,3]) $
+    spin "<3 4 6>" $
+    s "~ as:3"
+    # gain 0.8
+    ,
+    every 3 (juxBy 0.3 (# tsdelay "0 0.25 0.5 0.75 1") . (# xsdelay "3 124 3 12 62 2")) $
+    every 2 (# accelerate "{0.25 0 1 -0.5 0 -1 0 0.1 0 0 -0.2 0.75}%8") $
+    foldEvery [3,5] (stutWith "{2 3 4 6 2}%1" "{1/6 1/8 1/16 1/32 1/64 1/128}%3" (superimpose (|* gain 0.35) . (# cut 1) . (# delay 0.7) . (# delayfeedback 0.7) . (# delaytime 0.05))) $
+    whenmod 7 3 (superimpose (|* gain 0.5) . (# comb (fast 3 $ range 1.1 3.3 tri)) . (# scram (fast 3 $ range 0.3 1.2 tri))) $
+    whenmod 5 3 (juxBy 0.6  (|* gain 0.75) . (# ring 0.7) . (# ringf (fast 2 $ range 5 20 saw)) . (# lpf 8000) . (# smear (fast 2 $ range 0.5 1.2 isaw))) $
+    whenmod 7 5 (juxBy 0.4 (# room (fast 2 $ range 0.1 0.8 saw)) . (# size (fast 3 $ range 0.1 0.3 tri)) . (# binshift (fast 5 $ range 0.2 0.9 tri))) $
+    whenmod 10 8 (# s "~") $
+    slow "<1 2 1>" $
+    foldEvery [3,7] (slow 2) $
+    every 3 (# s "ch:2*16") $
+    s "ch:1*{12 16 8}/4"
+    # cut "<1 2 3 0>/8"
+    # gain (slow 16 $ range 0.8 0.96 tri)
+    # up "{-12 -5 0 3}%3"
+    # speed (slow 3 $ range 0.4 1.7 tri)
+  ]
+  # room 0
+  # size 0
+  # comb 0
+  # delay 0
+  # delaytime 0
+  # delayfeedback 0
+  # scram 0
+  # smear 0
+
+clutchIn 1 2 $ silence
+
+d1 $
+  stack [
+    -- every 4 (loopAt 2) $
+    -- every 3 (chop 4 . rev . (every 2 (|* speed "-1"))) $
+    every 2 (# begin (slow 10 $ range 0 0.5 sine)) $
+    note "0 0 0 4" #
+    s "[af:2, comb:2]"
+    # cut "-1"
+    # speed "{0.3 1 0.5 0.7}%2"
+    # gain 0.8
+    ,
+    whenmod 8 6 (# s "~") $
+    every 2 (chunk 4 (density 2)) $
+    s "bk:2(<2 3 3 4 6>,8)"
+    # lpf 800
+    # shape 0.3
+    # triode 0.3
+    -- # gain 0.8
+    ,
+    s "~ [~ [cp:4, ap:3]]"
+    |- up "{5 7 8 6 2 3}%8"
+    # gain 0.7
+    # shape 0.3
+    # cut "1 2 3 4"
+    # ringf (fast 2 $ range 8 180 isaw)
+    # ring (slow 4 $ range 0.2 0.4 saw)
+  ]
+
+xfadeIn 3 8 $ silence
+
+d3 $
+  -- every 6 (trunc 0.75) $
+  -- foldEvery [3,7] (within (0.25,0.75) (chunk 4 (hurry 2))) $
+  -- every 5 (within (0,0.25) (fast 1.5)) $
+  every 4 (rev) $
+  every 3 (|* speed "-1") $
+  -- overlay (s "bp:4(6,8,1)" # lpf 1200 # shape 0.3 # distort 0.01 # triode 0.3 # gain 0.8) $
+  stack [
+    every 4 (0.25 <~) $
+    s "ck:3(3 4 6,8,1)"
+    # lpf 1800
+    # shape 0.6
+    # gain 0.9
+    ,
+    whenmod 5 3 (# s "~") $
+    foldEvery [2,7] (# binshift (fast 2 $ range 0.2 0.8 cosine)) $
+    s "<ch:3 bh:2 ch:2>(7,8)"
+    # up 4
+    # coarse (slow 2 $ run 3)
+    ,
+    whenmod 6 4 (# s "~") $
+    every 2 (# fshiftnote (fast 3 $ range 0.05 0.2 tri)).(# fshift (fast 8 $ range 5 20 saw)) . (# fshiftphase (fast 5 $ range 0 1 tri)) $
+    foldEvery [2,3] (# lbrick (fast 2 $ range 0.05 0.7 saw)) . (every 2 (|* speed "-1")) $
+    s "[cp:2(<4 6>,8,<0 1 2>), ag:1(<3 4 6 8>/6,8<1 2>)]"
+    # cut "{1 2 3 1 -1}%2"
+    |- up ( (slow 2 $ run 7) + "[-1 [-2 -3]]/4")
+    ,
+    whenmod 7 5 (# s "~") $
+    every 4 (chunk 4 (hurry 2)) $
+    every 2 (iter 2) $
+    whenmod 6 4 (# krush (run 3)) . (# kcutoff (fast 3 $ range 400 7000 saw)) . (# octer (fast 4 $ range 0.4 0.8 tri)) . (# octersub (fast 6 $ range 0.5 1.2 cosine)) . (# octersubsub (fast 7 $ range 0.5 0.9 isaw)) $
+    s "as:4(<2 3 0 6 0>,4,1)"
+  ]
+  # krush 0
+  # lbrick 0
+  # hbrick 0
+  # fshift 0
+  # distort 0.0
+  # triode 0
+  # shape 0.2
+
+
+clutchIn 3 8 $ silence
+
+
+clutchIn 3 4 $
+  whenmod 6 4 (every "0.5" (# s "~")) $
+  iter 4 $
+  whenmod 8 4 (slowspread ($) [density 2, chunk 4 (hurry 2), scramble "<2 3 4>", fast 2, slow 2, rot 2, (# s "~")]) $
+  every 5 (# accelerate "{0 0.25 0.75 1}%3") $
+  every 7 (overlay (s "bp:3*6" # pan sine # gain 0.86)) $
+  every 4 (overlay (s "bc:3(5,8)" # crush 4 # gain 0.9)) $
+  every 4 (0.25 <~) $
+  every 3 (overlay (s "~ bs:4" # gain 0.9)) $
+  every 2 (overlay (s "bm:2")) $
+  every 2 (iter 4) $
+  s "[sub:4,bk:3(<6 12 24 6 32 8 16 4>/8,<8 16>)]"
+  # cut "-1 2 3 4 1"
+  # shape 0.3
+  # leslie 0.6
+
+hush
+
+d3 $ silence
+
+d1 $
+  whenmod 8 7 (# s "~") $
+  every 6 ((#cut "-1"). density 2. zoom (0.25, 0.75)) $
+  stack [
+    superimpose ( (# s "af:3") . (# speed "{0.5 -0.2}/2") . (slow 4) . (# lpf 1500) . (|- note "4 6 8 12") . (# cut 2)) $
+    whenmod 6 4 (slow 6 . striate 32 ) $
+    every 4 (trunc $ choose [0.5,0.75]) $
+    every 2 (fast 2) $
+    foldEvery [3,5] (juxBy 0.4 (# tsdelay "{0 0.25 0.5 0.75 1}%3") . (# xsdelay "{0.3 0.12 4 3 0.1 2 6 2 4}%2")) $
+    up "[0 3 1 4 7 12]"
+    # s "t:5 ex:1"
+    |- up (every 2 (density 2) $ "0 2 -5 8 14 4 -2 -4")
+    # cut "2 -1 4 2"
+    # lpf (slow 3 $ range 2600 400 isaw)
+    # lpq (slow 5 $ range 0 0.2 cosine)
+    # gain (slow 10 $ range 0.5 0.85 saw)
+    # speed "-1 0.25 0.5 0.75"
+    ,
+    every 8 (# s "~") $
+    whenmod 7 5 (spread ($) [density 2, chunk 4 (hurry 2), iter 2, ply 2]) $
+    every 4 ((0.25 <~) . chunk 4 (hurry 2 . (every 2 (# accelerate "{1 0.25 0.5 -0.75 -2 -0.32 2}%2"))) . density 2 . every 2 (spin 4)) $
+    juxBy 0.4 (# up "-2") . rev $
+    whenmod 4 2 (every 2 (rot "<2 3 4>")) $
+    every 4 (chunk 4 (density 2)) $
+    every 3 (spin "<2 3 4>") $
+    note (run 8) #
+    s "[ck:1({3 5}%3,4,<2 1>),cs:1(1,4,1)]"
+    # delay (slow 4 $ saw)
+    # cut "2 3 2 1 4"
+  ]
+
+  hush

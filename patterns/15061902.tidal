@@ -1,0 +1,5 @@
+p "midiclock" $ midicmd "midiClock*48" # s "carla"
+
+once $ midicmd "stop" # s "midi"
+
+p "midictl" $ silence

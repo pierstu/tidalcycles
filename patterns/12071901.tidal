@@ -1,0 +1,197 @@
+xfadeIn 1 8 $ silence
+
+hush
+
+do
+   d1 $
+    stack [
+      fix (|* gain 0.7) (s "tf") $
+      fix (superimpose (every 4 (0.25 <~)).(every 3 (density 2))) (s "k") $
+      fix (whenmod 8 6 (# "~")) (s "k") $
+      whenmod 7 4 (juxBy 0.4 (# leslie (fast 5 $ range 0.2 1 sine)) . (# lrate (fast 3 $ range 1 5 cosine)) . (# lsize (fast 2 $ range 0.1 0.7 tri)) . (# crush "14 12 14 8 15") . (every 2 (|+ coarse (fast 2 $ run 7)))) $
+      whenmod 6 4 (|+ coarse (run 4)) $
+      whenmod 8 6 (# vowel "a e u i ~ a i") $
+      whenmod 10 7 (# delay 0.7) . (# delayfeedback 0.7) . (# delaytime "0.05 0.0125 0.1 0.001 0.04 0.024") $
+      slow 2 $ s "k*2 <eau hits>*1 k*2 tf*1 "
+      # n (every 4 (0.25 <~) $ "8 3 1 10 11")
+      # cut "-1 -1 3"
+      ,
+      whenmod 7 4 (#fshift (fast 5 $ range 5 20 saw)) . (# fshiftnote (fast 2 $ range 0.01 0.2 tri)) .( # fshiftphase (slow 2 $ range 0.3 0.1 isaw)) $
+      whenmod 4 2 (# freeze "{0 1 0 1 0 0 1 0 1 0 0 1 0 1 0}%4") $
+      loopAt "<2 4>" $ s "pl*<2 4> stomp*<1 2 4> sphere*2 jpnperc*<1 2 4> "
+      # n (every 4 (0.25 <~) $ every 3 (rev) $ "6 10")
+      # cut "-1 -1 3"
+      # gain 0.68
+      # triode 0.3
+      # lpf 8200
+      ,
+      fix (foldEvery [2,7] (# "~")) (s "hhh") $
+      fix (# up 12) (s "bass1") $
+      whenmod 5 3 (# xsdelay (fast 4 $ range 0.1 0.6 tri)) . (# tsdelay (fast 3 $ range 0.6 0.2 isaw)) $
+      every 4 (rot 2) $
+      every 3 (# comb (range 0.05 0.65 tri)) $
+      whenmod 8 5 (every 2 (# enhance (slow 2 $ range 0.1 0.9 tri))) . (slowspread ($) [(# binshift (fast 2 $ range 0.1 0.7 tri)) , (# hbrick (fast 2 $ range 0 0.7 tri)) , (# lbrick (fast 3 $ range 0 0.8 cosine)) , (juxBy 0.4 (#real (fast 3 $ range 0 1 tri)) . (# imag (fast 2 $ range 0.3 0.9 cosine))), (# s "~") ]) $
+      every 2 (superimpose (# xsdelay (slow 2 $ range 0.05 0.1 tri)) . (every 2 (# octer 1) . (# octersub 2) . (# octersubsub 1))) $
+      foldEvery [3,5] (superimpose (# tsdelay (fast 2 $ range 0 0.1 tri)) . (#xsdelay (fast 4 $ range 0.1 0.7 cosine)) ) $
+      foldEvery [7,11] (superimpose (# comb (fast 5 $ range 0.1 2.7 perlin)) . (# scram (fast 4 $ range 0.1 2.7 cosine))) $
+      loopAt 2 $ s "[bass3*4 [~ bt*1] bass1*2 31*4, hhh?({16 32 64 8 16 32 16 32}%8,8,<0 2>)]"
+      # n (every 2 (0.25 <~) $ every 3 (rev) $ "7 10 4 1 2 0 2 7 6")
+      # cut "fast 2 $ -1 -1 1 0 2 3"
+      # gain 0.8
+      ,
+      every 8 (# s "~") $
+      every 4 (0.25 <~) $
+      foldEvery [3,7] (density 2) $
+      s "vk:2(2 3.5 2 1,8,<0 2>)"
+      # gain 0.9
+      ,
+      whenmod 8 6 (# s "~") $
+      every 2 (ghost) $
+      foldEvery [3,7] (chunk 4 (hurry 2)) $
+      s "if:1(3 7 1 0,8,<0 1 2>)"
+      # lpf 1800
+      # cut "-1"
+      # gain 0.9
+      ]
+      # binshift 0
+      # xsdelay 0
+      # tsdelay 0
+      # fshift 0
+      # comb 0
+      # scram 0
+      # hbrick 0
+      # lbrick 0
+      # octer 0
+
+
+hush
+
+do
+   d2 $
+      every 6 (# pan (saw)) $
+      every 3 (# speed "0.5") $
+      every 2 (# speed "-1") $
+      slow 2 $ s "[ch*4 [~ cp*1], ~  b*8] "
+      # n (every 3 (palindrome) $ scan 7)
+      # cut "-1"
+
+do
+   d1 $
+      scramble "2 3 4" $
+      every 4 (density 2) $
+      every 8 (# s "~") $
+      every 6 (slow 2) $
+      every 3 (# speed "0.5") $
+      every 2 (# speed "-1") $
+      loopAt 2 $ s "bk*4 ah*1 ~ comb*2 "
+      # n (every 8 (slow 4) $ every 3 (palindrome) $ run 12)
+      # cut "-1"
+
+do
+   d2 $
+      whenmod 5 2 (chop 16) $
+      every 6 (slow 2) $
+      every 4 (# speed "0.5") $
+      every 2 (# speed "-1") $
+      every 3 (slow 2) $ s "k*8 cp*1 ~ b*2 "
+      # note (every 16 (slow 4) $ every 3 (palindrome) $ run 12)
+      # cut "1 -1 3 1"
+
+do
+   d3 $
+      -- every 1 (# pan "0.25 0.25 0.75") $
+      whenmod 5 2 (0.125 <~) $
+      slow 2 $ s "k*8 k*4 k*4 cp*4 "
+      # n (every 1 (0.25 ~>) $ run 11)
+      # cut "2"
+
+do
+   d1 $
+      every 2 (# shape "0.2") $
+      every 5 (rev) $
+      whenmod 5 2 (0.125 <~) $
+      slow 2 $ s "ak*4 tf*4 cp*4 tf*2 "
+      # n  "4 0 10"
+      # cut "2"
+
+do
+   d2 $
+      every 2 (# shape "0.2") $
+      every 5 (rev) $
+      whenmod 5 2 (0.125 <~) $
+      slow 2 $ s "[ch*4 ugslam*<1 2 4>, bh*8 af*2 ]"
+      |- up  "4 0 10"
+      # cut "1"
+
+do
+   d1 $
+      every 2 (# shape "0.2") $
+      every 5 (rev) $
+      whenmod 5 2 (0.125 <~) $
+      every 3 (slow 2) $
+      s "[ck*4 ah*1, tf*8 <tk*8 ~> ]"
+      |+ up (every 3 (palindrome) $ every 4 (density 1.5) $ every 4 (density 3) $ "4 0 10")
+      # cut "1"
+
+do
+   d3 $
+      every 2 (# shape "0.2") $
+      every 5 (rev) $
+      whenmod 5 2 (0.125 <~) $
+      loopAt 2 $ s "[win*4 eau*2, sfx*8 pp*8 ]"
+      # n (every 4 (0.25 <~) $ run 6)
+      # cut "1"
+
+do
+   d2 $
+      every 2 ( "0.2") $
+      every 5 (rev) $
+      every 3 (# coarse "1 8 4 2 1") $
+      every 2 (|* shape 2) $
+      slow "4 2" $ s "hhh*4 s*1 k*8 glasso*8 "
+      # n (every 4 (0.25 <~) $ run 6)
+      # cut "1"
+      # shape (slow 4 $ range 0.1 0.3 tri)
+
+do
+   d3 $
+      every 2 (# shape "0.2") $
+      every 1 (slow (8/3)) $
+      every 1 (# pan "1 1") $
+      every 2 (rev) $
+      slow 2 $ s "k*1 cp:3*2 ch:7*4 sub:5*8 "
+      # up (every 4 (0.25 <~) $ run 6)
+      # cut "2 -1 -1 2 1 2"
+
+do
+   d1 $
+      -- every 4 (palindrome) $
+      every 2 (# shape "0.2") $
+      -- every 1 (slow (8/3)) $
+      -- every 1 (# pan "1 1") $
+      every 2 (rev) $
+      every 3 (slow 2) $ s "ch*8  cp*2 tf*8 k*8"
+      # n (every 5 (0.25 <~) $ every 4 (rev) $ every 8 (palindrome) $ every 2 (0.25 ~>) $ every 3 (rev) $ "5 10 0")
+      # cut "2 -1 -1 2 1 2"
+
+do
+   d1 $
+      every 4 (palindrome) $
+      every 2 (# shape "0.2") $
+      every 1 (slow (8/3)) $
+      -- every 1 (# pan "1 1") $
+      every 2 (((# delay "0.1 0.5") . (# delaytime "0.2 0.1 0.1") . (# delayfeedback "0.4 0.95"))) $
+      slow 2 $ s "ch*8 ~ cp*8 sub*8 "
+      # n (every 3 (0.25 <~) $ every 6 (palindrome) $ every 4 (0.25 ~>) $ every 5 (rev) $ "5 10 0")
+      # cut "2 -1 -1 2 1 2"
+
+do
+   d1 $
+      every 4 (palindrome) $
+      every 3 (density 1.5) $
+      every 6 (slow (8/3)) $
+      -- every 1 (# pan "1 1") $
+      every 2 (((# delay "0.1 0.5") . (# delaytime "0.2 0.1 0.1") . (# delayfeedback "0.4 0.95"))) $
+      slow 2 $ s "~ ch*8  cp*8 peri*8 "
+      # n (every 3 (0.25 <~) $ every 4 (rev) $ every 1 (palindrome) $ every 1 (0.25 ~>) $ every 3 (rev) $ "5 10 0")
+      # cut "2 -1 -1 2 1 2"

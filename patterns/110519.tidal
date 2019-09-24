@@ -1,0 +1,227 @@
+-- repet vilvoorde
+
+do
+  xfadeIn 1 8 $ silence
+  clutchIn 2 4 $ silence
+
+
+do
+  d1 $
+    stack [
+      whenmod 8 5 (# s "~") $
+      every 4 (chunk 4 (hurry 2)) $
+      n (unwrap (segment "8 4 2" (wchoose [("e4'min7",1.2), ("c5'min7",0.5), ("e2'min7",0.05)])))
+      # s "eau:2*2" # legato 0.5
+      ,
+      s "grk [grk ~ ~ grk] grsn ~"
+      # n "0 0 1 2"
+      ,
+      s "grh*8"
+      ]
+
+do
+  d1 $
+    whenmod 8 6 (slowspread ($)[(# accelerate "0.5 1"),(jux(rev)), (# s "~")]) $
+    whenmod 16 12 (slowspread ($)[
+    density "1 2 1"
+    , (# ring (range 0.2 0.8 sine)).(# ringf (range 60 500 tri)).(every 2 (# krush 1))
+    ,(fast "1 2 1").(every 2 (iter 2))
+    , (slow "1 2 1").(every 2 (chunk 4 (hurry 2)))
+    , (# s "~")
+    ]) $
+    stack [
+      loopAt 2 $
+      whenmod 8 5 (# s "~") $
+      every 4 (chunk 4 (hurry 2)) $
+      every 5 (stutWith 4 0.0125 (slow 2).(every 2(striate "<2 8 16 32>").(# gain (range 0.95 0.75 sine))).(# begin "<0.05 0.1 0.75>").(# end "<0.15 0.175 2>").(# loop "<8 12 16>").(every 2 (|+ note (slow 2 $ scan 3))).(# cut 1).(|* speed "<0.5 -1>")) $
+      n (unwrap (segment "8 4 2" (wchoose [("e4'min7",1.2), ("c5'min7",0.5), ("e2'min7",0.05)])))
+      # s "eau:2*2" # legato 0.5
+      |+ up (every 4 (slowspread ($)[(0.25 ~>),slow 2]) $ "1 -2 5 7 0 -4 1 6 4 3")
+      # pan ((slow "<3 2>" $ sine) * 0.75 + 0.15) # gain 0.95
+      # ring (slow 7 $ range 0.05 0.35 sine) # ringf (slow 5 $ range 20 2000 cosine)
+      ,
+      s "grk [grk ~ ~ grk] grsn ~"
+      # n "0 0 1 2"
+      ,
+      s "grh*8"
+      # bpf (slow 5 $ range 200 4000 cosine) # bpq (slow 6 $ range 0.05 0.15 saw)
+      # lpf (slow 3 $ range 3000 300 tri) # lpq (slow 7 $ range 0.15 0.05 sine)
+      ]
+
+    hush
+
+
+
+do
+   d1 $
+      every 4 (0.25 <~) $
+      whenmod 6 3 (stut' 4 (0.0625) (|* speed "1.5")) $
+      every 5 (slow 2) $
+      whenmod 6 4 (0.25 ~>) $
+      every 3 (rev) $
+      slow 2 $ s "gab*2 amencutup*8 909*1 el*1 "
+      # n (every 2 (density 2) $ "5 3")
+
+do
+  -- p 's' $
+  d1 $
+    stack [
+      whenmod 8 6 (# s "~") $
+      every 8 (zoom (0.25,0.75)) $
+      every 4 (chunk 4 (hurry 2)) $
+      n (unwrap (segment "8 4 2" (wchoose [("e4'min7",1.2), ("c5'min7",0.5), ("e2'min7",0.05)])))
+      # s "[sub:2,bass:1]*2"
+      # legato 0.5
+      # shape 0.3
+      # gain 0.65
+      ,
+      whenmod 8 5 (# s "~") $
+      s "grk [grk ~ ~ grk] grsn:1 ~"
+      # n "0 0 1 2"
+      -- ,
+      -- s "grh*8"
+      ]
+
+    hush
+
+do
+    xfadeIn 2 4 $ silence
+    xfadeIn 1 4 $ silence
+
+hush
+
+
+do
+   d1 $
+      every 8 (# s "~") $
+      stack [
+        loopAt 2 $
+        whenmod 7 4 (stutWith 4 "0.0125*<2 4 6 8>"((# delay "0.74 0.83") . (# delaytime "0.01") . (# delayfeedback "0.72"))) $
+        s "[[~ bros*1] [~ ts*2] , glasstap*2 hold*4] "
+        # n (every 4 (palindrome) $ every 2 (palindrome) $ run 4)
+        # octer (slow 3 $ range 0.3 1 tri)
+        # octersub (slow 4 $ range 0.7 2 tri)
+        # octersubsub (slow 7 $ range 1 2 cosine)
+        ,
+        whenmod 8 7 (# s "~") $
+        every 3 (degrade) $
+        whenmod 8 6 (fast 2) $
+        every 4 (slow 2) $
+        every 2 (zoom (0.25,0.75)) $
+        s "grh:5(<8 16 32 8>,8)"
+        # up 12
+        # octer (slow 3 $ range 0.3 1 tri)
+        # octersub (slow 2 $ range 3 1 tri)
+        # unit "<c r>"
+        # coarse (slow 3 $ run 6)
+        # distort (slow 7 $ range 0.05 0.16 cosine)
+        ,
+        every 4 (0.25 <~) $
+        every 3 (density 2) $
+        whenmod 8 6 (slow 2) $
+        s "[grk:2 ~ ~ grk:2] grk:2 [grk:2*2 ~ ~ grk:2*2] [~ grk*2]" # cut "-1"
+        # triode (slow 4 $ range 0.1 0.5 tri)
+        # lpf 800
+        # shape 0.3
+      ]
+
+
+setcps 0.5
+
+do
+   d2 $
+      whenmod 4 3 (jux (rev)) $
+      whenmod 6 3 (0.25 <~) $
+      whenmod 8 7 (stutWith 4 "0.0625*<1 2 3 4>" ((# delay 0.7).(# delayfeedback 0.7).(# delaytime 0.05))) $
+      whenmod 5 3 (spread' (striate' 16) ((*0.05) <$> slow (8/3) sine)) $
+      slow 2 $ s "grprc*2 ul*2 layer*1 clic*8 "
+      # n (every 2 (palindrome) $ every 2 (slow 1.25) $ every 4 (0.25 <~) $ run 4)
+      # cut "-1"
+
+do
+   d3 $
+      whenmod 6 4 (0.125 ~>) $
+      every 3 (density 2) $
+      loopAt 2 $
+      slow 2 $ s "tempk*2 toms*2 grsn*2 impact*4 "
+      |+ n (every 2 (rev) $ every 3 (rev) $ every 1 (rev) $ every 3 (0.25 ~>) $ run 7)
+
+clutchIn 1 16 $ silence
+
+do
+   d1 $
+      whenmod 5 3 (0.125 <~) $
+      stack [
+      every 4 (# distort (range 0.05 0.1 tri)) $
+      every 2 (rev) $
+      s "brok ~ [~ brok] ~"
+      #2shape 0.3
+      # lpf 800
+      ,
+      every 4 (loopAt 2) $
+      fix ((# cut 1).(# fshiftnote (range 0.05 0.2 tri)).(# fshift (slow 6 $ range 40 200 cosine)).(# ring (fast 2 $ range 0.4 0.8 cosine)).(# ringf (range 20 400 isaw)).(every 2 (|* speed "-1")).(# cut "1 -1"))(s "el") $
+      whenmod 6 3 (rev) $
+      every 4 (degrade) $
+      slow 2 $ s "if*8 el*8 xcp*1 hats*8 "
+      |+ n (every 2 (palindrome) $ "7 4 9 3 0")
+      ]
+      # cut "-1"
+
+anticipateIn 2 8 $ silence
+
+do
+   d1 $
+      whenmod 8 6 (iter 4) $
+      every 4 (# up "0") $
+      every 5 (degrade) $
+      stack [
+      -- fix (|+ note "2 4 6 8 1 2") (s "sub") $
+      -- every 4 (# s "~") $
+      -- every 3 (density 2) $
+      -- s "[sub:1,brok] [~ [sub:1,brok]]"
+      -- # shape 0.3
+      -- ,
+      -- slow 2 $ s "626*2 xh*4"
+      -- # n (every 3 (rev) $ run 4)
+      -- ,
+      -- every 4 (density 2) $
+      -- every 2 (jux (# accelerate "0.5 -1 -2 -0.3")) $
+      -- fix (|+ note "2 3 4 -6") (s "bbss") $
+      -- s "broh*8 bbss:5*<1 2> "
+      -- # cut 1
+      -- # gain 0.65
+      -- ,
+      every 2 (# distort (range 0 0.1 tri) ) $
+      every 3 (# triode (slow 3 $ range 0 0.6 saw)) $
+      slow 2 $ s "supermandolin*<2 4 8>"
+      # voice (slow 7 $ range 0 1 tri)
+      # decay (slow 3 $ range 0.1 0.7 cosine)
+      # accelerate (slow 8 $ range 0 2 saw)
+      |- note "1 2 -3 -4 -6 -1 -7 -12 "
+      # shape 0.5
+      # up "-12 -24"
+      ,
+      every 4 (slow 2) $
+      n (slow 2 $ fmap (*7) $ run 8)
+      # s "supergong"
+      # decay "[1 0.2 0.4 0.8 2]/4"
+      # sustain (slow 5 $ range 0.05 1 tri)
+      # voice "[0.5 0 1 2 3]/8"
+      ]
+      # cut "-1"
+
+
+  d3 $
+        fix (|+ up (run 7)) (s "grsn") $
+        every 8 (jux (slow 2).(# s "~")) $
+        every 4 (0.25 <~) $
+        fix (# lpf (slow 2 $ range 800 1600 cosine)) (s "vk") $
+        interlace (s "[vk(<3 4 7>,8), tc(<7 8 16>,8,<0 1 2>), ~ grsn(<1 2>,4,<2 1>)]") (s "vk:1(<3 5 3.5 7>,8)")
+        |+ n (every 2 (slow 2) $ "0 1")
+        # cut "-1"
+        # shape 0.3
+        # gain 0.9
+
+
+
+hush

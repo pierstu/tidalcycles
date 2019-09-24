@@ -1,0 +1,168 @@
+setcps 0.25
+
+hush
+
+d1 $
+whenmod 6 3 (spread' (striate' "<12 48 64>") ((*0.125) <$> slow 2 sine)) $
+whenmod 10 7 (spread ($)[ iter 4, chunk 4 (hurry 2), trunc 0.25]) $
+-- spread (striate) [2,6,8] $
+  every 8 (linger "<0.25 0.5>") $
+  every 4 (# accelerate "-0.5 -0.2") $
+  every 7 (# s "~") $
+  stack [s "ts (1,7,3)" ,
+  s "tc(6,11,<2,8>)",
+  s "tcp(3,11,7)",
+  s "[grh ,ughat]"
+  ]
+  |+ note (every 4 (slow 2) $ run 5)
+  # triode (segment 8 $ slow 4 $ range 0.3 0.6 tri)
+
+
+  d1 $ silence
+
+do
+  d2 $
+    whenmod 11 9 (|* speed 2).(every 2(density 2)) $
+    whenmod 8 7 (# "~") $
+    every 6 (spread ($)[density 2, slow 2, fast 2,(# "~")]) $
+    every 4 (0.25 ~>) $
+    fix (jux (# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# up 24).(every 4 (# coarse "1 2 3 4")).(every 2(# squiz "2 3 4"))) (s "gh") $
+    stack [
+    loopAt "1 2" $
+    -- s "sub:<2 3 4>*<2 3 4>"
+    -- |+ note (every 4 (slow 2) $ run 5)
+    -- ,
+    -- slow "<2 4>" $ s "white(5,8,<0 2 4>)" # gain (slow 8 $ range 0.3 0.75 sine) # lpf (slow 6 $ range 3500 1200 cosine) # attack "<0.1 0.25 0.3 0.5 0.8>"
+    -- ,
+    every 16 (stutWith 4 0.0125 (|* speed (range 0.75 1.25 tri))) $
+    whenmod 6 3 ((|* speed (range 0.25 0.5 cosine)).(spread' (striateBy "<12 48 64>") ((*0.125) <$> slow 2 sine))) $
+    whenmod 10 7 (spread ($)[ iter 4, chunk 4 (hurry 2), trunc 0.25]) $
+    s "gh(<3.5 7 12 3>,8,<0 2 3>)"
+    ]
+    # cut "-1"
+    # n (every 2 (fast 2) $ run 2)
+
+
+d2 $
+    whenmod 11 9 (|* speed 2).(every 2(density 2)) $
+    every 8 (# "~") $
+    every 6 (spread ($)[density 2, slow 2, fast 2,(# "~")]) $
+    every 4 (0.25 ~>) $
+    stack [
+    -- loopAt 2 $
+    s "sub:<2 3 4>*<2 3 4>"
+    |+ note (every 4 (slow 2) $ run 5)
+    -- ,
+    -- interlace (every 3 (density 2) $ every 4 (0.25 ~>) $ s "vk(<3 3.5 5.5>,11)" # cut 1 )(s "tk(5,11,<0 2 4>)") # gain 0.85
+    -- ,
+    -- s "808(<3.5 7 12 3>,7,<0 2 3>)"
+    ]
+    # cut "-1"
+    # n (every 2 (fast 2) $ run 2)
+
+
+d3 $
+whenmod 15 11 (slowspread ($)[iter 4, (zoom (0.25,0.75)).(ply 2), ply "<2 3>", striate 512, (# s "~")]) $
+      every 6 (jux (rev).(every 2 (density 2).(# accelerate 2))) $
+      whenmod 5 2 (# triode (tri)).(# ring (cosine)).(# ringf (slow 4 $ range 10 200 sine)) $
+      every 4 (0.25 <~) $
+      every 3 (# accelerate "0.25") $
+      slow 2 $ stack [s "<ughat grh>(<3 7 14>,11,<3 5 1>)", s"grcp(<1 2 3>,7,<2 1 3>)", s "grh(<2 5 7 11 13>,7) "]
+      # n (every 2 (rev) $ every 4 (0.5 ~>) $ every 2 (rev) $ every 4 (0.25 <~) $ run 9)
+
+d3 $ silence
+
+
+clutchIn 2 16 $ silence
+
+d2
+-- $ whenmod 8 5 (slowspread ($) [
+--   (jux(every 2(striate 56)).(chunk 4 (hurry 1.25))),
+--   -- (superimpose (slow 2 . rev ).(zoom (0.25,0.75)).(stut 4 0.25 0.125).(every 2 (|+| accelerate "<0.1 -0.25 0.3 -1>"))),
+--   -- (jux(slow 2).(striate "<1 2 4>")),
+--   (superimpose (fast 2. rev ).(zoom (0.25,0.75)).(stut 4 0.25 0.125).(every 2 (|+| accelerate "<0.1 -0.25 0.3 -1>")))
+--   ])
+    $ slow "<1 2>"
+    $ loopAt 4
+    $ every 8 (superimpose (chunk 4 (hurry 2)).(# cutoff ((range 800 240 sine) * (slow 0.5 saw))).(|+|shape 0.15).(slow 2))
+    $ every 4 (superimpose (zoom (0.25,0.75)).(slow 2).(sometimesBy (1/6)(0.5 <~)))
+    $ every 3 (juxBy 0.5 (fast 2))
+    $ every 2 (juxBy 0.5 (slow 2).(density 2))
+    $ stack [
+      -- s "<if:2 brok:5>(3,<7 11>,2)" # cut 2 ,
+      every 2 (slow 2) $ s "ughat(<11 17 3 8>,<7 11>)" # cut 2,
+      s "<ugsnare:6? claps:7 grprc>(<1 0.5 4>,<7 11 13>,1)"
+    ]
+    # sustain ( range 0.1 0.5 $ slow 8 saw)
+    -- |+| shape ((slow 6 $ range  0.5 0.25  sine) * (slow 4 tri))
+    # gain 0.85
+  -- # unit " s c r c"
+  # n (every 2 (rev) $ every 4 (0.5 ~>) $ every 2 (rev) $ every 4 (0.25 <~) $ run 3)
+  --   # speed 1 # shape 0.25
+
+  clutchIn 2 16 $ slow 2 $ silence
+
+clutchIn 2 8
+      $ every 2 (jux rev )
+      $ chunk 4 (hurry 2)
+      $ s "~ <el:2 foleyperc:3> [foleyperc:4 foleyperc:5] [~ <bs:6 foleyperc:6>*2]"  # cut 3
+      # orbit 1 # unit "c s" # shape "<0.35 0.45 0.1 0.5>" # gain 0.8
+
+
+
+hush
+
+
+d4 $ silence
+
+
+d4    $
+      -- loopAt "<2 4>" $
+      every 8 (juxBy 0.6 (slow 2).(|* speed 0.5).(iter 4)) $
+      every 3 (juxBy 0.5(slow 3).(|* speed 0.25).(density 2).(trunc (1/2))) $
+      whenmod 8 3 (|* speed 0.25).(spread (slow) [2,3]).(stut' "<32 64>" "<1/40 1/70 1/100>" (spread ($)[(# triode (range 0.22 0.6 tri)),(#vowel "<a e i>"),(# s "~")])) $
+      every 4 (0.25<~) $
+      stack [
+        s "jpnperc(7,11,<0 1 2>)" # n (every 2 (slow 2) $ run 4),
+        s "grprc:2(<2 3 5>,7,<2 3 4>)",
+        s "percs:3(<4 6.5 7 1>,<5 7 11>)",
+        s "bs:4(<1 2 5 6 9>,<7 11 13>,<1 2 3 6>)"
+        ]
+      # cut "-1" # unit "<c s r>" # hpf "<500 80 200 1000? >" # room 0 # size 0
+      # n (every 5 (rev) $ every 4 (0.5 ~>) $ every 3 (rev) $ every 2 (0.25 <~) $ run 4)
+      # speed "<1 0.75>"
+
+
+d2 $
+  every 3 (density 2) $
+  every 4 (0.25 ~>) $
+  s "tk(<3.5 5.5>,7,<0 1 3>)" # cut 1
+
+
+d1 $ silence
+
+xfadeIn 2 8 $ silence
+
+d2 $
+-- loopAt 4 $
+  every 4 (density 2) $
+  whenmod 8 5 (spread ($)[trunc "<0.25 0.5 0.75>", zoom (0.25,0.75),(linger "<0.5 0.25 1>")]) $
+  sometimesBy (1/3) (spread ($) [fast 2, density 2, hurry 2, (jux(# speed 2).(fast 2))]) $
+  whenmod 15 11 (slowspread ($)[iter 4, (zoom (0.25,0.75)).(ply 2), ply "<2 3>", striate 512, (# s "~")]) $
+  every 6 (jux (rev).(every 2 (density 2).(# accelerate 2))) $
+  whenmod 5 2 (# triode (tri)).(# ring (cosine)).(# ringf (slow 4 $ range 10 200 sine)) $
+     stack [
+    whenmod 16 14 (#sound "~") $ whenmod 8 6 (const $ s "<ugkick:1 tempk:1>(3,11)") $ every 2 (slow 2) $ every 4 (fast 2) $ s "<tempk tempk:4 ugkick:2>([3 5 7],<11 7>,2)",
+    every 4 (superimpose (jux (rev)).(# sound "tempt:2(<3 3.5 5>,7)")) $ s "tempt:1(<1 2 3 5>,<7 11>)" |*| speed "[0.7 1 1.3]/3" # coarse 3 # hpf 500 # cut 2 # shape 0.3,
+    slow 2 $ every 6 (juxBy 0.2 (fast 2)) $ every 8 (juxBy 0.8 (# sound "[grprc:2(2,11,<2 4 6>), grprc:3(<2 3 4 5>,<5 7 11>)]")) $ s "[grprc:5]/2?" |*| speed "[0.7 0.9 1.1]/4" # bpf (slow 2 $ range 6000 2500  sine) # shape (slow 8 $ range 0.1 0.3  saw) # gain 0.9,
+    every 3 (juxBy 0.6 (fast 2)) $ every 4 (juxBy 0.4 (# sound "[ugclap:2(2,7,<3 5>) ugclap:3]")) $ s "~ ugclap:1(1,11,<3.5 5>)" # speed "[1.7 1.9 2.1]/4" # lpf (slow 2 $ range 6000 2500  sine) # shape (slow 3 $ range 0.1 0.3  saw) # gain 0.9,
+    s "ugslam(1,11,<5 6 1>)",
+    slow "[4 2]" $ every 4 (slow 2) $ every 3 (fast 2) $ s "<temph:8 temph:3>(<6 10 12 14>,[11 7],<0 1 2>)" # cut (-1) # hpf (slow 4 $ range 500 6500  tri) # shape (fast 2 $ range 0 0.3  saw)
+    ]
+    # shape 0.8
+    # gain 0.8
+
+
+setcps (range 0.7 0.85 sine)
+
+setcps 0.85

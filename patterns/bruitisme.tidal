@@ -1,0 +1,15 @@
+d1 $
+  stack [
+  s "k(1,8,<0 1 2>)"
+  ,
+  s ""]
+
+  d1 $ silence
+
+
+  d2 $
+    whenmod 8 6 (striate 32) $
+    whenmod 6 4 (density 2 . zoom (0.125,0.625)) $
+    s "sub:3"
+    |- up "0 3 6 5 1 0 11 1 2"
+    # cut "1 2 1 -1"

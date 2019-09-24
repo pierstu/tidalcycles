@@ -1,0 +1,163 @@
+do
+  d1 $
+    stack[
+      whenmod 8 5 (# s "~") $
+      every 4 (spread' (striate' 4) ((+slow 8 tri) <$> slow 4 sine) . (# accelerate "0.25 -1")) $
+      whenmod 3 0 ((# begin (segment 8 $ fast 4 $ range 0.01 0.05 tri)).(# end "0.03 0.02 0.06 0.1 0.01").(# loop "2 4 6 16 24")) $
+      whenmod 5 3 (0.25 <~) $
+      every 2 (chunk 4 (hurry "2 4")) $
+      slow 2 $
+      s "[~ [cp:2*4, cs:0*2]] eau:1"
+      # coarse (every 3 (density 1.25) $ "9 10 4 3 1 7 2 1 6 3 12 5 7 5 0 2 6 9 4 2 0")
+      # cut "-1"
+      ,
+      every 6 (spread' (striate' 4) ((+slow 8 tri) <$> slow 4 sine) . (|* speed "2.25 -1") . (# begin (segment 8 $ fast 4 $ range 0.01 0.05 tri)).(# end "0.03 0.02 0.06 0.1 0.01").(# loop "2 4 6 16 24")) $
+      whenmod 4 3 (# s "~") $
+      whenmod 8 6 (spin 4) $
+      -- whenmod 5 3 ((slow 8 . striate 4)) $
+      every 5 ((# begin (segment 8 $ fast 4 $ range 0.01 0.05 tri)).(# end "0.03 0.02 0.06 0.1 0.01").(# loop "2 4 6 16 24")) $
+      every 4 (0.25 ~>) $
+      every 3 (|* speed "-1").(# pan tri) $
+      every 2 (slow 2) $
+      s "dh:0*<2 4>  dt:1*<1 2 4 0> "
+      # coarse (every 4 (fast 2) $ "7 7 4 4 11 0 12 0 12 6 12 7 10 10 11 3 3 3 9 2 9 3 12 7 7 11 12 0 6 2 12")
+      # cut "2"
+      ,
+      seqPLoop [
+        (0,14,every 8 (# s "~") $
+        s "[<~ sub:1 ~>,dk:1](<3 5 3.5>,8,<0 2>)"
+        # distort 0.1
+        # shape 0.35
+        # lpf 1200
+        # coarse "2 4 8"
+        # cut "-2 -1 0"
+        # up "0 -1 -3 -7 -12")
+        ,
+        (14,15, s"~")
+        ,
+        (16,29, every 8 (# s "~") $
+        s "[<~ sub:1 ~ sub:2 ~>,<dk:1 ~>*2](<3 5 3.5>,8,<0 2>)"
+        # distort 0.1
+        # shape 0.35
+        # lpf 1200
+        # coarse "2 4 8"
+        # cut "-2 -1 0"
+        # up "0 -1 -3 -7 -12")
+        ,
+        (30,31, s"~")]
+      ,
+      every 16 (# s "~") $
+      s "dh:0*<16 8 16>"
+      # cut 1
+      # up 12
+      ,
+      seqPLoop [
+        (0,9, s"~")
+        ,
+        (10,15,every 4 (# s "~") $
+        every 3 (# pan (tri)).(gap "<32 16 8 4>") $
+        whenmod 5 3 ((slow 8 . striate 4)) $
+        every 5 (0.125 <~) $
+        slow 2 $ s "dt*<2 1 4 0> ~ dt:4*<8 4 2 0> ~ "
+        # cut "-1")
+        ]
+      ,
+      seqPLoop [
+        (0,7,s"~")
+        ,
+        (8,19,whenmod 16 10 (# s "~") $
+        whenmod 8 5 ((slow 8 . striate 4) . (every 2 (jux (|* speed "-1")))) $
+        every 4 (slow 2 . chop 16) $
+        whenmod 4 2 (density 2) $
+        s "pl:3*<2 4 8> ap*<2 4> dt*<8 2> dt:2*<4 1 0>"
+        |+ n (every 4 (0.25 <~) $ every 3 (0.25 ~>) $ every 2 (slow 1.5) $ "0 1 0")
+        # cut "-1"
+        # up "0 12 24")
+        ,
+        (20,24, s"~")
+        ]
+    ]
+
+do
+   d1 $
+      stack [
+        seqPLoop [
+          (0,14,
+            every 8 (# s "~") $
+            whenmod 14 11 (zoom (0.25,0.75)).(density 2).(every 2 (chunk 4 (hurry 2))) $
+            whenmod 7 2 (|+ squiz ("1 2 3 4")) $
+            every 6 (spread' (striate' 4) ((+slow 8 tri) <$> slow 4 sine) . (|* speed "2.25 -1") . (# begin (segment 8 $ fast 4 $ range 0.01 0.05 tri)).(# end "0.03 0.02 0.06 0.1 0.01").(# loop "2 4 6 16 24")) $
+            every 4 (0.25 ~>) $
+            every 2 (slow 2 . ghost) . (# up "-8 -12") . (every 2 (loopAt 2)) $
+            slow 2 $
+            s "[[sub:1*<1 2 4>, dt:1*<4 8 4 8 16 8 4 2>*4], [<junk:3 eau:3 <~ moto:1>>*2,<el:3 pl:3>]*<8 16 4 0>*2, dh:1*<2 4 8>] "
+            |+ n (every 1 (0.25 <~) $ every 3 (0.25 ~>) $ every 2 (slow 1.5) $ "0 1")
+            |- up "3 7 5 2 3"
+          )
+          ,
+          (15,16, s"~")
+          ]
+          # gain 0.7
+          # hpf "{120 80 10 800 50}%2"
+          # hpq (segment 4 $ slow 8 $ range 0.1 0.183 cosine)
+          # bpf (segment 32 $ slow 16 $ range 180 1440 tri)
+          # bpq (segment 16 $ slow 32 $ range 0 0.3 cosine)
+          # octer "{0 0.5 0.1 0.25 0}%3"
+          # octersub "{0.25 0.5 0.7 0.8 0.1}%4"
+          # ring (slow 16 $ range 0 0.5 saw)
+          # ringf (slow 24 $ range 20 120 tri)
+          # cut "-1"
+          # coarse 2
+          # squiz 0
+          # shape 0.23
+        ,
+        every 8 (# s "~") $
+        foldEvery [3,7] (# s "~").(every 4 (density 2)) $
+        every 2 (slow 2) $
+        s "[dk:1,sub:3](<3 5 3.5>*2,8)"
+        # shape 0.3
+        # distort 0.01
+        # triode 0.01
+        # lpf 1300
+        # lpq 0.15
+        # squiz 0
+        |- up "4 2 7 3"
+        # cut "-1"
+        ]
+
+do
+   d1 $
+    stack [
+      whenmod 8 6 (juxBy 0.4 (density 2).(rot 2).(|* speed "<1.5 2 2.5 3>").(# cut 1).(|* gain 0.75).(# octersub (segment 8 $ slow 4 $ range 0.5 0.95 cosine))) $
+      every 4 (0.25 ~>).(every 2 (# s "~")) $
+      every 7 ((chunk 4 (hurry 2)).(every 2 (# pan (tri)))) $
+      every 2 ((0.125 <~).every 2 (slow 2 . chop "<16 32 64>")) $
+      every 3 (slow 2) $
+      s "[[dt:3*<2 4 8 2>*2 ~], clic:5(<5 7 10 12>,16,<0 2>)] "
+      |- n (every 3 (rev) $ every 2 (0.25 ~>) $ "1 2 1 3 3 2")
+      # cut "1 -1 4 4"
+      # octersub 0
+      ,
+      whenmod 16 14 (# s "~") $
+      every 5 (0.25 ~>) $
+      every 3 (slow 2 . ghost) $
+      interlace (whenmod 4 3 (# speed "-1") $ whenmod 5 3 (chunk 4 (hurry 2)) $ s "bk:4(5,8,<0 1>)") (whenmod 5 2 (0.125 ~>) $ foldEvery [3,7] (density 2) $ s"ak:5(<3 5 6>,8,<0 0 1 0>)")
+      |+ coarse (every 3 (rev) $ every 2 (0.25 ~>) $ "1 2 0 1 2")
+      # shape 0.4
+      # lpf 1200
+      # distort 0.05
+      # cut "1 -1 4 4"
+      ,
+      whenmod 5 3 (# speed "-1") $
+      whenmod 4 2 (chunk 4 (hurry 2)).(every 2 (|* speed "-1")) $
+      every 5 (gap 64) $
+      every 3 (0.25 ~>) $
+      every 4 (slow 2) $
+      s "dh:5(<8 16 12 16 8 16 24 8 16>*2,8,<0 2>)"
+      |+ coarse (every 2 (density 4) $ run 2)
+      # cut "-1"
+      # up "{1 2 2 4 1 5 2}%3"
+      # gain (segment 32 $ slow 32 $ range 0 1 sine)
+      ]
+
+hush

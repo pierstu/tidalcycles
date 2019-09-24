@@ -1,0 +1,91 @@
+do
+   d2 $
+      every 6 (trunc 0.5) $
+      whenmod 6 5 (linger 2) $
+      every 4 (slow 2) $
+      stack [
+        whenmod 5 2 (chunk 4 (hurry 2)) $
+        s "~ bt*4"
+        ,
+        every 3 (chop 4) $
+        every 5 (0.25 <~) $
+        loopAt 2 $
+        s "eau*8 rst*2 "
+        # n (every 2 (palindrome) $ "2 7 2 3")
+      ]
+        # cut "0 1"
+
+hush
+
+do
+   d2 $ silence
+
+   clutchIn 2 16 $
+      whenmod 8 6 (jux (zoom (0.25,0.75)).(iter 2).(every 2 (chunk 4 (hurry 2)).(every 2 (|* speed "-1")))) $
+      every 4 (0.25 <~) $
+      stack [
+        every 3 (# coarse "0 2 4 8 16 3") $
+        every 5 (0.25 <~) $
+        loopAt 2 $
+        slow 2 $ s " r0*8 can*1 tn*2 ~"
+        ,
+        sometimes (hurry 2) $
+        every 2 (|* speed "-1") $
+        s "~ sd"
+        # distort 0.3
+        # shape 0.6
+        ,
+        whenmod 8 6 (|* speed "-0.5") $
+        whenmod 6 3 (rev) $
+        -- slow 2 $
+        s "k*2 ts*<2 1 8?> ~ ts*4 "
+        |+ krush (every 6 (rev) $ every 4 (slow 2) $ every 3 (0.25 ~>) $ every 2 (rev) $ run 12)
+        |+ n (every 6 (rev) $ every 4 (slow 2) $ every 3 (0.25 ~>) $ every 2 (rev) $ run 3)
+        # cut 1
+        # shape 0.38
+        ,
+        whenmod 6 4 (# delaytime " 0.01 0.05 0.1 0.3").(# delay 0.6).(# delayfeedback 0.8) $
+        every 4 (loopAt 2) $
+        s "impacts*8 tf*4 toms*2 tn*1 "
+        # n (every 4 (rev) $ run 10)
+        # cut "-1"
+        ]
+      # n (every 2 (palindrome) $ "2 7 2 3")
+
+
+   d2 $
+      whenmod 6 4 (# delaytime " 0.01 0.05 0.1 0.3").(# delay 0.6).(# delayfeedback 0.8) $
+      loopAt 2 $
+      s "impacts*8 tf*4 toms*2 tn*1 "
+      # n (every 4 (rev) $ run 10)
+      # cut "-1"
+      -- # gain 0.35
+      -- # cps 0.25
+      # orbit 1
+
+do
+   d1 $
+   stack [
+    ,
+      whenmod 6 3 (density 2) $
+      every 2 (palindrome) $
+      slow 2 $ s "kicks*<1 2 4 8> ~ [kicks ~ ~ kicks*<1 2>] ~]"
+      # n (every 4 (rev) $ run 10)
+      # cut "-1"
+      # cps 0.5
+      # shape 0.3
+      # distort 0.1
+      ]
+
+do
+   d1 $
+      whenmod 6 3 (((# delay "0.2 0.6 0.4 0.3 0.1") . (# delaytime "0.01") . (# delayfeedback "0.8"))) $
+      -- whenmod 6 3 (density 2) $
+      every 2 (palindrome) $
+      slow 2 $ s " kicks*4 ~ toms*<4 8 1> jpnperc*<1 2 4> "
+      # n (every 4 (rev) $ run 10)
+      # cut "-1"
+
+d1 $ silence
+
+hush

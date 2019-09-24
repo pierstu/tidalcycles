@@ -1,0 +1,180 @@
+hush
+
+-- 4/4
+do
+  setcps 0.35
+  d1 $
+      whenmod 7 5 (stut' "<4 6 8>" (0.125) (slowspread ($)[(# krush (segment 8 $ range 0.3 3 tri)).(# kcutoff (range 6000 300 tri)),(# ring (segment 4 $ range 0.2 0.5 tri)).(# ringf (range 300 6000 tri)),(|*| accelerate "<0.75 1.25 0.85 1.15 1.5>")])).(# cut "<-1 1 3 6 303>") $
+      every 8 (# triode "0.3 0.5") $
+      every 4 (0.25 <~) $
+      whenmod 5 3 (slowspread ($)[(slice 8 "1 7 5 2 3 6 4 0").(every 2 (stutWith 4 "0.125 -0.125" (|* speed 1.25))), chop "<16 128 32>",(slowspread ($)[stripe 3, iter' 4, slowstripe 3, (iter 4)]),(chunk 4 (hurry 0.5)).(every 2 (spread ($)[ply "<2 3>", (stripe 3)]))]) $
+      whenmod 7 5 (# fshiftnote "0 0 0.5 0.75 0.35").(# fshift (range 20 300 tri)) $
+      seqPLoop [
+      (0,6, slow 2 $ stack [
+        -- s  "sub*1 tc*<2 4> ~" ,
+        s  "~ gh*<4 8> bs*1 "
+          ]
+        # n (every 2 (slow 2) $ "8 9 10"))
+        ,
+      (6,7, s "~")
+      ,
+      (8,14,
+        whenmod 12 9 (every 2 (# s "~").(slowspread ($)[
+        (every 2 (# leslie (range 0.3 0.9 tri)).(# lrate (range 0.6 4 saw)).(# lsize (range 0.8 2.5 isaw))).(# fshift (range 0.4 0.1 tri)).(# fshiftnote "<1 2 3 5 0.75>")
+        ,(every 2 (# vowel "{a e i o u}%32")).(chunk 4 (hurry 2)),(every 2 (# coarse (run 16))).(# room "<1.3 2.4 3.8 0.1>").(# size "2.1 0.4 0.8 1.2").(# cut 1)
+        ,(every 2 (# octer "0.2 0.9").(# octersub (range 0.2 4 tri)).(# octersubsub (range 0.4 1.3 isaw)))
+        ,(ply "<2 3>")
+        ])) $
+        every 2 (slow 2) $ s "sub*<1 2 4> tc*<2 4> gh*8 bs*<1 2> "
+      # n (every 4 (slow 2) $ "8 9 10"))
+      ,
+      (14,15, s "~")
+      ]
+
+
+d3 $ silence
+
+-- attention ça grouve en 11
+do
+  setcps 0.55
+  d1 $
+        stack [
+          fix (|+ up (run 7)) (s "grsn") $
+            every 4 (jux (slow 2).(# s "~")) $
+            interlace
+              (stack [
+                  s "vk(<3 4 7>,11)",
+                  s " tc(<7 8 9>,11,<0 1 2>)",
+                  s " ~ grsn(<1 2>,5.5,<2 3>)"
+                ])
+              (s "vk:1(<3 5 3.5 7>,11)")
+            # shape 0.5
+            |+ n (every 2 (slow 2) $ "0 1")
+            # cut "-1"
+            ,
+          fix (|+ up "<5 7 12>") (s "temph") $
+          fix (|+ coarse "<5 7 12>") (s "temph") $
+          fix (# gain (slow 8 $ range 0.75 0.95 tri)) (s "temph") $
+          -- every 3 (# triode (range 0.3 0.5 sine)) $
+          -- every 4 (spread ($) [slow 2, (# s "~")]) $
+          stack [
+          whenmod 5 3 (stutWith 4 (0.125) (# cut 2).(every 2 (# coarse "<2 4 6>")).(|* speed (slow 2 $ range 1.25 1.5 tri))) $
+            interlace (s "temph:2(<3.5 5 6>,11)" # cut 2) (s "temph:1(<2 3 5.5>,11)" # cut 1)
+            , s "909(<4 8 3>,11)"
+            , s "626:3(<5 2 6>,11)"
+            , s "jpnperc:5(<3.5 6 2 5>,11)"
+            ]
+          |+ n (every 2 (0.25 <~) $ every 4 (rev) $ "8 10") # shape 0.4
+          # cut "-1"
+      ]
+
+
+-- 4/4
+do
+  d1 $
+    every 8 (spread ($)[slow 2, (# s "~")]) $
+    fix ((# lpf (range 800 30 tri)).(every 2 (# lpq (range 0.1 0.2 tri))).(# shape (range 0.1 0.3 saw)).(# cut 1)) (s "sub") $
+    fix (|+ up "5 3 7 12") (s "grh") $
+    fix (# cut "-1") (s "grsn") $
+    fix ((|- up (scan 12)).(# hpf 60).(# gain (slow 8 $ range 0.2 1.2 saw)).(every 4 (# triode (range 0.2 0.3 cosine)).(# squiz "2 4 8")).(every 2 (# fshiftnote (range 0.2 0.05 tri)).(# fshift (slow 2 $ range 500 10 cosine)))) (s "win") $
+    stack [
+      every 4 (chunk 4 (hurry 0.5)) $ s "[sub:2?,win:5](<4 5 7 9>,<8 16>)" # shape 0.5
+      ,
+      interlace (s (fit 4 ["vk", "grsn", "ughat", "tcp", "sub", "v2"] "[0 3*2 2 1 0 3*2 [1*<2 4>] ~]")) (s "grk:1(<3 3.5 5>,8)") # shape 0.3
+      ,
+      -- loopAt "<2 4>" $
+      whenmod 7 5 (# coarse "2 16") $
+      fix (# cut 1) (s "layer") $
+      fix ((# pan (slow 16 $ range 0.2 0.8 cosine)).(# up "-7").(foldEvery [3,5](# speed 0.75)).(# triode (range 0.3 0.5 tri)).(# fshift (range 20 500 saw)).(# fshiftnote (range 0.1 0.25 tri)).(# begin (range 0.05 0.1 saw)).(#coarse (run 5)).(every 2 (|* speed "-1"))) (s "notif") $
+      whenmod 8 3 (stutWith "<2 4 8>" 0.0625 (|* speed (slow 2 $ range 1.25 1.5 cosine))) $
+      slow 4 $ s "notif*8 ~ layer*4 pp*1 "
+      # n (every 3 (palindrome) $ every 2 (0.25 <~) $ "3 9 6 3 12 7 5 9 1")
+    ]
+    |+ n "2 1"
+    -- # cps (slow 10 $ range 0.5 0.75 sine)
+    # cps 0.5
+
+-- encore un 4/4
+do
+   d1 $
+      whenmod 5 2 (rev) $
+      whenmod 8 6 (0.125 ~>) $
+    every 2 (slow 2) $
+    stack [
+        s "[ugkick:4*<8 4>, ~ ugsnare*<1 2> ]",
+        every 4 (slow 2) $ s "bbss*<8 16> " # cut "1 -1"
+        -| note "10 [12,14] 16*2 12*3"
+        ]
+      |+ n (every 2 (rev) $ run 3)
+
+-- encore un 4/4 chelou
+do
+  setcps 0.7
+  d1 $
+     every 8 (slowspread ($)[(#s "~"),(0.125 <~)]) $
+     stack [
+     whenmod 5 2 (slowspread ($)[density 2, hurry 2, chunk 2 (hurry 2), (superimpose(|* speed 2).(density 2)), (# s "~")]) $
+      foldEvery [3,5] (stutWith 4 0.0125 (# fshift (range 30 300 tri)).(# fshiftnote (range 0.05 0.2 cosine)).(|* speed (range 1.5 2 saw)).(density 2)) $
+      s "layer:4(<5 7 4>,8)"
+      # cut 1 # up 24
+      # lpf (slow 2 $ range 7000 8000 saw)
+      # speed 2
+      ,
+      whenmod 10 6 (slowspread ($)[ply 2,off 0.125 (# accelerate 0.5), ghost, off 0.25 (# cut 1), slowstripe 2,iter 4,(# speed "[0.7,0.85]")]) $
+      every 3 (density 2) $
+      s "[vk(<2 3 4>,8),~ [~ <ts:2 ~>] <~ ts:2> ~, tk*2, ~ [gh ~ ~ gh?]]"
+      # cut "-1"
+      ,
+      every 2 (# s "~") $ s "sub*<4 8>" # cut "-1" #shape 0.3 # lpf (range 30 800 sine)
+    ]
+    # shape (slow "<2 4 8>" $ range 0.45 0.65 saw)
+
+
+do
+  xfadeIn 1 4 $ silence
+  xfadeIn 3 8 $ silence
+
+-- attention ça grouve en 5
+do
+  d3 $
+    slow 2 $
+    whenmod 8 6 (slowspread ($)[slow 2, fast 2]) $
+    whenmod 17 15 (# s "~") $
+    fix (|+ up "<5 7 12>") (s "grh") $
+    fix (|+ up "<5 7 12>") (s "snares") $
+    fix (jux (# lpf (range 5000 200 cosine)).(# lpq (slow 2 $ range 0.3 0.1 sine))) (s "vk") $
+    weaveWith 3 (interlace (stack [
+      -- s "vk:2(<3 4 1.5>,5)/<2 4 1>"
+      -- # cut 1
+      -- ,
+       s " grh(<7 5 8>,10)" # up "<-5 2 3 4 5>"
+      ,
+      slow 2 $ s "snares:9(<1 2 0>,10,5)"
+      ]) (s "gh:3(<2.5 2 4>,5)/<2 4>" # cut "-1") # shape 0.3 )
+    [
+      fast 2
+      -- , iter 4
+      -- , density 2
+      -- , (|* speed (segment 8 $ range 0.5 0.75 cosine))
+      -- , every 2 (jux(rev))
+      , trunc 0.5
+    ]
+    # gain 0.8
+    # cut "-1"
+  d1 $
+      whenmod 6 4 (jux (rev)) $
+      fix (# squiz "2 4 8 12") (s "pp") $
+      fix (# coarse (slow 2 $ run 7)) (s "sub") $
+      fix (|+ coarse (slow 4 $ run 12)) (s "bbss") $
+      -- whenmod 5 3 (0.25 <~) $
+      -- every 6 (spin 4) $
+      -- every 2 (0.125 <~) $
+      slow 2 $
+      interlace
+        (s "[<win bbss>(<2 3>,5), temps(<1 2>,5) pp(<1 2 3>,5), ~ sub(<2 1>,5) ]")
+        (s "[< win bbss>(3,5,2), temps:1(1,5,2), pp:1(<1 2>,5,1), ~ sub(1,5,1)]")
+      |+ n (every 2 (palindrome) $ every 4 (0.25 ~>) $ run 4)
+      # cut "-1"
+      |+ note "2 1"
+
+hush

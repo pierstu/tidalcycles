@@ -1,0 +1,43 @@
+do
+   d1 $
+      -- every 1 (rev) $
+      fix (|+ coarse (every 4 (0.25 <~) $ every 2 (slow 3) $ run 7)) (s "super808") $
+      fix (|- note (every 2 (0.25 ~>) $ every 3 (palindrome) $ run 5)) (s "super808") $
+      stack [
+      -- whenmod 8 6 (# coarse (run 12)) $
+      -- every 4 (slow 3) $
+      every 2 (spread ($) [chunk 4 (hurry 2), fast 2 , density 2, iter 4, ply 2, (# s "~")]) $
+        -- loopAt 2 $
+        s "super808(8,16)"
+        # cut "1"
+        # gain (slow 2 $ range 0.75 0.95 isaw)
+        -- # attack 0
+        # attack "<0.05 0.01 0.0625>"
+        # accelerate "0.1 0.2 0.3 0.4 0.5 1 2 -1 -2"
+        # n (slow 2 $ "2 3 4 5 6 8 0 1")
+        # speed (slow 3 $ range 4 43 tri)
+        # slide "1 2 3 4"
+        # resonance (slow 4 $ range 0 0.2 cosine)
+        # rel "0.5 0.04 0.3 0.2"
+        # lpf (fast 5 $ range 8000 4500 saw)
+        # lpq (slow 3 $ range 0.3 0.14 isaw)
+        # hpf (slow 3 $ range 20 300 cosine)
+        # hpq (slow 7 $ range 0.1 0.25 tri)
+        # bpf (slow 4 $ range 1500 2500 tri)
+        # bpq (fast 2 $ range 0.4 0.65 sine)
+        # voice "0.01 0.1 0.3 0.4"
+      ,
+      every 5 (((# delay "0.2 0.4 0.3 0.3 0.5 0.5 0.6") . (# delaytime "0.001") . (# delayfeedback "0.4 0.7 0.9"))) $
+      slow 2 $ s "supernoise(<8 16>,16,<0 3>)" # cut 1  # gain 0.5 # rel 0.2
+      ,
+      whenmod 7 4 (spread' (striate' 8) ((*0.05) <$> slow 2 sine)) $
+      slow 2 $  s "[tk:1(<3 5 7 1>,8,<0 1>),win:1*2] [grh*4,bag*<1 2>]"
+      ,
+      slow 2 $ s "sub:1" # cut "-1" |+ note "1 2 5 7 12 5 -3 0" # gain 0.75 # orbit 1
+      ,
+      slow 4 $ s "~ ~ [~ grprc:4*4] impact*1 "
+      #  cut "-1"
+      ]
+      # orbit 0
+
+hush

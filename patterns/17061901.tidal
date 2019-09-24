@@ -1,0 +1,351 @@
+do
+   d1 $
+      stack [
+        foldEvery [3,5] (spread ($)[density 2, (zoom (0.25, 0.75)) . (iter 4), chunk 4 (hurry 2), (# s "~")]) $
+        every 8 (# s "~") $
+        every 4 (0.25 <~) $
+        every 2 (rot 2) $
+        s "vk [vk ~ ~ vk] [~ vk] vk"
+        # lpf 800
+        # lpq (slow 32 $ range 0 0.15 saw)
+        # shape 0.2
+        # distort 0.05
+        ,
+        fix (# shape 0.3) (s "k") $
+        every 8 (# s "~") $
+        whenmod 4 3 (# speed "0.5") $
+        whenmod 5 2 (stut' 4 (0.0625*3) (jux (|*| speed "1.5") . (# cut 1))) $
+        every 4 (0.25 ~>) $
+        slow 2 $
+        s "k*4 31*4 grh*2 ugslam*2 "
+        # n (every 4 (0.25 ~>) $ every 2 (palindrome) $ run 12)
+        ,
+        foldEvery [3,5] (jux (zoom (0.25,0.75)).(density 2)) $
+        foldEvery [7,11] (|* hbrick 2) $
+        every 2 (|* voice "2 3 4") $
+        every 7 (|* sustain 2) $
+        every 4 (# s "~") $
+        s "supergong (<1 3 5>,8,<0 2>)"
+        |- up "0 1 2 -1"
+        # pan (slow 3 $ sine)
+        # accelerate "{0 0.25 -0.75 -1}%8"
+        # voice (slow 4 $ range 0 0.7 saw)
+        # decay "[1 0.2]/8"
+        # sustain "[0.3 0.9]/5"
+        # hbrick (slow 4 $ range 0.6 0.7 saw)
+        # gain (slow 8 $ range 0 0.7 saw)
+        ,
+        whenmod 8 6 (# pan "0.75 1") $
+        whenmod 5 3 (iter 4) $
+        every 6 (chunk 4 (hurry 2)) $
+        whenmod 7 5 (# accelerate "[0.2 1 -1]/4") $
+        loopAt 2 $ s "31*2 meca*4 el:1*2 pl:2*1 "
+        |+ n (every 2 (palindrome) $ run 4)
+        # cut "-1"
+        ,
+        every 3 (density 2) $
+        whenmod 7 4 (0.25 <~) $
+        every 2 (|* speed "-1") $
+        slow 2 $
+        loopAt 2 $
+        s "xcy*1 ugslam*2 hhh*2 tf*2 "
+        # n (every 4 (0.25 <~) $ every 4 (0.25 <~) $ every 3 (0.25 ~>) $ run 6)
+        # attack (slow 3 $ range 0.05 0.1 tri)
+        # cut "0 1"
+        ,
+        whenmod 7 5 (chunk 4 (iter 4)) $
+        whenmod 6 4 (# coarse "4 6 32") $
+        every 4 (palindrome) $
+        every 8 (slow 2) $
+        loopAt 2 $
+        s "eau*8 tk*1 glasstap*2 can*4 "
+        # n (every 2 (rev) $ every 6 (density 3) $ every 4 (density 4) $ run 12)
+        # cut "1"
+      ]
+
+do
+   d1 $
+    stack [
+      every 8 (# s "~") $
+      every 3 (chunk 4 (hurry 2)) $
+      every 4 (0.25 ~>) $
+      loopAt 2 $ s "[win*8 tn*4, eau*2 31*4 ]"
+      # n (slow 2 $ every 4 (0.25 ~>) $ run 8)
+      # up (fast 2 $ every 4 (0.25 ~>) $ "1 2 -3 -6 8 7 1")
+      # cut "-1"
+      ,
+      every 2 (# up "[10 0]/4") $
+      every 4 (density 3) $
+      slow 2 $ s "tempk*2 ul*2 ~ grsn*2 "
+      # n (every 3 (slow 1.5) $ every 3 (density 1.5) $ every 3 (palindrome) $ every 2 (palindrome) $ every 1 (palindrome) $ every 1 (0.25 <~) $ "11 3")
+      ]
+
+
+do
+   xfadeIn 2 16 $
+    stack [
+      every 8 (# s "~") $
+      every 4 (0.25 <~) $
+      foldEvery [3,5] (slowspread ($) [density 2,  chunk 4 (hurry 2), (# s "~")]) $
+      s "vk(<1 2 4 0>,8,<0 2>)"
+      # distort 0.05
+      # triode (slow 4 $ range 0.03 0.3 tri)
+      # shape 0.2
+      # lpf 800
+      # lpq (slow 3 $ range 0.05 0.15 tri)
+      # smear (slow 4 $ range 0 0.6 tri)
+      ,
+      foldEvery [3,5] (|* speed "-1") $
+      whenmod 7 5 (jux (# delay "0.5") . (# delaytime "0.2 0.001 0.2") . (# delayfeedback "0.7")) $
+      whenmod 8 6 (# accelerate "-1") $
+      whenmod 5 2 (spread ($)[(slow 2) .(striate 4) , (slow 2) .(gap 32) , (chop 16)]) $
+      every 4 (loopAt 2) $
+      slow 2 $ s "~ stomp*8 tf*2 glasstap*2 "
+      |- up (every 4 (slow 2) $ every 2 (rev) $ every 7 (0.25 <~) $ "8 5 6 2 3")
+      |+ n (every 2 (slow 3) $ run 4)
+      # cut 1
+      # gain 0.6
+      ,
+      foldEvery [3,5] (superimpose (|* gain (fast 2 $ range 0 0.85 saw)).(# freeze "[1 0 0 1 0 1]/4")) $
+      whenmod 8 4 (superimpose (# ring (slow 2 $ range 0.3 0.9 tri)) . (# ringf (slow 3 $ range 20 600 saw)) . (every 2 (# fshift (range 0.05 0.2 tri)) . (# fshiftnote (range 0.01 0.15 saw)))) $
+      seqPLoop [
+      (0,6,whenmod 8 6 (# accelerate "0.25 -1 1 0.5") $
+      every 4 (# speed "-0.5") $
+      every 6 (# shape "0.4") $
+      every 2 (# accelerate "0 0.25 -0.75") $
+      every 8 (hurry 0.5) $
+      loopAt 2 $ s "tn*4 grcm*1 notif*2 scapes*2 "
+      |- up (every 2 (slow 3) $ run 4))
+      ,
+      (8,14,
+      whenmod 5 2 (every 2 (|* speed "-1")) $
+      every 2 (0.125 <~) $
+      every 4 (chunk 4 (hurry 2)) $
+      every 6 (iter 4) $
+      loopAt 2 $ s "basss*4 31*2 v1*8 el*2 "
+      |- up (every 3 (rev) $ every 4 (0.25 ~>) $ "0 9 4 8 0 0 1"))
+      ,
+      (16,22,
+      every 4 (0.25 ~>) $
+      whenmod 7 5 (((# delay "0.4 0.3 0.3") . (# delaytime "0.01 0.1 0.2 0.1 0.001") . (# delayfeedback "0.2"))) $
+      every 2 ((slow 2) . (striate 4)) $
+      loopAt 2 $ s "basss*4 31*2 bs*8 bs*1 "
+      |- up (every 3 (rev) $ every 4 (density 2) $ "2 2 1"))
+      ,
+      (24,30,
+      every 2 (0.125 ~>) $
+      whenmod 7 5 (((# delay "0.4 0.3 0.3") . (# delaytime "0.01 0.1 0.2 0.1 0.001") . (# delayfeedback "0.2"))) $
+      every 2 ((slow 2) . (striate 16)) $
+      loopAt 2 $ s "basss*4 31*2 moto*8 el*2 "
+      |- up (every 4 (rev) $ every 3 (density 2) $ "2 2 1"))
+      ]
+      # n (every 4 (0.25 ~>) $ every 2 (palindrome) $ run 12)
+      # cut "0 1"
+      # shape 0.3
+    ]
+    # gain 0.7
+
+    hush
+
+
+do
+   setcps (110/60/2)
+   d1 $
+    foldEvery [3,7] (chunk 4 (spread ($)[density 2, (hurry 2)])) $
+    whenmod 10 6 (slowspread ($) [
+      (|+ lbrick (fast 3 $ range 0.3 0.7 tri))
+      , (|+ scram (fast 4 $ range 0.5 0.96 tri))
+      , (|+ smear (fast 2 $ range 0.9 1.8 sine))
+      , (|+ hbrick (fast 5 $ range 0.9 1.7 tri))
+      , (jux (# kcutoff (range 300 800 tri)) . (# krush (range 0.3 0.8 tri)))
+      -- , (# s "~")
+      ]) $
+    stack [
+      every 8 (every 8 (# s "~")) $
+      s "vk*<4 8>"
+      ,
+      fix ((|- up (fast 2 $ run 8)).(# coarse (run 8)).(# lbrick (fast 3 $ range 0 0.7 tri)).(# scram (fast 4 $ range 0.05 0.6 tri)).(# smear (fast 2 $ range 0.9 0.3 isaw)).(# hbrick (fast 5 $ range 0.1 0.7 tri))) (s "tv") $
+      whenmod 5 3 (juxBy 0.8 (slow 2).(spread' (striate' 128) ((*0.05) <$> slow 4 sine))) $
+      whenmod 11 9 (stutWith 6 (0.625*3) (juxBy 0.6 (# cut 1).(|+ accelerate "-0.25"))) $
+      whenmod 7 6 (# s "~") $
+      every 8 (loopAt 2) $
+      slow 2 $
+      s "[k*2 tv*2, [~ percs*2] ifdrums*4] "
+      # n (every 4 (slow 4) $ every 6 (0.25 <~) $ "6 10 10 0 0 9 10 0")
+      ,
+      whenmod 15 9 (chunk 4 (spread ($)[hurry 2, iter 4, ply 2, (# accelerate "[-0.5 -0.25 -0.125 0.15]/8"), (# s "~")])) $
+      whenmod 5 3 (slowspread ($)[ density "1 2 1" , (# ring (range 0.2 0.8 sine)).(# ringf (range 60 500 tri)).(every 2 (# krush 1)) ,(fast "1 2 1").(every 2 (iter 2)) , (slow "1 2 1").(every 2 (chunk 4 (hurry 2))) , (# s "~") ]) $
+      seqPLoop [
+          (0,3,
+          every 4 (0.25 <~) $
+          every 2 (# pan (tri)) $
+          whenmod 7 6 (every 2 (chunk 4 (hurry 2))) $
+          whenmod 5 3 (|+ up "10") $
+          slow 2 $ s "broh*2 31*2 percs*1 junk*2 "
+          # n (every 4 (density 3) $ "5 2 1")
+          # up "0 2 5 -7"
+          # cut "-1")
+         ,
+         (4,7,
+         whenmod 8 6 (|+ up "10") $
+         every 4 (0.25 <~) $
+         every 3 (jux (iter 2)) $
+         whenmod 7 6 (jux (trunc 0.5).(chunk 4 (hurry 2))) $
+         whenmod 5 3 (chunk 4 (# accelerate "[0.25 0.33 0.5 0.75 1 1.5 2]/8")) $
+         slow 2 $ s "tn*2 31*1 impact*2 ps*8 "
+         # up "0 2 5 -7"
+         # cut 1
+         # n (every 2 (0.25 <~) $ "1 2 4 6"))
+         ,
+         (8,11,
+         whenmod 7 4 (chunk 2 (density 2)) $
+         every 4 (0.25 <~) $
+         every 3 (chunk 4 (iter 2)) $
+         whenmod 7 5 (jux (# accelerate "0.2 0.4 0.8 -0.3 -1").(chunk 4 (hurry 2))) $
+         whenmod 5 3 (stutWith 6 0.0125 (|* speed "-2")) $
+         slow 2 $ s "moto*2 bottle*8 impact*4 ps*8 "
+         # n (every 2 (density 4) $ every 2 (palindrome) $ every 3 (density 1.25) $ run 11)
+         # cut "-1")
+         ,
+         (12,15,
+         whenmod 6 3 (chunk 4 (hurry "0.5 2")) $
+         every 2 (jux (0.125 <~).(slow 2).(striate 16)) $
+         slow 2 $ s "ps*2 bottle*4 impact*2 amencutup*2 "
+         # n (every 2 (density 4) $ every 2 (palindrome) $ every 3 (density 1.25) $ run 11)
+         |- up (every 2 (0.25 <~) $ "1 2 4 6")
+         # cut "1")
+         ,
+         (16,19,
+         every 3 (((# delay "0.6 0.4 0.1 0.3 0.3") . (# delaytime "0.001 0.1") . (# delayfeedback "0.9 0.1"))) $
+         every 4 (0.25 ~>) $
+         every 6 (zoom (0.25,0.75)) $
+         slow 2 $ s "ps*2 bottle*4 brop*2 amencutup*4 "
+         |- up (every 2 (0.25 <~) $ "1 2 4 6")
+         # cut "1"
+         # n (every 3 (rev) $ "2 12 5 6 3 6 4 2 10 9 4"))
+         ]
+         ,
+         foldEvery [3,7] (chunk 4 (hurry 2)) $
+         every 16 (# s "~") $
+         whenmod 5 2 (spin 2) $
+         whenmod 6 4 (degrade) $
+         whenmod 8 6 (0.5 <~) $
+         every 8 (loopAt 2) $
+         every 4 (chunk 4 (hurry 2)) $
+         slow 2 $
+         s "impacts*4 strings*2 31*8 glasstap*4 "
+         # n (every 4 (palindrome) $ every 2 (density 3) $ run 6)
+         # cut "1"
+         ,
+         seqPLoop [
+         (0,7, every 4 (0.25 <~) $
+         whenmod 7 5 (chunk 4 (density 2)) $
+         every 3 (stutWith 6 0.0125 (jux (# cut 1).(# ring (range 0.2 0.8 tri)).(# ringf (range 50 600 tri)).(# fshiftnote (range 0.01 0.15 saw)).(# fshift 0.25))) $
+         loopAt 2 $
+         s "k*2 el:1*1 ~ foleyperc*4  "
+         |+ n (every 2 (0.25 ~>) $ run 5)
+         # cut "1")
+         ,
+         (8,15, every 2 (# up (run 5)) $
+         whenmod 7 5 (density 1.5) $
+         every 4 (0.25 ~>) $
+         loopAt 2 $
+         s "win:3*2 31*1 bs*2 meca*2 "
+         # note (every 2 (0.25 ~>) $ run 5)
+         # cut "-1")
+         ]
+         ,
+         whenmod 8 6 (stutWith 3 (0.0125*3) (# accelerate "-1.5")) $
+         whenmod 9 6 (chunk 4 (iter 2)) $
+         whenmod 7 4 (# speed "0.5") $
+         slow 2 $
+         every 8 (loopAt 2) $
+         s "~ psr*4 notif*2 moto*2 "
+         # cut 1
+         # n (every 4 (0.25 ~>) $ every 4 (0.25 <~) $ "7 2 4 6 10")
+         ,
+         whenmod 6 4 (zoom (0.25,0.75)) $
+         every 4 (0.25 ~>) $
+         whenmod 8 6 (stut' 3 (0.125*3) (|*| speed "1.5")) $
+         every 4 (slow 2) $
+         loopAt 2 $
+         s "vk*4 toms*8 ugclap*2 snares*2 "
+         # cut 1
+         # n (every 4 (0.25 ~>) $ every 4 (0.25 <~) $ "7 2 4 6 10")
+      ]
+      -- # cps (slow 8 $ range 1 1.5 tri)
+
+      d2 $
+         every 16 (# s "~") $
+         foldEvery [3,7] (chunk 4 (jux (# lbrick (fast 3 $ range 0 0.7 tri)).(# scram (fast 4 $ range 0.05 0.6 tri)).(# smear (fast 2 $ range 0.9 0.3 isaw)).(# hbrick (fast 5 $ range 0.1 0.7 tri)))) $
+         whenmod 5 2 (chop 4) $
+         whenmod 6 4 (# coarse "16 12 4 8 4 8 12") $
+         every 4 (0.25 ~>) $
+         every 8 (loopAt 2) $
+         slow 2 $ s "~ amencutup*<2 4> ugclap*2 ps*8 "
+         # n (fast 2 $ every 3 (palindrome) $ run 16)
+
+do
+   d1 $
+    stack [
+      whenmod 7 5 (spread' (striate' 64) ((*0.2) <$> slow 2 sine)) $
+      whenmod 9 6 (density 2) $
+      every 4 (0.25 <~) $
+      loopAt 4 $ s "hold*8 moto*2 pp*8 layer*1 "
+      # n (every 3 (0.25 ~>) $ every 2 (density 4) $ every 1 (slow 1.25) $ every 2 (palindrome) $ run 12)
+      ,
+      whenmod 7 5 (# accelerate "0.5") $
+      whenmod 8 6 (0.5 <~) $
+      whenmod 7 5 (0.125 <~) $
+      every 4 (0.25 <~) $
+      slow 2 $ s "[k*2 if:2*1, bs*2 impacts*4 ]"
+      |- note (every 2 (palindrome) $ every 3 (0.25 <~) $ every 4 (slow 2) $ every 5 (rev) $ run 4)
+      ,
+      foldEvery [3,5] (trunc 0.5) $
+      every 8 (# s "~") $
+      every 4 (slow 2) $
+      loopAt 2 $
+      s "vk [vk*2 [~ vk]]  [~ vk] ~"
+      # shape (slow 4 $ range 0.3 0.5 tri)
+      -- # gain 0.9
+      ,
+      every 5 (zoom (0.25,0.75)) $
+      whenmod 6 4 (# pan "{0.25 0.75 0.25 0}%8") $
+      every 2 (0.25 <~) $
+      slow 2 $ s "percs*2 tc*4 31*1 hits*4 "
+      # n (every 3 (slow 3) $ "3 2 3 8 2 7 0 10 8 2 7")
+      # cut 1
+      # gain 0.7
+      ,
+      fix ((# gain (slow 8 $ range 0.3 0.9 saw)).(# pan (fast 4 $ sine)).(# coarse (run 8)).(# sustain "0.01 0.02 0.05").(# hbrick (fast 3 $ range 0 0.7 tri)).(every 4 (# scram (fast 4 $ range 0.05 0.6 tri))).(every 2(# smear (fast 2 $ range 0.9 0.3 isaw)))) (s "hhh") $
+      fix ((# gain (slow 8 $ range 0.3 0.9 saw)).(# pan (slow 4 $ sine)).(# coarse (run 3)).(# sustain "0.1 0.2 0.5").(# hbrick (fast 3 $ range 0 0.7 tri)). (# scram (slow 4 $ range 0.05 0.6 tri)).(# smear (slow 2 $ range 0.9 0.3 isaw)).(|- up (every 3 (slow 3) $ "3 2 3 8 2 7 0 10 8 2 7"))) (s "eau") $
+      fix ((# hbrick (fast 3 $ range 0 0.7 tri)). (# scram (slow 4 $ range 0.05 0.6 tri)).(# smear (slow 2 $ range 0.9 0.3 isaw))) (s "31") $
+      fix (|+ shape (slow 4 $ range 0 0.4 tri)) (s "ugkick") $
+      whenmod 5 2 (density 2) $
+      every 5 (trunc 0.5) $
+      whenmod 5 3 (chop 4) $
+      slow 2 $ s "[ugkick(<1 3 5>,8,<0 1 2>), eau*4 31*2, hhh*4] "
+      # krush (every 4 (density 4) $ every 2 (slow 3) $ every 6 (0.25 <~) $ every 3 (slow 4) $ "0 8 3 11 0 1 7 4 5 7 4 9 8 11 2 1 4 6 3")
+      # kcutoff (slow 4 $ range 400 6000 tri)
+      # cut 1
+      ,
+      whenmod 5 3 (striate 8) $
+      every 4 (# speed "-0.5") $
+      whenmod 7 5 (chunk 4 (hurry 2)) $
+      whenmod 5 3 (jux (rev)) $
+      every 4 (# pan "0.75 1 0.25") $
+      loopAt "<2 4>" $
+      s "~ win*1 hoover if:2*2 "
+      # cut 1
+      -- |+ n (every 1 (0.25 ~>) $ run 3)
+      ,
+      s "vk:5*4"
+      # shape 0.3
+      # distort 0.05
+      # cut 1
+      ]
+      # cut "-1"
+
+      xfadeIn 3 8 $ silence
+
+hush

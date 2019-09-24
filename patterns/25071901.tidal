@@ -1,0 +1,69 @@
+hush
+
+--basses
+
+xfadeIn 3 8 $ silence
+
+   d3 $
+      whenmod 5 4 (0.125 <~) $
+      whenmod 6 3 (|+ krush "0.75 0.25 0 1") . (# kcutoff (slow 2 $ range 600 1200 cosine)) $
+      whenmod 7 5 (scramble 2) $
+      every 4 (loopAt 2) $
+      every 3 (iter 2) $
+      every 2 (slow 2) $
+      slow 4 $
+      up (every 3 (fast 4) $ every 2 (density 3) $ "[11 2] 1 ~  1 ~ [4 1] 8 7") #
+      s "sub:5*8  "
+      # cut "-1"
+      |+ up "-12 0"
+      # shape 0.35
+      # lpf 800
+      # octer 0.1
+      # octersub 0.1
+      # octersubsub 0.8
+      # gain 0.8
+
+   d2 $
+      whenmod 5 2 (# tremdp "{0.3 0.4 0.1 0.9 0.4 0.1 0.3 0.8 0.4 0.1 0.8 0}%3") . (# tremr "{0.2 0.7 0.1}%2") . (# scram "{1.1 3.2 2.4 1.3 1.3 2.4 1.3}%3")$
+      whenmod 8 6 (0.125 <~) $
+      whenmod 5 3 (chop 16) $
+      whenmod 6 3 (# ring "{0.75 0.25 0 1}%3") . (# ringf "{20 40 60 200 120 70}%4") . (# ringdf "{0 0.4 0.1 0.8 1 0}%2") . (# coarse "[0 1 2]") $
+      whenmod 7 5 (# coarse "1 2 1 0 1 2 0") $
+      slow 2 $ s "sub:6(<6 4>,8,<0 1>) "
+      |+ up (every 4 (rev) $ every 2 (slow 1.5) $ "-2 3 -12 7 1 11 13")
+      # cut "-1 4 4"
+      # octer 0
+      -- # octersub 0.2
+      -- # octersubsub 0.8
+      # sustain "{0.1 0.3 0.3 0.1 0.3 0.4 0.8 0.1}%2"
+      # release "{0.3 0.1 0.4 0.1 0.4 0.1}%3"
+      # scram 0
+      # gain 0.9
+
+   xfadeIn 3 8 $
+      whenmod 5 2 (|- accelerate "0.3 0.4 0.1") $
+      whenmod 8 6 (0.125 <~) $
+      whenmod 5 3 (striate 16) $
+      whenmod 6 3 (|+ sustain "0.75 0.25 0 1") $
+      whenmod 7 5 (rev) $
+      slow 2 $ s "b:7(<6 5 3>*2,8,<0 1>) "
+      |+ up (every 4 (rev) $ every 2 (slow 1.5) $ every 4 (density 3) $ "1 -2 3 1 8 -7 -2")
+      # cut "-1 2 1"
+      # n "{0 1 2 0 1 2 0 1 2}%2"
+      # decay "{0.1 0.3 0.7 0.8 0.1 0.4 0.4}%7"
+      # sustain "{0 1 0.2 0.4 0.01 0.4 0.1 0.4 0.4 0.1 0.7 0.4 0.7}%2"
+      # accelerate "{0.2 0.1 0.4 0 0.1 0.7 -2 0 -7 0.1 -1 0.4 -0.3 0.6 -1 0.25 -2 0.8 -0.4 -1.7}%3"
+      # slide "{0 0.2 0.7 0 1 0.8 0 0.3 0.6 0.1 0.3 0.6 0.1 0 1}%3"
+      # octersub 0.4
+      # octersubsub 0.8
+      # shape 0.3
+
+d3 $ silence
+
+   d3 $
+      whenmod 8 6 (striate 16) $
+      whenmod 5 2 (iter 2) $
+      slow 2 $
+      s "sub:7({3 5 7}%2,8,<0 1>) "
+      |+ up (every 4 (0.25 ~>) $ "9 5 5 5")
+      # cut "-1"

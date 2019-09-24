@@ -1,0 +1,318 @@
+
+clutchIn 1 16 $ silence
+
+do
+   d2 $
+      stack [
+        seqPLoop [
+          (0,15, every 6 (rev) $
+          every 3 (|* speed "-1") $
+          whenmod 8 6 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "0.7"). (#hbrick "0.1 0.2 0.7 0.9"))) $
+          whenmod 7 5 (0.125 <~) $
+          every 4  (superimpose (# real "0.4 0.6 1"). (# imag "0.3 0.8 0.2 1") . (# smear "0.3 0.5 0.8 1.1 0.3") ) $
+          slow 2 $ s "[ac*2 ap*4 [af*1 as] [~ ap*4 ], ah(<4 8 16>/3,8,<0 1>)]"
+          # n (every 4 (slow 3) $ run 2)
+          # cut "-1")
+          ,
+          (16,31, every 6 (rev) $
+          every 3 (|* speed "-1") $
+          whenmod 7 4 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "0.85"). (#lbrick "0.1 0.2 0.7 0.9"))) $
+          every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "0.3 0.8 0.2 1") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+          every 4 (0.25 <~) $
+          slow 2 $ s "[af*2 [~ as*4] [as? b*2] [ac*8 win], ah(<4 8 16>/3,8,<0 1 2>)]"
+          # n ( every 4 (slow 3) $ run 2)
+          # cut "-1")
+        ]
+        ,
+        every 8 (# s "~") $
+        s "ak(<3 5 6>/3,8,<0 1>)"
+        # distort 0.08
+        # triode 0.5
+        # shape 0.3
+        ,
+        whenmod 7 4 (# s "~") $
+        s "supergrind({3 4 6 7}%5,8,<0 1 2>)"
+        |- up "1 2 5 12 7 3 12 1"
+        # decay (fast 2 $ range 0.01 0.5 saw)
+        # accelerate (fast 3 $ range 0 2 isaw)
+        # detune (fast 4 $ range 0 0.5 sine)
+        # voice (fast 5 $ range 0.2 0.8 cosine)
+        # gain 0.85
+        ,
+        whenmod 9 6 (# s "~") $
+        s "superprime (<3 6 7 1>/4,8)"
+        # accelerate "0 1 2 -2"
+        # detune (fast 2 $ range 0 1 saw)
+        # voice "0 1 2 0.5 0.2"
+        # speed "0 1 2 -5"
+        |- up "1 2 5 7 -12 -24 -3"
+      ]
+
+do
+   d3 $
+      stack [
+        seqPLoop [
+        (0,7, every 6 (rev) $
+        every 3 (# accelerate 0.25) $
+        whenmod 7 5 (fast 2) $
+        whenmod 7 4 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "1"). (# hbrick "0.1 0.2 0.7 0.9"))) $
+        whenmod 7 5 (0.125 <~) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "0.3 0.8 0.2 1") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+        slow 2 $
+        s "[ap*2 [<~ af*<2 4>> af*4] [win b*2] ac*8, ah(<8 16>,8)]"
+        # n (every 3 (palindrome) $ every 4 (0.25 <~) $ "12 10 11 5 5")
+        # cut "-1")
+        ,
+        (8,15, whenmod 5 2 (rev) $
+        every 3 (|* speed "-2") $
+        whenmod 8 6 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "1.05"). (#lbrick "0.1 0.2 0.7 0.9"))) $
+        whenmod 7 5 (0.125 <~) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "0.3 0.8 0.2 1") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+        slow 2 $ s "[[ap*2 af*4][af*<2 4 8> b*2] [~ ac*8] [win b*2], ah*<8 16> ]"
+        # n (every 3 (palindrome) $ every 4 (0.25 <~) $ "12 10 11 5 5")
+        # cut "-1")
+        ,
+        (16,23, every 4 (chunk 4 (hurry 2)) $
+        whenmod 5 2 (|* speed "-1") $
+        whenmod 7 4 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "1.25"). (#hbrick "0.1 0.2 0.7 0.9"))) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "{0.3 0.8 0.2 1}%3") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+        every 3 (rot 2) $
+        whenmod 7 5 (0.125 <~) $
+        slow 2 $ s "[[ap*2 af*4] [af*<2 4 1> b*4] [b*2 win*<1 2 4>] [as*<1 2> ap*4], ah*<8 16> ]"
+        # n (every 1 (0.25 ~>) $ every 3 (palindrome) $ every 1 (0.25 <~) $ "12 10 11 5 5")
+        # cut "-1")
+        ,
+        (24,31, every 1 (rev) $
+        every 6 (palindrome) $
+        whenmod 7 4 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "1.5"). (# lbrick "0.1 0.2 0.7 0.9"))) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "{0.23 0.48 0.22 0.1}%4") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+        whenmod 5 2 (rev) $
+        every 3 (rev) $
+        whenmod 7 5 (0.125 <~) $
+        slow 2 $ s "[[ap*2 ap*4] [b*2 af*8] [~ win] [as*8 an*<1 2 4>], ah(<4 8 16 32>/5,8,<0 1>) ]"
+        # n (every 1 (0.25 ~>) $ every 3 (palindrome) $ every 1 (0.25 <~) $ "12 10 11 5 5")
+        # cut "-1")
+        ]
+        ,
+        whenmod 7 6 (# s "~") $
+        whenmod 7 4 (jux (# binshift "{1.5 1 0.6 0.26}%8"). (#hbrick "{0.1 0.2 0.05 0.6}%4")) $
+        every 4 (jux (# real "0.4 0.6 1"). (# imag "{0.3 0.8 0.2 1}%7") . (# smear "{0.43 0.25 0.18 1.1 0.3}%3"). (|* gain 0.5) ) $
+        every 4 (slow 2) $
+        s "ah:3({4 8 16 8 32 8 16 8}%16,16,<0 1 2>)"
+        ,
+        whenmod 12 10 (density 2) $
+        whenmod 16 13 (# s "~") $
+        whenmod 7 5 (# s "~") $
+        every 4 (loopAt 2) $
+        every 8 (slow 2) $
+        s "ak:3({3 5 7 4}%16,8,<0 1 2>)"
+        # distort (slow 16 $ range 0.05 0.3 saw)
+        # triode (slow 8 $ range 0.1 0.4 cosine)
+        # shape 0.2
+        # lpf 800
+        # gain 0.86
+      ]
+      # orbit 0
+
+hush
+
+do
+   d2 $
+      stack [
+      seqPLoop [
+        (0, 7, every 5 (rev) $
+        every 6 (rot 2) $
+        whenmod 7 4 (stutWith 4 "(0.0625* <2 3>)" (superimpose (# binshift "0.5"). (#hbrick "0.1 0.2"))) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.14 0.26"). (# imag "0.3 0.8") . (# smear "0.3 0.5") . (|* gain 0.5))) $
+        whenmod 7 4 (# speed "-1") $
+        whenmod 7 5 (0.125 <~) $
+        slow 2 $ s "tn*2 tp*4 b*2 tn*8 "
+        # n (every 3 (palindrome) $ "12 10 11 5 5")
+        # cut "4")
+        ,
+        (8, 11, every 4 (rev) $
+        every 6 (chunk 4 (hurry 2)) $
+        whenmod 7 4 (stutWith 4 "(0.0625* <3 4>)" (superimpose (# binshift "1"). (#hbrick "0.7 0.9 0.6"))) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.34 0.46 1"). (# imag " 0.2 1") . (# smear " 1.1 0.3") . (|* gain 0.5))) $
+        whenmod 7 4 (# speed "-1") $
+        slow 2 $ s "tn*2 tp*4 b*2 tn*8 "
+        # n (every 3 (palindrome)  $ "12 10 11 5 5")
+        # cut "4")
+        ,
+        (12, 15, every 3 (rev) $
+        every 6 (trunc 0.5) $
+        whenmod 7 4 (stutWith 4 "(0.0625* <4 6>)" (superimpose (# binshift "1.5"). (#hbrick "0.1 0.2 0.7 0"))) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.64 0.76 0"). (# imag "0.8 0") . (# smear " 1.1 0") . (|* gain 0.5))) $
+        whenmod 7 4 (# speed "-1") $
+        slow 2 $ s "tn*2 tp*4 tf*2 tn*2 "
+        # n (every 3 (palindrome)  $ "12 10 11 5 5")
+        # cut "4")
+        ]
+      ,
+      every 8 (# s "~") $
+      every 2 (rot "<1 2>") $
+      every 4 (0.25 <~) $
+      s "[[tk*2 ~] [~ tk] ~ [~ tk], tf({3 5 6}%4,16,<0 1 2>)]"
+      # cut "<1 2>"
+      ]
+
+do
+   anticipateIn 2 32 $
+      stack [
+        seqPLoop [
+          (0, 7, every 2 (|* speed "-1") $
+          every 6 (chunk 4 (hurry 2)) $
+          whenmod 5 2 (rev) $
+          whenmod 7 4 (# speed "-1") $
+          every 4 (0.25 ~>) $
+          slow 2 $ s "sphere*2 tn*4 psr*2 percs*2 "
+          # n (every 2 (0.25 ~>) $ "1 4 3 5")
+          # cut "[1 2 -1 0]/4")
+          ,
+          (8, 15, every 3 (|* speed "-1") $
+          every 6 (rot 2) $
+          whenmod 5 2 (rev) $
+          every 4 (0.25 ~>) $
+          every 5 (juxBy 0.4 (# octer "1 3") . (# octersub "3 7") . (# octersubsub "10 3") ) $
+          slow 2 $ s "sphere*2 tn*4 psr*2 percs*2 "
+          # n (every 2 (0.25 ~>) $ "1 3 2 5")
+          # cut "1 2 3 4")
+          ,
+          (16, 23, every 5 (# accelerate "-1") $
+          every 6 (trunc 0.5) $
+          whenmod 5 2 (rev) $
+          every 4 (0.25 ~>) $
+          every 5 (juxBy 0.4 (# octer "2 4") . (# octersub "4 8") . (# octersubsub "8 2") ) $
+          slow 2 $ s "sphere*2 tn*4 psr*2 percs*2 "
+          # n (every 2 (0.25 ~>) $ "2 3 1 5")
+          # cut "[-1 0 1 0]/4")
+          ,
+          (24, 31, every 5 (# accelerate "-1") $
+          every 6 (spin 2) $
+          every 4 (0.25 ~>) $
+          every 5 (juxBy 0.4 (# octer "3 8") . (# octersub "1 5") . (# octersubsub "7 2") ) $
+          slow 2 $ s "sphere*2 tn*2 psr*2 percs*2 "
+          # n (every 2 (0.25 ~>) $ "1 2 4 5")
+          # cut "[0 1 2 0]/5")
+        ]
+        ,
+        -- whenmod [3,5] (density 2) $
+        every 8 (# s "~") $
+        s "if:1(<3 7 2>,8,<0 2>)"
+        # cut "0 1 2"
+        # lpf 800
+      ]
+
+
+
+clutchIn 2 16 $
+    stack [
+    slow 2 $
+     seqPLoop [
+        (0,3, every 5 (# accelerate "-1") $
+        every 6 (chunk 3 (hurry 2)) $
+        every 2 (slow (4/3)) $
+        every 4 ((1/3) ~>) $
+        every 5 (trunc (3/8)) $
+        slow 2 $ s "~ tn*2 ah*8 tf*2 "
+        # n (every 2 (0.25 ~>) $ "5")
+        # cut "4")
+        ,
+        (4,7, every 5 (# accelerate "-1") $
+        every 6 (trunc (1/3)) $
+        every 2 (slow (4/3)) $
+        every 4 ((1/3) ~>) $
+        every 5 (trunc (3/8)) $
+        slow 2 $ s " b*1 ~ tn*8 ap*2 "
+        # n (every 4 (palindrome) $ run 12)
+        # cut "4")
+        ,
+        (8,11, every 5 (# accelerate "-1") $
+        every 6 (zoom (0.33,0.66)) $
+        every 2 (slow (4/3)) $
+        every 4 ((1/3) ~>) $
+        every 5 (trunc (3/8)) $
+        slow 2 $ s " b*1 ah*8 ~ ac*2 "
+        # n (every 4 (palindrome) $ run 12)
+        # cut "4")
+        ,
+        (12,15, every 5 (# accelerate "-1") $
+        every 6 (density 3) $
+        every 2 (slow (4/3)) $
+        every 4 (0.125 ~>) $
+        every 5 (trunc (3/8)) $
+        slow 2 $ s " b*1 tn*8 tf*2 ~"
+        # n (every 4 (palindrome) $ run 12)
+        # cut "4")
+        ,
+        (16, 19, every 5 (# accelerate "-1") $
+        every 6 (rot 3) $
+        every 2 (slow (4/3)) $
+        every 4 (0.125 ~>) $
+        every 5 (trunc (3/8)) $
+        slow 2 $ s " b*1 ~ ah*8 tn*2 "
+        # n (every 4 (palindrome) $ run 12)
+        # cut "4")
+      ]
+      ,
+      -- foldEvery [3,5] (density 3) $
+      whenmod 4 3 (# s "~") $
+      every 4 ((1/3) <~) $
+      s "tk:1(<3 7 5>,8,<0 1 2>)"
+      ,
+      s "tk:2*<8 4>"
+    ]
+
+clutchIn 2 16 $ silence
+
+do
+   d2 $
+      every 8 (# s "~") $
+      trunc (1/4) $
+      stack [
+        every 4 (superimpose (# binshift "1.5"). (#hbrick "0.1 0.2 0.7 0.9")) $
+        seqPLoop [
+          (0,3, every 5 (# accelerate "-1") $
+          every 6 (palindrome) $
+          every 2 (slow (4/3)) $
+          every 4 (0.125 ~>) $
+          every 5 (trunc (3/8)) $
+          slow 2 $ s "k*2 b*1 ch*8 k*2 ")
+          ,
+          (4,7, every 5 (# accelerate "-1") $
+          every 6 (palindrome) $
+          every 2 (slow (4/3)) $
+          every 4 (0.125 ~>) $
+          every 5 (trunc (3/8)) $
+          slow 2 $ s "b*8 b*1 ch*8 k*2 ")
+          ,
+          (8, 15, every 5 (# accelerate "-1") $
+          every 6 (palindrome) $
+          every 2 (slow (4/3)) $
+          every 5 (trunc (3/8)) $
+          slow 2 $ s "b*8 b*1 ch*8 k*2 ")
+          ,
+          (16, 23, every 5 (# accelerate "-1") $
+          every 4 (striate 64) $
+          every 2 (slow (4/3)) $
+          every 5 (trunc (3/8)) $
+          slow 2 $ s "b*8 b*1 ch*8 k*2 ")
+          ,
+          (24, 31, every 5 (# accelerate "-1") $
+          every 4 (striate 64) $
+          every 2 (slow (4/3)) $
+          slow 2 $ s "b*8 b*1 ch*8 k*4 "
+          )
+        ]
+        # n (every 4 (palindrome) $ run 12)
+        # cut "4"
+        ,
+        s "ak({0 7 8 14 16}%6,16,<0 1 2>)"
+      ]
+      # hbrick 0
+      # binshift 0
+      -- # gain (slow 16 $ range 0.1 1 saw)
+      # shape (slow 8 $ range 0.1 0.4 tri)
+      # triode (slow 4 $ range 0.1 0.6 cosine)
+
+hush

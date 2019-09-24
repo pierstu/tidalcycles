@@ -1,0 +1,220 @@
+do
+   clutchIn 3 16 $
+      whenmod 13 15 (# s "~") $
+      every 8 (# s "~") $
+      stack [
+        seqPLoop [
+          (0,15,stack [
+            every 4 (0.25 <~) $
+            foldEvery [3,7] (superimpose (# real (slow 2 $ range 0 1 saw)) . (#imag (fast 2 $ range 0.01 0.5 sine))) $
+            whenmod 5 3 (# up "3") $
+            every 4 (chunk 4 (hurry 2)) $
+            slow 2 $
+            s "ak*2 ah*1 ac*4 b*4 "
+            # n (every 6 (0.25 <~) $ every 4 (fast 1.5) $ "6 7 10 6")
+            # cut "-1"
+          ,
+          fix (superimpose (#voice (slow 3 $ range 0.5 3 sine)). (# release "<0.05 0.1 0.04 0.2>") . (# attack "<0.1 0.2 0.25>") . (# up (run 5))) (s "supercomparator") $
+          fix (superimpose (# sustain (slow 2 $ range 0.01 0.7 sine)). (|- up (run 8))) (s "gabor") $
+          every 2 (slow 1.5) $
+          whenmod 8 6 (rot 2) $
+          whenmod 6 4 (# speed "-0.5") $
+          foldEvery [3,5] (# binshift (fast 3 $ range 0.05 0.5 saw)) $
+          every 2 (0.25 <~) $
+          every 8 (loopAt 2) $
+          slow 2 $ s "<xk ak>*2 gabor*4 supercomparator*<1 2 4> b*2 "
+          # n (every 4 (0.25 ~>) $ every 2 (density 3) $ every 2 (0.25 ~>) $ run 3)
+          # cut "-1 1 -1 2 -1 3 2 -1 3 -1"
+          ])
+          ,
+          (16,31, every 2 (chunk 4 (hurry 2)) $
+          whenmod 6 4 (# speed "-0.5 -2") $
+          every 2 (0.25 <~) $
+          slow 2 $ s "ak*2 ah*4 ak*1 b*2 "
+          # n (every 4 (0.25 ~>) $ every 2 (density 3) $ every 2 (0.25 ~>) $ run 3)
+          # cut "-1 1 -1 2 -1 3 2 -1 3 -1")
+        ]
+        ,
+        s "grk [~ grk*2] ~ grk*2"
+        ,
+        foldEvery [2,3] (# s "~") $
+        every 4 (0.25 <~) $
+        s "hats(16,8)"
+        # n 2
+        # gain 0.75
+        ,
+        fix (# pitch1 1.5) (s "superclap") $
+         s "superclap(2,8,2)"
+        |+ n "1 0.2 0.73 0.4"
+        # delay (fast 2 $ range 2.05 1.8 isaw)
+        |+ speed (fast 3 $ range 0.1 0.62 sine)
+        |+ pitch1 (slow 4 $ "0.92 0.993 01.1 0.2 0.42 0.2")
+        -- |* gain 0.6
+        |+ sustain "0.3 0.4 0.05 0.3"
+        ]
+        -- # gain 0.8
+
+do
+   clutchIn 2 16 $
+      every 6 (rev) $
+      whenmod 8 6 (# speed "0.5") $
+      whenmod 5 2 (0.125 <~) $
+      whenmod 6 3 (0.5 ~>) $
+      slow 2 $ s "ch*2 b*1 ak*2 ac*2 "
+      # n (every 1 (density 2) $ run 3)
+      # cut "-1 1 -1 2 -1 3 2 -1 3 -1"
+
+d1 $ silence
+
+   anticipateIn 1 8 $
+      stack [
+        every 8 (# s "~") $
+        seqPLoop [
+        (0,3, every 5 (# shape "0.4") $
+        every 4 (chunk 4 (hurry 2)) $
+        slow 2 $ s "k*2 grcp*8 af*2 sub*4 "
+        # n (every 2 (0.25 <~) $ run 5)
+        # cut "-1 -1")
+        ,
+        (4,7, whenmod 5 2 (jux (rev)) $
+        every 4 (rot 2) $
+        slow 2 $ s "k*2 ac*8 af*2 sub*4 "
+        # n (every 2 (0.25 <~) $ run 5)
+        # cut "-1 -1")
+        ,
+        (8,11, whenmod 5 2 (jux (rev)) $
+        every 4 (0.25 <~) $
+        slow 2 $ s "k*2 grprc*8 af*2 sub*4 "
+        # n (every 2 (0.25 <~) $ run 5)
+        # cut "-1 -1")
+        ,
+        (12,15, whenmod 7 5 (chunk 4 (hurry 2)) $
+        whenmod 4 2 (((# delay "0.8 0.3 0.4 0.3") . (# delaytime "0.1 0.2 0.001") . (# delayfeedback "0.7"))) $
+        slow 2 $ s "k*4 b*1 ac*4 sub*4"
+        # n (every 2 (density 2) $ every 3 (palindrome) $ every 3 (slow 3) $ run 7)
+        # cut "-1")
+        ]
+      ,
+      foldEvery [4,7] (# s "~") $
+      foldEvery [3,5] (# krush (fast 3 $ range 0.6 3 sine)) . (# kcutoff (fast 6 $ range 80 700 cosine)) . (# enhance (fast 2 $ range 0.5 1 sine)) .(# binshift (fast 2 $ range 0.05 1 tri)) $
+      whenmod 5 3 (# speed "-1") $
+      every 4 (chop 8) $
+      slow 2 $ s "superfork*8 "
+      # note (every 2 (density 2) $ "12 7 5 0 7 12 7 8 5 1 6 9")
+      # sustain "{0.02 1 0.3 4 0.6}%8"
+      # accelerate "{0 -2 0.5 0 0.9 -0.87}%8"
+      # cut "4"
+      # up "{-12 0 -24}%4"
+      ,
+      every 8 (# s "~") $
+      every 3 (# pan (saw)) $
+      every 4 (chop 8) $
+      every 4 (slow 2) $ s "[cp*8 k*2 ~ k*4 , win]"
+      |- up (slow 3 $ every 4 (rev) $ run 12)
+      # cut "2 -1"
+      ]
+
+      hush
+
+d3 $ silence
+
+do
+   d1 $
+      whenmod 8 6 (0.25 <~) $
+      every 4 (slow 4) $
+      every 2 (chunk 4 (hurry 2)) $
+      whenmod 6 4 (stutWith 3 0.025 (# accelerate 0.25)) $
+      slow 2 $ s "[ak*2 cp*8 cp*1 ch*2, vk:2*<4 8> ]"
+      # n (every 3 (rev) $ run 2)
+      # cut "-1"
+      # orbit 0
+
+do
+   anticipateIn 2 16 $
+      every 8 (# s "~") $
+      every 2 (fast 2) $
+      every 4 (density 2) $
+      foldEvery [3,5] (spread ($) [density 2, rot 2, chunk 4 (hurry 2), (# accelerate "-0.25")]) $
+      seqPLoop [
+        (0,7, whenmod 8 6 (0.25 <~) $
+        whenmod 7 4 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "1.5"). (#hbrick "0.1 0.2 0.7 0.9"))) $
+        every 4 (chunk 4 (hurry 2)) $
+        -- every 3 (rot 2) $
+        every 2 (stutWith 5 (0.0625*3) (|*| speed "-1.5")) $
+        slow 2 $ s "ak*2 ac*1 ac*1 ch*4 "
+        # n (every 3 (rev) $ run 2)
+        # cut "-1")
+        ,
+        (8,15, every 3 (chunk 4 (hurry 2)) $
+        whenmod 7 4 (stutWith "<1 2 5 6>" (0.0625) (# smear 0.2)) $
+        every 4 (0.25 <~) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "0.3 0.8 0.2 1") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+        every 2 (stutWith 5 (0.0625*3) (# krush "1.5")) $
+        slow 2 $ s "k*<1 2 4> ac*1 ap*2 ch*4 "
+        # n (every 3 (rev) $ run 2)
+        # cut "-1")
+        ,
+        (16,23, whenmod 4 2 (0.25 ~>) $
+        whenmod 7 4 (stutWith 4 "(0.0625* <1 2 3>)" (superimpose (# binshift "1.5"). (#hbrick "0.1 0.2 0.7 0.9"))) $
+        every 3 (rot 2) $
+        every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "0.3 0.8 0.2 1") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+        slow 2 $ s "k*4 af*<2 4> ac*2 k*2 "
+        # n (every 4 (palindrome) $ run 6)
+        # cut "-1 1 0 3")
+        ,
+        (24,31, whenmod 4 2 (0.25 ~>) $
+        -- whenmod 7 4 (stutWith 5 (0.0625) (|*| speed "1.5")) $
+        every 2 (stutWith 5 (0.0625*3) (|*| speed "1.5")) $
+        -- every 4 (stutWith 5 (0.0625*3) (superimpose (# real "0.4 0.6 1"). (# imag "0.3 0.8 0.2 1") . (# smear "0.3 0.5 0.8 1.1 0.3") . (|* gain 0.5))) $
+        slow 2 $ s "cp*4 af*8 [~ ac*2] ap*2 "
+        # n (every 4 (palindrome) $ run 6)
+        # cut "3 -1 2 3 4")
+      ]
+
+do
+   clutchIn 2 16 $
+      foldEvery [3,5] (# smear (slow 4 $ range 0.1 0.7 tri)) $
+      every 6 (chunk 4 (hurry 2)) $
+      every 4 (|* smear 2) $
+      every 2 (0.125 ~>) $
+      every 4 (slow 2) $
+      s "[ak:1*2 b*4 af*<2 4> [~ ak:1*<1 2 4>], vk:2*4] "
+      -- # n (every 4/ (palindrome) $ run 8)
+      # cut "4"
+      # smear 0
+
+do
+   clutchIn 3 16 $
+      whenmod 7 5 (spin 2) $
+      stack [
+      whenmod 6 3 (chunk 4 (hurry 0.5)) $
+      whenmod 5 2 (rot 2) $
+      every 8 (loopAt 2) $
+      slow 2 $ s "[ak cp]*<1 2 8> cp*2 af*4 [~ ak*4] "
+      # n (every 2 (density 3) $ run 3)
+      # cut "2 2 3 3 3"
+      ,
+      whenmod 5 2 (density 2) $
+      every 2 (# speed "-1") $
+      s "~ [~ as*2] ~ as"
+      ,
+      s "supernoise(<3 5 7>,8,<0 1>)"
+      # gain 0.75
+      # sustain "0.01 0.4 0.06 0.1"
+      # attack "0.1 0.01 0.05 0.02"
+      ,
+      s "grk*<4 8>"
+      ]
+
+do
+   d2 $
+      whenmod 16 12 (# s "~") $
+      every 6 (rev) $
+      every 3 (rev) $
+      whenmod 7 5 (0.125 <~) $
+      every 4 (slow 2) $
+      slow 2 $ s "tk*2 tf*4 b*2 tk*8 "
+      # n (every 8 (rev) $ every 4 (slow 3) $ run 2)
+      # cut "-1"
+
+clutchIn 1 32 $ silence

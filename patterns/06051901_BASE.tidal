@@ -1,0 +1,116 @@
+do
+   d1 $
+      -- every 1 (rev) $
+      fix (|+ coarse (every 4 (0.25 <~) $ every 2 (slow 3) $ run 7)) (s "supernoise") $
+      fix (|- note (every 2 (0.25 ~>) $ every 3 (palindrome) $ run 5)) (s "supernoise") $
+      every 4 (0.25 <~) $
+      stack [
+      whenmod 8 6 (# coarse (run 12)) $
+      every 4 (slow 3) $
+        loopAt 2 $
+        s "supernoise(8,16,<0 1>)"
+        # cut "1"
+        # gain (slow 2 $ range 0.75 0.95 isaw)
+        -- # attack 0
+        # attack "<0.05 0.01 0.0625>"
+        # accelerate "0.1 0.2 0.3 0.4 0.5 1 2 -1 -2"
+        # n (slow 2 $ "2 3 4 5 6 8 0 1")
+        # speed (slow 3 $ range 4 43 tri)
+        # slide "1 2 3 4"
+        # resonance (slow 4 $ range 0 0.2 cosine)
+        # rel "0.5 0.04 0.3 0.2"
+        # lpf (fast 5 $ range 8000 4500 saw)
+        # lpq (slow 3 $ range 0.3 0.14 isaw)
+        # hpf (slow 3 $ range 20 300 cosine)
+        # hpq (slow 7 $ range 0.1 0.25 tri)
+        # bpf (slow 4 $ range 1500 2500 tri)
+        # bpq (fast 2 $ range 0.4 0.65 sine)
+        # voice "0.01 0.1 0.3 0.4"
+      ,
+      every 2 (slowspread ($) [chunk 4 (hurry 2), fast 2 , density 2, iter 4, ply 2, (# s "~")]) $
+      every 4 (slow 2) $  s "tk:1(<3 5 7 1>,8,<0 1>),bs:1"
+      # shape 0.15
+      # triode 0.2
+      # distort 0.05
+       ,
+      -- every 4 (chunk 4 (hurry 2)) $ s "[grh(9,16,<0 1>),[~ tc*<1 2>]]"
+      -- ,
+      every 5 (((# delay "0.2 0.4 0.3 0.3 0.5 0.5 0.6") . (# delaytime "0.001") . (# delayfeedback "0.4 0.7 0.9"))) $
+      slow 2 $ s "white(<8 16>,16,<0 3>)" # cut 1  # gain 0.5 # rel 0.2
+      ,
+      slow 2 $ s "sub:1" # cut "-1" |+ note "1 2 5 7 12 5 -3 0" # gain 0.75 # orbit 1
+      -- ,
+      -- whenmod 7 4 (spread' (striate' 8) ((*0.05) <$> fast 2 cosine)) $
+      -- slow 4 $ s "~ ~ [~ grprc:4*4] impact:1*1 "
+      -- #  cut "-1"
+      ,
+      whenmod 8 6 (((# delay "0.5 0.6") . (# delaytime "0.1") . (# delayfeedback "0.9 0.8"))) $
+      every 2 (# up "-5") $
+      every 3 (0.25 <~) $
+      whenmod 7 4 (# speed "0.5") $
+      every 2 (slow 2) $
+      s " grk*4 jpnperc:3*8 if*2 ~"
+      |- note (every 2 (rev) $ every 4 (0.25 ~>) $ "10 11 5 2")
+      ]
+      # orbit 0
+      |+ shape (slow 16 $ range 0.1 0.6 tri)
+      |+ triode (slow 8 $ range 0.1 0.6 tri)
+
+
+d $ silence
+
+do
+  d2 $
+    stack [
+      every "<7 8>" (# s "~") $
+        s "[grk:2 ,grk](3 3.5 5,8)"
+        # up "-3"
+        # shape 0.5
+        # triode 0.3
+        # distort 0.05
+        # lpf 3000
+      ,
+      whenmod 9 5 (stutWith 3 "0.0625*<8 4 3>" (jux (# ring (fast 2 $ range 0.5 0.75 tri)).(# ringf (fast 4 $ range 30 400 cosine)).(# accelerate "0 0.5 1 0.5 0 -0.5 -1").(# cut 1))) $
+      every 8 (# s "~") $
+      s "tc(7 10 11 5,16)"
+        # gain 0.95
+        # up 24
+        # hpf 300
+        # lpf 6000
+        # lpq (slow 7 $ range 0 0.13 tri)
+        # triode (slow 16 $ range 0.05 0.3 saw)
+        # shape (slow 6 $ range 0.4 0.8 tri)
+      ,
+      fix (# gain 0.5) (s "sub") $
+      fix (# coarse (every 2 (rev) $ every 4 (0.25 ~>) $ "8 11 5 3")) (s "sub") $
+      fix (every 8 (# s "~")) (s "vk") $
+      fix (whenmod 8 5 (slowspread ($) [density 2, chunk 4 (hurry 2), iter 4, ply 2, (# s "~")])) (s "tk") $
+      seqPLoop [
+        (0,6, slow 16 $ every 2 (# cut "-1")  $ s $ step' ["tk:0", "vk:1", "sub:5"]
+        (take 512 $ lindenmayer 5 "0:1~~~,1:0~~~2~~~~~0~~~2~,2:2~1~,~:~~1~" "0"))
+        ,
+        (6,7, s "~")
+        ,
+        (8,14,slow 8 $ every 2 (# cut "-1")  $ s $ step' ["tk:1", "vk:2", "sub:3"]
+        (take 256 $ lindenmayer 5 "0:1~~~,1:0~~~2~~~~~0~~~2~,2:2~1~,~:~~1~""1"))
+        ,
+        (14,15, s "~")
+        ,
+        (16,22, slow 4 $ every 2 (# cut "-1")  $ s $ step' ["tk:2", "vk:1", "sub:4"]
+        (take 128 $ lindenmayer 10 "0:1~~~,1:0~~~2~~~~~0~~~2~,2:2~1~,~:~~1~" "2"))
+        ,
+        (22,23, s "~")
+        ,
+        (24,30,slow 2 $ every 2 (# cut "-1")  $ s $ step' ["tk:3", "vk:2", "sub:3"]
+        (take 64 $ lindenmayer 5 "0:1~~~,1:0~~~2~~~~~0~~~2~,2:2~1~,~:~~1~" "0"))
+        ,
+        (31,32, s "~")
+      ]
+      # cut "-1"
+      # triode 0.3
+      # distort (slow 3 $ range 0 0.05 saw)
+    ]
+    # shape 0.3
+
+
+hush

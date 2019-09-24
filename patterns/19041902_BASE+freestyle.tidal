@@ -1,0 +1,163 @@
+hush
+-- faire une copie avant edition
+
+do
+  setcps 0.65
+  d1 $
+    foldEvery [7,13] (fastspread ($)[(# "~"),(chunk 4 (hurry 2))]) $
+   stack [
+    s "vk:8(3 3.5 7,11)"
+    # triode (slow 4 $ range 0.2 0.4 tri)
+    ,
+    whenmod 8 6 (slowspread ($)[slow 2, (# s"~")]) $
+      foldEvery [3,5](# squiz "2 4 8") $
+      s " gh(<7 10 11>,11)" # n 2 # up 12
+    ,
+    whenmod 8 6 (slowspread ($)[
+    density "1 2 1"
+    , (# ring (range 0.2 0.8 sine)).(# ringf (range 60 500 tri)).(every 2 (# krush 1))
+    -- ,(fast "1 2 1").(every 2 (iter 2))
+    , (slow "1 2 1").(every 2 (chunk 4 (hurry 2)))
+    , (# s "~")
+    ]) $
+    s " ~ claps"
+    ]
+    # cut "-1"
+    -- # n (run 15)
+
+do
+  d1 $
+    every 4 (spread ($)[stutWith 4 0.125 (|* speed 1.5), (# s "~")]) $
+    whenmod 8 6 (slowspread ($)[(# accelerate "0.5 1"),(jux(rev)), (# s "~")]) $
+   stack [
+   whenmod 8 6 (jux (slowspread ($)[density 2, (|* speed (range 0.8 1.5 tri)), (# s"~"), density 2])) $
+    -- s "vk:8(3 3.5 7,11)" # shape (slow 2 $ range 0.3 0.1 saw)
+    -- ,
+      whenmod 8 6 (jux (slowspread ($)[density 2, (|* speed (range 0.8 1.5 tri)), (# s"~")])) $
+      s " <hats gh>(<7 10 11>,11)" # n 2 # up 12
+    ,
+    whenmod 8 6 (slowspread ($)[
+    density "1 2 1"
+    , (# ring (range 0.2 0.8 sine)).(# ringf (range 60 500 tri)).(every 2 (# krush 1))
+    ,(fast "1 2 1").(every 2 (iter 2))
+    , (slow "1 2 1").(every 2 (chunk 4 (hurry 2)))
+    , (# s "~")
+    ]) $
+    foldEvery [3,5](spread ($)[(# squiz "2 4 8"),(#accelerate "0.5 0.75 0.9 -0.5 -2"),iter 4, chunk 4(hurry 2), ghost, (# accelerate "-2"),(# s "~")]).(every 2 (density "<1 2 1>")) $
+      every 4 (jux (# room (segment 16 $ range 0.4 1.6 cosine)).(# size (segment 8 $ range 0.5 1 tri)).(# gain 0.9).(# shape 0.3)) $  s " ~ claps" # gain 1
+    ]
+    # cut "-1"
+    # room 0 # size 0
+
+do
+  d1 $
+    whenmod 8 6 (slowspread ($)[(# accelerate "0.5 1"),(jux(rev)), (# s "~")]) $
+    whenmod 16 12 (slowspread ($)[
+    density "1 2 1"
+    , (# ring (range 0.2 0.8 sine)).(# ringf (range 60 500 tri)).(every 2 (# krush 1))
+    ,(fast "1 2 1").(every 2 (iter 2))
+    , (slow "1 2 1").(every 2 (chunk 4 (hurry 2)))
+    , (# s "~")
+    ]) $
+   stack [
+    every 4 (slowspread ($) [density 2, (# s "~")]) $
+    s "if:2(3 3.5 7,11,<0 1.5 3>)"
+    # shape 0.35 # lpf (range 2200 1800 tri) # lpq (slow 4 $ range 0.1 0.25 isaw) # speed 0.5 # up "-12" # gain (slow 16 $ range 0.75 1 saw) # triode (slow 5 $ range 0.3 0.6 $ cosine * 2)
+    ,
+    whenmod 8 6 (jux (slowspread ($)[density 2, (|* speed (range 0.8 1.5 tri)), (# s"~")])) $
+    s "vk:8(3 3.5 7,11)" # shape (slow 2 $ range 0.3 0.1 saw)
+    ,
+    foldEvery [3,5](spread ($)[(# squiz "2 4 8"),(#accelerate "0.5 0.75 0.9 -0.5 -2"),iter 4, chunk 4(hurry 2), ghost, (# accelerate "-2"),(# s "~")]).(every 2 (density "<1 2 1>")) $
+      whenmod 8 6 (jux (slowspread ($)[density 2, (|* speed (range 0.8 1.5 tri)), (# s"~")])) $
+      s " hats(<7 10 11>,11)" # n 2 # up 12
+    ,
+      every 4 (jux (# room (segment 8 $ range 1.4 0.2 saw)).(# size (segment 4 $ range 0.75 1.5 isaw)).(# gain 0.9).(# shape 0.3)) $  s " ~ claps" # gain 1
+    ]
+    # cut "-1"
+    # room 0 # size 0
+
+    -- # n (run 15)
+hush
+
+
+clutchIn 1 16 $ silence
+
+
+-- deuxieme break apres silence
+do
+  setcps 0.72
+  d1 $
+    every 16 (# s "~") $
+    stack [
+      every 6 (fast 2) $
+      every 4 (# s "tk:8(4,5)") $
+      every 2 (density 2) $
+      s "tk:5(3,5)"  # cut "1" # triode 0.1 # ring 0.2 # ringf 50 # shape (slow 8 $ range 0.2 0.4 cosine) # lpf (slow 4 $ range 800 1200 tri)
+      ,
+       whenmod 4 2 (# pan ((sine * 0.75))) $ s "tc(6,10,<1 2>)"
+      ,
+       loopAt 4 $ s "sphere" # cut "-10"
+      , whenmod 8 6 (# hpf (slow 2$ range 30 300 sine)) $ slow "<8 12 16>" $ note "10 15 2 1 2 5 17 18 10 1 2 3" # s "supernoise" # cut "<2 1>" # attack (run 8) # lpf (slow 8 $ range 8000 300 sine)
+      , s "~"
+    ]
+
+d4 $ silence
+
+hush
+
+-- troisieme break == tout péter
+do
+    setcps (82/120)
+    d1 $ stack [
+      s "grk:4([4,7],11,<0 2?>)" # shape 0.25 # lpf 3450 # triode (slow 4 $ range 0.05 0.5 tri) # distort ((slow 3 $ range 0.05 0.15 cosine) * 0.75) # cut "-1" # gain 1.05
+      ,
+        whenmod 8 6 (# s "~") $ every 4 (slow 2) $ s "xcp:1(<7 11?>,11)" # cut 1 # gain "0.9 0.85" # pan (slow 4 $ sine)
+      ,
+        s "<pp psr:2>(5,11)" # cut 2 # up "12 5 7 0 -12"
+      ,
+        slow 2 $ s "foleyperc:6(5,11,<1 2>)" # cut 2 # gain 0.95 # up "-5" # distort (slow 2 $ range 0.05 0.25 tri)
+      ,
+        s "moto:1(5,11)" # cut 2 |- up "12 5 7 0 -12" # gain 0.9 # shape 0.2
+      ,
+       whenmod 19 17 (# s "~") $
+       every 4 (slow 2) $
+         s "grhats:4(<7 9?>,11,<0 2>)"
+         # pan ((slow "<3 2>" $ sine) * 0.75 + 0.15) # gain 0.95
+         # ring (slow 7 $ range 0.05 0.35 sine) # ringf (slow 5 $ range 20 2000 cosine)
+         # bpf (slow 5 $ range 200 4000 cosine) # bpq (slow 6 $ range 0.05 0.15 saw)
+        # lpf (slow 3 $ range 3000 300 tri) # lpq (slow 7 $ range 0.15 0.05 sine)
+        |+ up (every 4 (slowspread ($)[(0.25 ~>),slow 2]) $ "1 -2 5 7 0 -4 1 6 4 3")
+      ]
+      # shape 0.2
+
+
+
+do
+    setcps (82/120)
+    d1 $ stack [
+      -- s "grk:4([4,7],11)" # shape 0.25 # lpf 3450 # triode (slow 4 $ range 0.05 0.5 tri) # distort ((slow 3 $ range 0.05 0.15 cosine) * 0.75) # cut "-1" # gain 1.05
+      -- ,
+      --   whenmod 8 6 (# s "~") $ every 4 (slow 2) $ s "xcp:1(<7 11?>,11)" # cut 1 # gain "0.9 0.85" # pan (slow 4 $ sine)
+      -- ,
+      --   s "<pp psr:2>(5,11)" # cut 2 # up "12 5 7 0 -12"
+      -- ,
+      --   slow 2 $ s "foleyperc:6(5,11,<1 2>)" # cut 2 # gain 0.95 # up "-5" # distort (slow 2 $ range 0.05 0.25 tri)
+      -- ,
+        s "moto:1(5,11)" # cut 2 |- up "12 5 7 0 -12" # gain 0.9
+      -- ,
+      --   whenmod 19 17 (# s "~") $
+      --   every 8 (slow 2) $
+      --    s "percs:4(<7 9?>,11,<0 2>)"
+         # pan ((slow "<3 2>" $ sine) * 0.75 + 0.15) # gain 0.95
+         # ring (slow 7 $ range 0.05 0.35 sine) # ringf (slow 5 $ range 20 2000 cosine)
+         # bpf (slow 5 $ range 200 4000 cosine) # bpq (slow 6 $ range 0.05 0.15 saw)
+        # lpf (slow 3 $ range 3000 300 tri) # lpq (slow 7 $ range 0.15 0.05 sine)
+        |+ up (every 4 (slowspread ($)[(0.25 ~>),slow 2]) $ "1 -2 5 7 0 -4 1 6 4 3")
+      ]
+      # triode  (range 0.3 0.4 tri)
+      # distort (range 0.5 0.8 saw)
+      # squiz 2
+      # cps (slow 20 $ segment 128 $ range 0.82 1.25 saw)
+
+
+hush

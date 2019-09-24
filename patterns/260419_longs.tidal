@@ -1,0 +1,374 @@
+do
+  xfadeIn 2 16 $ silence
+  xfadeIn 1 6 $ silence
+
+hush
+
+
+-- attention ça chatouille
+do
+  setcps 0.35
+  d2 $
+    whenmod 4 2 (juxBy 0.35 (# delay "0.6 0.8 0.7") . (# delaytime (range 0.05 0.12 cosine)) . (# delayfeedback (range 0.7 0.45 sine)) ) $
+    whenmod 8 6 (slowspread (slow) [2,4,6]).
+      ( spread (striate' "<16 128 64>") [(1/64),(1/128),(1/256)]).
+      (|*| speed (range 0.2 1 tri)).
+      (# gain (range 0.4 0.9 tri)).(|+| delay 0.3).(|+| delayfeedback 0.3).(|+| delaytime 0.15) $
+    every 4 (slow 4) $ every 2 (slow 2) $
+    s "<tv bs>:1*<2 4> ~"
+    # speed 0.75 # up "<0 -5 -7 -12>" # gain 0.85 # cut 1
+    -- # unit "<r c>"
+    |+| n (every 3 (density 2) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 1 0 12 8")
+    |+| note (every 3 (density 2) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 -5 0 12 8")
+
+
+clutchIn 2 8 $ silence
+
+-- attention ça bute --
+do
+  setcps 0.35
+  d2 $
+    whenmod 6 4 (juxBy 0.35 (# delay "0.6 0.8 0.7") . (# delaytime (range 0.05 0.12 cosine)) . (# delayfeedback (range 0.7 0.45 sine)) ) $
+    whenmod 12 4 (# fshift (range 30 120 saw)).(every 2 (# fshiftnote (range 0.5 0.2 cosine))) $
+    whenmod 12 10 (stut' "<3 4 6>" "<0.0125 0.0625>*<2 4 6>" (spread ($)[(# krush 1).(# kcutoff (range 160 3000 saw)),(# accelerate "1.5")])) $
+    whenmod 5 2 (# ring (range 0.4 0.6 tri)).(# ringf (range 20 300 cosine)) $
+    whenmod 7 6 (# accelerate "0.5") $
+    whenmod 8 6 (slowspread (slow) [2,4,6]).
+      ( spread (striate' "<16 128 64>") [(1/64),(1/128),(1/256)]).
+      (|*| speed (range 0.2 1 tri)).
+      (# gain (range 0.4 0.9 tri)).(|+| delay 0.3).(|+| delayfeedback 0.3).(|+| delaytime 0.15) $
+    every 4 (slow 4) $ every 2 (slow 2) $
+    s "<tv bs>:1*<2 4> ~"
+    # speed 0.75 # up "<0 -5 -7 -12>" # gain 0.85 # cut 1
+    # unit "<r c>"
+    |+| n (every 3 (density 2) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 1 0 12 8")
+    |+| note (every 3 (density 2) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 -5 0 12 8")
+
+
+hush
+
+
+do
+  clutchIn 2 4 $
+    whenmod 11 9 (|* speed 2).(every 2(density 2)) $
+    whenmod 8 7 (# "~") $
+    every 6 (spread ($)[density 2, slow 2, fast 2,(# "~")]) $
+    every 4 (0.25 ~>) $
+    fix (jux (# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# up 24).(every 4 (# coarse "1 2 3 4")).(every 2(# squiz "2 3 4"))) (s "gh") $
+    stack [
+    loopAt "1 2" $
+    s "sub:<2 3 4>*<2 3 4>"
+    |+ note (every 4 (slow 2) $ run 5)
+    ,
+    slow "<2 4>" $ s "white(5,8,<0 2 4>)" # gain (slow 8 $ range 0.3 0.75 sine) # lpf (slow 6 $ range 3500 1200 cosine) # attack "<0.1 0.25 0.3 0.5 0.8>"
+    ,
+    every 16 (stutWith 4 0.0625 (# triode (range 0.75 0.01 tri))) $
+    whenmod 6 3 ((|* speed (range 0.25 0.5 cosine)).(spread' (striateBy "<12 48 64>") ((*0.125) <$> slow 2 sine))) $
+    whenmod 10 7 (spread ($)[ iter 4, chunk 4 (hurry 2), trunc 0.25]) $
+    every 4 (jux (rev).(every 2 (|* speed "-1").(every 2 (hurry 2)))) $
+    s "gh(<3.5 7 12 3>,8,<0 2 3>)"
+    ]
+    # cut "-1"
+    # n (every 2 (fast 2) $ run 2)
+
+
+-- grime tout droit ou presque
+do
+  setcps 0.5
+  d2 $
+     fix ( every 2 (# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# coarse "1 2 3 4").(every 2 (# squiz "2 3 4")))  (s "tv") $
+     fix (jux (# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# up 24).(every 4 (# coarse "1 2 3 4")).(every 2(# squiz "2 3 4"))) (s "tf") $
+     whenmod 5 3 (# coarse (run 3)).(|* gain 0.85) $
+     whenmod 15 10 (slowspread ($)[
+     (jux(spread ($) [ (every 2(gap 8)) , (chunk 4 (hurry 2)), (slow 2).(# s "~")])),
+     (superimpose (slow 2).(striate "<16 8 4>").(every 2 (jux (rev)).(|* speed "-1")).(density 2)),
+     (slowspread ($) [(slow 2 . rev ),(zoom (0.25,0.75)),(stutWith 4 0.0125 (|* speed (range 1 1.5 tri))),trunc 0.25,(every 2 (|+| accelerate "<0.1 -0.25 0.3 -1>")), (slow 2).(# s "~")])
+     ]) $
+      every 6 (density 2) $
+      every 3 (palindrome).(every 2 (|* speed "-1")) $
+      every 2 (slow 2) $ stack [
+        every 4 (# s "~") $
+          foldEvery [3,5] (sometimes (jux (striate' "<36 12 24>" "<1/64 1/32 1/16>").(slow 2))).(every 2(|* speed 0.5).(slow "<2 0.5>").(every 2 (density 2))) $
+          every 1 (superimpose (every 2(# accelerate "<0.5 1 2 -1 -2>").(slow 2)).(# up "<0 -5 -7 -12 12?>").(# speed (slow 2 $ range 1.5 1.35 saw)).(# loop "<12 24>").(# begin "<0.05 0.08 0.65>").(# end "<0.1 0.12 0.14 0.15>").(# cut "-1 1")) $
+          slow 4 $ s "tv:1*2 ~ "
+          +| speed "0.75 0.65 0.68 0.71"
+        ,
+         whenmod 8 5 (# ring (segment 4 $ range 0.8 0.6 saw)).(# ringf (slow 2 $ range 230 500 cosine)).(# cut 2).(# triode (range 0.1 0.3 tri)).(# fshift (range 200 40 saw)).(# fshiftnote (range 1 2 isaw)) $
+          s "[grprc:13*2, tf ugslam*1 ]"
+          # speed 0.75 # cut 2 # ring 0.6 # ringf (slow 2 $ range 1500 800 saw)
+        , s "xk(<3 3.5 5>,8)" # cut "-1" # shape (range 0.35 0.5 saw) # lpf 1200 # triode (range 0.3 0.6 tri)
+        ,
+         loopAt 2 $ s "sphere" # cut "-1" |+ n (slow 8 $ "1 2 5 6") # attack 0.1
+       ]
+      # n (every 2 (density 1.25) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 1 0 12 8")
+
+d2 $ silence
+
+-- encore un truc plus ou moins droit
+do
+  -- setcps 0.5
+  clutchIn 2 4 $
+    fix  ((# coarse (slow 2 $ every 4 (0.25 ~>) $ run 4)).(# ringf (slow 5 $ range 30 500 tri)).(# ring (slow 3 $ range 0.3 0.5 saw)).(# krush (slow 2 $ range 1 1.8 tri)).(# kcutoff (range 8000 300 isaw)).(# attack (range 0.05 0.15 tri)).(# up "-17")) (s "notif") $
+    every 4 (chop 8) $
+    seqPLoop $ [
+      (0,14,
+        whenmod 5 3 (chunk 4 (# leslie (segment 4 $ range 0.6 1 tri)).(# lrate (segment 32 $ range 2.5 5 saw)).(# lsize (segment 8 $ range 0.9 3 cosine)).(every 2 (stripe "<2 3>")))  $
+        whenmod 7 4 (chop 4) $
+        whenmod 8 6 (0.125 ~>) $
+        every 2 (slow 2) $stack [
+          -- s "psr*<1 2> brop*<2 4>"
+          -- ,
+          s "v5*<8 4> notif*<1 2>"
+        ]
+        # note (every 4 (0.125 <~) $ "-2 6 -9")
+        # speed "<0.75 1 >"
+        # n (every 2 (density 2) $ "0 11") )
+        ,
+      (15,16, s "~")
+      ,
+      (17,31, whenmod 3 2 (zoom (0.25,0.75)).(density 2).(# coarse (fast 2 $ segment 16 $ irand 6)) $
+        whenmod 6 3 (within (0,0.5) (density 2).(slow 2).(>| speed (slow 2 $ segment 16 $ range 0.75 1.25 tri)).(# cut 1)) $
+        whenmod 8 5 (0.125 ~>) $
+        slow 2 $stack [
+          s "psr*<2 4> brop*<8 4> tempp*<1 2> notif*<1 2> "
+        ]
+        # note (every 2 (0.0625 <~) $ "2 -6 9")
+        # speed "<0.75 1 >"
+        # n (every 2 (density 4) $ "0 11") )
+        ,
+      (32,33, s "~")
+      -- ,
+      -- (34,48,whenmod 5 3 (iter 4).(# bpf (slow 2 $ segment 16 $ range 300 1200 isaw)).(# bpq (segment 8 $ range 0.3 0.5 cosine)) $
+      --   every 4 (jux (rev)).(# fshift (slow 2 $ segment 16 $ range 30 500 cosine )).(# fshiftnote (segment 8 $ range 0.25 0.75 cosine)) $
+      --   whenmod 8 4 (linger "<1/4 1/2 3/4>") $
+      --   every 3 (# up "7") $
+      --   every 2 (slow 2) $stack [
+      --     s "psr*<4 2> brop*<8 2> tempp*<1 2 4> notif*<1 2> "
+      --   ]
+      --   # note (every 4 (0.125 <~) $ "-2 6 -9")
+      --   # speed "<0.75 1 >"
+      --   # n (every 3 (density 2) $ "0 11") )
+      --   ,
+      -- (48,64, s "~")
+      -- ,
+      -- (50,65, whenmod 5 3 (linger 0.25).(# delay 0.7).(# delaytime (fast 3 $ segment 4 $ range 0.05 0.125 sine)).(# delayfeedback (fast 2 $ segment 8 $ range 0.5 0.75 cosine)) $
+      --   every 4 (jux (rev)).(0.125 <~) $
+      --   whenmod 8 3 (# fshift (fast 2 $ "<20 40 400 80 240>")).(# fshiftnote "<0.1 0.5 0.25>").(every 2 (>| fshiftphase (fast 4 $ range 0.01 0.2 tri))).(# cut "-1") $
+      --   every 6 (density 1.5) $
+      --   every 3 (# up "7") $
+      --   every 4 (slow 2) $ every 2 (density 2) $ stack [
+      --     s "psr*<4 8> brop*<8 4 2> tempp*<4 2> notif*<1 2> "
+      --   ]
+      --   # note (every 2 (0.25 <~) $ "2 -6 9")
+      --   # speed "<0.75 1>"
+      --   # n (every 2 (density 4) $ "0 11") )
+      --   ,
+      -- (66,67, s "~")
+      ]
+
+hush
+
+d1 $ silence
+
+-- mélodie avec un peu de subs
+d2 $
+  fix ((# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# up 24).(# coarse "1 2 3 4").(every 2 (# squiz "2 3 4")))  (s "pads") $
+  fix ((# ringf (range 20 300 saw)).(# ring (range 0.25 0.9 tri)).(# coarse "1 2 4 8").(every 2 (# krush (run 3)).(# kcutoff (slow 3 $ range 5000 30 saw))))  (s "el") $
+  fix ((# triode (range 0.25 0.5 isaw)).(every 2 (|+ delay "0.4").(|+ delaytime "0.05 0.1 0.025").(# delayfeedback "0.7 0.6 0.8"))) (s "bs") $
+  whenmod 4 2 (juxBy 0.35 (# delay "0.6 0.8 0.7") . (# delaytime (range 0.05 0.12 cosine)) . (# delayfeedback (range 0.7 0.45 sine)) ) $
+  seqPLoop [
+  (0,12,
+    every 4 (slow 4) $ every 2 (slow 2) $
+    stack[
+      whenmod 8 4 (slowspread ($)[
+        (slowspread (slow) [2,3,1])
+        ,( spread (striateBy "<16 8 4>") [(1/64),(1/128),(1/256)])
+        ,(|*| speed (range 0.95 1.05 tri))
+        ,(# triode (slow 3 $ range 0.15 0.25 tri))
+        ,(# delay 0.7).(|+| delayfeedback 0.7).(|+| delaytime 0.05)
+      ]) $
+      s "[<pads bs>*<2 4> ~ , el*<1 2 4>]"
+    , slow 2 $ s "~ [sub:4 ~ ~ sub]" # shape 0.35 # lpf 1200
+    ])
+  , (13,14, s "~")
+  , (15,30,
+    every 4 (slow 4) $ every 2 (slow 2) $
+    stack [
+      whenmod 8 6 (slowspread ($)[
+        (slowspread (iter) [2,4,6])
+        ,( stutWith "<2 4 6>" "<0.0125 -0.0125 0.025 0.0625>" (slowspread ($)[(# squiz "<2 4 6 8>"), (jux (# fshift (range 200 30 saw)).(# fshiftnote (range 0.2 0.4 tri)))]))
+        , (every 2 (chunk 4 (hurry 2)))
+        ,(# fshiftnote (range 0.2 0.41 tri)).(# fshift (slow 3 $ range 30 400 saw))
+        ,(# krush (range 2 0.5 tri)).(# kcutoff (range 30 4000 isaw))
+        ,(|+| delay 0.3).(# delayfeedback 0.3).(# delaytime "<0.05 0.15 0.075>")
+      ]) $
+      s "[<pads:1 bs:2>*<2 4> ~ , el:1*<1 2 4>]"
+    , slow 2 $ s "[sub:3 ~ ~ sub] ~" # shape 0.35 # lpf 1200
+    ]
+  )
+  , (31,32, s "~")
+  ]
+  # speed 0.75
+  # up "<0 -5 -7 -12>"
+  # gain 0.85 # cut "-1"
+  -- # unit "<r c>"
+  |+| n (every 3 (density 2) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 1 0 12 8")
+  |+| note (every 3 (density 2) $ every 4 (0.25 <~) $ every 3 (rev) $ "1 -5 0 12 8")
+
+
+xfadeIn 2 4 $ silence
+
+setcps 0.
+-- les bons vieux sons du futur, ça vaut le coup de le foutre en solo pour démarrer
+
+xfadeIn 2 4 $
+ seqPLoop [
+ (0,6,stack [
+  whenmod 6 4 (every 2(juxBy 0.2 (# begin (fast 6 $ "<0.05 0.0015 0.001>")).(# end (fast 3 $ "<0.1 0.105 0.11>")).(# loop (fast 4 $ "<16 24 32 12>")).(# cut (fast 2 $ "<1 2 3 0>")))) $
+    whenmod 5 4 (chop 4) $
+    whenmod 4 3 (density 2) $
+    whenmod 3 2 (spread ($)[(*| cut "<2 1 -1>"), (|* cut "<2 1 -1>")]) $
+    every 2(spread ($)[(|+ triode (every 2 (slow 2) $ every 2 (0.25 ~>) $ "0.4 0.1 0.2 0.6 0.4 0.6 0.8 0.25")),(+| distort (every 2 (slow 4) $ every 2 (0.25 ~>) $ "0.1 0.2 0.15 0.25 0.4 0.15 0.45 0.8 0.43 0.25" ))]) $
+    slow "<1 2>" $ s "[sub*8 tp*2, ~ <tp tc tn tf>*2 ps*2 <tcp tc>*4 ]"
+    # n (every 4 (rev) $ every 2 (0.25 <~) $ "1 2 4 8")
+    # cut "-1"
+    |/| speed (every 2 (rev) $ every 4 (0.125 <~) $ "0.95 1.05 0.75 1.15 1.25 0.89 0.96 1.04")
+]) ,
+ (7,14,stack [
+  whenmod 16 12 (0.125 <~) $
+  whenmod 6 4 (every 2(juxBy 0.2 (# begin (fast 6 $ "<0.05 0.05 0.01>")).(# end (fast 3 $ "<0.1 0.15 0.2>")).(# loop (fast 4 $ "<16 24 32 12>")).(# cut (fast 2 $ "<1 2 3 0>")))) $
+    whenmod 5 4 (chop 4) $
+    whenmod 4 3 (density 2) $
+    whenmod 3 2 (spread ($)[(*| cut "<2 -2 0 1>"), (|* cut "<2 -2 -1>")]) $
+    every 2(spread ($)[(|+ triode (every 2 (slow 2) $ every 2 (0.25 ~>) $ "0.4 0.1 0.2 0.6 0.4 0.6 0.8 0.25")),(+| distort (every 2 (slow 4) $ every 2 (0.25 ~>) $ "0.1 0.2 0.15 0.25 0.4 0.15 0.45 0.8 0.43 0.25" ))]) $
+    every "<2 4>" (fast 2) $ s "<~  meca*<1 2 4>> " # n (every 3 (slow 2) $ every 4 (0.125 ~>) $ "0 1 2 1 0 1 2 1 2 1 2 0 1 2 1 2"),
+  whenmod 6 5 (|*| speed (range 0.5 1.25 tri)).(slow 2).(striate 64) $
+  --   whenmod 5 4 (0.25 ~>) $
+    whenmod 4 3 (spread ($) [(# ring (range 0.1 0.4 tri)).(# ringf (fast 2 $ range 200 4000 saw)).(# triode (fast 3 $ range 0.1 0.3 tri)) ,(every 2(# fshift (("0.2 0.4 0.3") * (sine * 0.5) * 2)).(# fshiftnote (range 0 2 tri)))]) $
+    whenmod 3 2 (|* speed "-1") $
+    slow "<1 2>" $ s "[sub*8 tp*2, ~ <tp tc tn tf>*2 ps*2 <tcp tc>*4 ]"
+    # n (every 4 (rev) $ every 2 (0.25 <~) $ "1 2 4 8")
+    # cut "-1"
+    |/| speed (every 2 (rev) $ every 4 (0.125 <~) $ "0.95 1.05 0.75 1.15 1.25 0.89 0.96 1.04")
+]),
+(14,15, s "~") ,
+(16, 22, stack [
+  every 4 (+| fshift ( every 2 (slow 2) $ range 3 400 sine)).(|+ fshiftnote "<1 2 0.4 3>")$
+      every 3 (# ring (range 0 0.5 cosine)).(# ringf (fast 2 $ range 200 4000 tri)) $
+      every 2 (slow 2) $ s "[sub*2 <amencutup*8 ~>, rave2*4 ~ ]"
+      # n (every 4 (rev) $ "7 5 7 5 5 6 11")
+      # cut "<3 -1 2>" ,
+  whenmod 6 4 (every 2(juxBy 0.2 (# begin (fast 6 $ "<0.05 0.05 0.01>")).(# end (fast 3 $ "<0.1 0.15 0.2>")).(# loop (fast 4 $ "<16 24 32 12>")).(# cut (fast 2 $ "<1 2 3 0>")))) $
+      whenmod 5 4 (chop 4) $
+      whenmod 4 3 (density 2) $
+      whenmod 3 2 (spread ($)[(*| cut "2 2 2"), (|* cut "2 2 2")]) $
+      every 2(spread ($)[(|+ triode (every 2 (slow 2) $ every 2 (0.25 ~>) $ "0.4 0.1 0.2 0.6 0.4 0.6 0.8 0.25")),(+| distort (every 2 (slow 4) $ every 2 (0.25 ~>) $ "0.1 0.2 0.15 0.25 0.4 0.15 0.45 0.8 0.43 0.25" ))]) $
+      every "<2 4>" (fast 2) $ s "<~  meca*<1 2 4>> " # n (every 3 (slow 2) $ every 4 (0.125 ~>) $ "0 1 2 1 0 1 2 1 2 1 2 0 1 2 1 2"),
+  whenmod 6 5 (|*| speed (range 0.5 1.25 tri)).(slow 2).(striate 64) $
+      -- whenmod 5 4 (0.25 ~>) $
+      whenmod 4 3 (spread ($) [(# ring (range 0.1 0.4 tri)).(# ringf (fast 2 $ range 200 4000 saw)).(# triode (fast 3 $ range 0.1 0.3 tri)) ,(every 2(# fshift (("0.2 0.4 0.3") * (sine * 0.5) * 2)).(# fshiftnote (range 0 2 tri)))]) $
+      whenmod 3 2 (|* speed "-1") $
+      slow "<1 2>" $ s "[sub*8 tp*2, ~ <tp tc tn tf>*2 ps*2 <tcp tc>*4 ]"
+      # n (every 4 (rev) $ every 2 (0.25 <~) $ "1 2 4 8")
+      # cut "-1"
+      |/| speed (every 2 (rev) $ every 4 (0.125 <~) $ "0.95 1.05 0.75 1.15 1.25 0.89 0.96 1.04")
+    ] ) ,
+  (22,23, s "~")
+] # triode 0 # distort 0 # squiz 0 # fshiftnote 0
+
+
+-- encrasse et retarde le son , jouer à la fin
+do
+  -- setcps 0.25
+  d2 $
+    whenmod 14 12 (stutWith 4 0.0125 (# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# up 24).(# coarse "1 2 3 4").(# squiz "2 3 4"))  $
+    whenmod 10 8 (stutWith 6 0.0625 (# ringf (range 20 300 saw)).(# ring (range 0.25 0.9 tri)).(# squiz "1 2 4 8").(every 2 (# krush (run 3)).(# kcutoff (slow 3 $ range 2000 300 saw))))  $
+    whenmod 6 4 (stutWith 8 0.00625 (# triode (range 0.25 0.5 isaw)).(every 2 (|+ delay "0.4").(|+ delaytime "0.05 0.1 0.025").(# delayfeedback "0.7 0.6 0.8"))) $
+    whenmod 18 16 (stutWith 5 0.075
+        (|- up "<5 7 12 16 -5>").(# ring (range 0.3 0.7 tri)).(# ringf (range 20 4 cosine))
+        -- .(# fshift (range 20 8 tri)).(# fshiftnote (range 0 0.2 cosine)).(# fshiftphase (range 0.1 0.25 tri))
+        .(# coarse (run 8)).(# triode (range 0.25 0.4 cosine)).(|* speed "-1")
+        .(every 4 (# distort (range 0.05 0.15 tri)).(every 2 (# squiz (run 6)))))  $
+    whenmod 18 16 (stutWith 7 0.0035 (# fshift (slow 7 $ range 50 800 tri)).(# fshiftnote (slow 4 $ range 0.3 0.05 sine)).(# hpf (slow 6 $ range 20 200 cosine))) $
+    whenmod 8 6 (slow 2) $
+    whenmod 11 8 (every 2(|+ delay "0.5 0.9 0.7").(|+ delaytime "0.05 0.0125 0.025").(|+ delayfeedback "0.87 0.9 0.95").(# cut 1)) $
+    seqPLoop [
+      (0,12, every 4 (# shape "0.3").(0.25 <~) $
+        whenmod 5 3 (density 2) $
+        whenmod 6 4 (spread ($) [ chunk 4 (hurry 2), iter 4, chunk 4 (hurry 2), (#  accelerate "< 0.3 0.4 -1 -2>"),(0.5 <~)]) $
+        every 4 (spin 4) $
+        whenmod 8 6 (chop 4) $
+        every 2 (slow 2) $ s "el*2 ~ gh*2 <stomp bs>*4 "
+        |+ n (every 2 (0.25 ~>) $ every 4 (0.5 ~>) $ "5 4 9 0 6 6 4 7 4 7 8 8 9"))
+        ,
+      (13,14, s "~") ,
+      (15,32,every 4 (# shape "0.3").(every 2 (spin 4)) $
+        whenmod 5 3 (density 2) $
+        whenmod 5 2 (slow 2).(slowspread ($) [ chunk 4 (hurry 2), iter 4, outside 4 (rev), (#  accelerate "< 0.3 0.4 -1 -2>"),(# speed "-1")]) $
+        every 3 (stutWith 6 (0.0625) (slowspread ($)[(|+ triode (slow 2 $ range 0.2 0.8 tri)) ,(|*| speed "1.5")])) $
+        whenmod 8 6 (chop 4) $
+        slow 2 $ s "el:2? ~ gh*8 <jpnperc bs:1>*4 "
+        |+ n (every 2 (0.25 ~>) $ every 4 (0.25 ~>) $ "5 4 9 0 6 6 4 7 4 7 8 8 9"))
+        ,
+      (33,34, s "~") ,
+      (35,50,every 4 (# shape "0.3") $
+        every 6 (chunk 4 (hurry 2)) $
+        whenmod 12 9 (# leslie (slow 8 $ range 0.35 0.85 tri)).(# lrate (range 6 1 isaw)).(# lsize (slow 2 $ range 5 0.5 tri)) $
+        every 5 (stutWith "<4 6>" "0.0125*<1 2 3>" (slowspread ($)[(# krush 1).(# kcutoff (range 200 600 saw)), (# fshiftnote (range 0.5 2 saw)).(# fshift (range 200 60 tri)),(# squiz (run 4))])) $
+        whenmod 8 6 (chop 4) $
+        every 2 (slow 2) $ s "el:3*<1 2> pads*2 gh*<4 8 2 0> ~ "
+        |+ n (every 2 (0.25 <~) $ every 3 (0.25 ~>) $ run 5)
+        # cut "-1") ,
+       (51,52, s "~")
+      ,
+      (53,72,every 6 (0.25 <~) $
+        every 5 (# delay "0.5 0.9 0.7").(# delaytime "0.05 0.0125 0.025").(# delayfeedback "0.87 0.9 0.95").(# cut 1) $
+        every 6 (|* speed "-1") $
+        every 3 (stutWith 6 (0.0625) (|*| speed "1.5")) $
+        whenmod 8 6 (striate 4) $
+        every 4 (slow 2) $ s "<~ el:4> <pads:1 [hold,jpnperc]*2> gh*<2 4 8> bs*<1 2 4> "
+        |+ n (every 2 (0.25 <~) $ every 3 (0.25 ~>) $ run 6)
+        # cut "-1") ,
+      (73,75, slow 2 $ s "~")
+      ]|* speed "<0.75 1 1.25>"
+        # speed (slow 2 $ range 0.98 1.02 sine)
+
+d2 $ silence
+
+do
+  setcps 0.35
+  d2 $
+    slow 2 $
+    fix  ((# coarse (slow 2 $ every 4 (0.25 ~>) $ run 4)).(# ringf (slow 5 $ range 30 500 tri)).(# ring (slow 3 $ range 0.3 0.5 saw)).(# krush (slow 2 $ range 1 1.8 tri)).(# kcutoff (range 8000 300 isaw))) (s "eau") $
+    fix ((# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# up 24).(# coarse "1 2 3 4"))  (s "pads") $
+    fix ((# triode (range 0.3 0.5 tri)).(# fshift (range 20 500 saw)).(# fshiftnote (range 0.1 0.25 tri))) (s "atm") $
+    fix ( (# ring (slow 8 $ range 0.15 0.5 tri)).(# ringf (slow 7 $ range 30 300 sine)).(# fshift ( range 20 300 saw)).(# fshiftnote (range 0.05 0.2 tri)).(# up 24).(every 4 (# coarse "1 2 3 4")).(every 8 (# s "~"))) (s "impact") $
+     foldEvery [3,5] (juxBy 0.4 (|*| speed "<0.85 1.15>").(slow "<2 3>").(spread ($) [iter "<2 4>", chop "<3 6 2>",gap "<4 1 2>", (superimpose (|+ accelerate "<-1 -0.5 0.25 0>").spread($)[fast 2,(density 2)].(every 2(jux(|*| speed "<0.5 0.75>").(striate "<4 3 1 2>"))))]) ) $
+     stack [
+     whenmod 8 4 (slowspread ($) [ chunk 4 (hurry 2), iter 4, chunk 4 (hurry 2), (#  accelerate "< 0.3 0.4 -1 -2>")]) $
+      whenmod 15 12 (slowspread ($) [(# accelerate "<0.1 0.2 0.4 -1 -2>"), chunk 2 (hurry 2), iter 2,(# s "~")]) $
+          loopAt 2 $
+          struct "slow 2 $ <t*2 ~> [~ <t ~ t*2>] [<[<t f t*2> <t f t*2>] t*2> [<t t*2 ~> <t t*2>]] [<t t*2 ~> t*2]" $
+           s "impact"
+          |+ n "0 5 -7 -12 12"
+          # size "{0 0.1 0.4 0.5 0 0.2}%8" # room "{0 0.1 0.4 0.5 1 0}%4"
+          # cut "-2"
+          |+ triode (slow 8 $ range 0.1 0.3 cosine)
+          # begin (slow 2 $ range 0.2 0.15 tri)
+          # lpf (slow 3 $ range 15000 300 tri)
+      ,
+      whenmod 15 10 (slowspread ($)[(# crush "<16 12 15? 8>"), (# coarse (irand 6)), (|* speed "-1")]) $
+      loopAt 2 $ s "<win:10,eau:8>*<3 2.5 1.5>*2" # shape 0.3
+      ,
+      loopAt 4 $
+      -- every 4 (slow 2) $
+      whenmod 8 7 (# s "~") $
+      s "[atm:6*<3 3.5 5>, pads:3*<1 2 3>]" # shape 0.3 # lpf 9000 # hpf 320
+      -- # speed 0.35
+      # cut "-1"
+    ]
+    |+ shape (slow 8 $ segment 16 $ range 0.2 0.5 cosine)
+    # room 0 # size 0  # orbit 0
+    # gain (slow 10 $ range 0.2 0.6 tri)
+
+hush

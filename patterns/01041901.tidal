@@ -1,0 +1,183 @@
+setcps 0.35
+
+
+
+
+
+xfadeIn 2 4 $ silence
+    # gain 0.9
+
+clutchIn 1 8 $ silence
+
+
+hush
+
+d2
+
+clutchIn 2 8
+$ sometimesBy (2/3) (spread ($)[fast 2, density 2, jux((#speed 2).(fast 2).(# coarse (run 6))) , (hurry 2)])
+  $ s "kicks:4(<3 1 3.5>,8,<2 0 3>)"
+  # cut 1
+  # shape "<0.4 0.5 0.6>"
+  # lpf (slow 3 $ range 1200 3000 isaw)
+
+d3
+$ every 5 (stutWith)
+
+
+d1 $ s "xk(3,8,11)" # n (scan 8)  # cut 1
+
+clutchIn 1 8
+$ whenmod 8 5 (spread ($)[trunc "<0.25 0.5 0.75>", zoom (0.25,0.75),(linger "<0.5 0.25 1>")])
+$ sometimesBy (1/3) (spread ($) [fast 2, density 2, hurry 2, (jux(# speed 2).(fast 2))])
+    $ stack [
+    whenmod 16 14 (#sound "~") $ whenmod 8 6 (const $ s "<ugkick:1 tempk:1>(3,8)") $ every 2 (slow 2) $ every 4 (fast 2) $ s "<tempk tempk:4 ugkick:2>([3 5 7]/3,8,2)",
+    every 4 (superimpose (jux (rev)).(# sound "~ [tempt:2 tempp:2]*4")) $ s "~ [tempt:1 tempp:1]*2" |*| speed "[0.7 1 1.3]/3" # coarse 3 # hpf 500 # cut 2 # shape 0.3,
+    slow 2 $ every 6 (juxBy 0.2 (fast 2)) $ every 8 (juxBy 0.8 (# sound "~ [grprc:2? grprc:3]")) $ s "~ [~ grprc:5]/2?" |*| speed "[0.7 0.9 1.1]/4" # bpf (slow 2 $ range 6000 2500  sine) # shape (slow 8 $ range 0.1 0.3  saw) # gain 0.9,
+    every 3 (juxBy 0.6 (fast 2)) $ every 4 (juxBy 0.4 (# sound "~ [ugclap:2*2 ugclap:3*2]")) $ s "~ ugclap:1*2" # speed "[1.7 1.9 2.1]/4" # lpf (slow 2 $ range 6000 2500  sine) # shape (slow 3 $ range 0.1 0.3  saw) # gain 0.9,
+    s "~ ugslam/16",
+    slow "[4 2]" $ every 4 (slow 2) $ every 3 (fast 2) $ s "<temph:8 temph:3>([4 8],[8 16],6)" # cut (-1) # hpf (slow 4 $ range 500 6500  tri) # shape (fast 2 $ range 0 0.3  saw)
+    ]
+    # shape 0.8
+    # gain 0.8
+
+d9 $ silence
+
+
+t8 (clutchIn 16)
+
+d8 $ silence
+
+
+clutchIn 3 8
+-- $ hurry 2
+      -- $ ifp ((== 0).(flip mod 2))
+      --   (superimpose (zoom (0.25,0.75)).(trunc "[0.75 0.5 0.75]/3")) -- cycles pairs
+      --   (superimpose (linger "<0.25 0.5>").(# accelerate "0.1 0 -0.2 0")) -- cycles impairs
+      $ whenmod 32 30 (superimpose (zoom (0.25,0.75)) . (#coarse 2))
+      $ every 16 (juxBy 0.6 (linger "[0.5 0.25]/2"))
+      $ every 4 (juxBy 0.5 (every 8 (trunc "<0.25 0.5>")).(every 2 (#accelerate "[-0.2 0 0.1]/3")).(0.5 <~))
+      $ loopAt 2
+      -- $ chop 4
+      $ fast 2
+      $ every 8 (superimpose (# s "ravebreaks:3"))
+      $ every 2 (superimpose (# sound "ravebreaks:4"))
+      $ slow 4 $ chop 8 $ s "ravebreaks:1" # speed 2
+      # cut 1
+      # gain 0.9
+      -- # speed 2
+
+t8 (clutchIn 16)
+    $ ifp ((== 0).(flip mod 2))
+      (superimpose (zoom (0.25,0.75)).(trunc "[0.75 0.5 0.75]/3")) -- cycles pairs
+      (superimpose (linger "<0.25 0.5>").(# accelerate "0.1 0 -0.2 0")) -- cycles impairs
+
+    d8
+
+clutchIn 2 16
+    $ whenmod 32 30 (superimpose (zoom (0.25,0.75)) . (#cut 2))
+    $ every 4 (juxBy 0.5 (linger "<0.25 0.5>").(trunc "<0.25 0.5>").(#accelerate "[-0.2 0 0.1]/3"))
+    $ every 2 (0.25<~)
+    $ loopAt 8
+    $ fast 2
+    $ chop 32
+    $ every 8 (# s "breaks175:4")
+    $ s "breaks175:5"
+    -- # cut 2
+    # lpf 7000
+    # shape (slow 8 $ range 0 0.3 $ tri)
+    # gain 0.9
+    # speed 2
+    # room 0 # size 0
+
+    d8 $ silence
+
+t8 (clutchIn 16)
+    -- $ ifp ((== 0).(flip mod 2))
+    --   (superimpose (zoom (0.25,0.75)).(trunc "[0.75 0.5 0.75]/3")) -- cycles pairs
+    --   (superimpose (linger "<0.25 0.5>").(# accelerate "0.1 0 -0.2 0")) -- cycles impairs
+    $ whenmod 32 30 (superimpose (zoom (0.25,0.75)) . (#coarse 2))
+    $ every 8 (juxBy 0.5 (linger "<0.5 0.25>").(trunc "<0.25 0.5>").(#accelerate "[-0.2 0 0.1]/3"))
+    $ loopAt 4
+    $ chop 8
+    $ every 4 (0.5 <~)
+    -- $ slow 2
+    $ every 4 (superimpose (#accelerate 0.1).(#crush "16 15 14").(# s "ravebreaks:6*2").(jux (rev)))
+    $ stack[
+        wedge (2/4) (sound "ravebreaks:5" # gain 0.6)( every 4 (superimpose (linger "<0.5 0.25>").(slow 2).(#accelerate "0.1 0 -0.2"))$ sound "ravebreaks:4" # speed 2 # gain 0.7),
+          every 4 (superimpose (# accelerate "-0.5").(fast 0.5).(# speed 1)) $ slow 2 $ s "ravebreaks:1*4" |*| speed (slow 2 $ range 1.9 2.1 $ tri) |*| gain 0.7,
+          slow 2 $ s "ravebreaks*2" # speed 0.5
+        ]
+    # cut "[-1 4]"
+    # lpf 7000
+    # shape (slow 8 $ range 0 0.3 $ tri)
+    # gain 0.9
+    -- # speed 0.5
+    # room 0 # size 0
+
+
+t8 (clutchIn 16) $ silence
+
+
+d7
+    $ foldEvery [3,7] (# sound "~")
+    $ every 2 (jux (|*| speed "[-1 -0.5]").(slow 2).(every 2 (rev)))
+    $ midinote (slow 4 $ "c5 d5*4" * "[7 8 9]/[4 5]" + "[45 50 55 42]/3" ) # s "chords:8"
+    # cut 1
+    # hpf 350
+    # shape 0.4
+    # up 24
+    # gain 0.6
+    # accelerate "0.1 0 0.2 -0.4 0"
+
+    t7 (clutchIn 16) $ silence
+
+d6
+    $ every 4 (superimpose (#sound "gbass:1").(slow 2))
+    $ every 3 (slow 2)
+    $ every 2 (superimpose (#accelerate "0.1 -0.2 0 0.5").(# sound "gbass:2").(#lpf 350))
+    $ slow "1.5 3"
+    $ note "c7 d6*2 d6 e5*2 c6 a6*2" # s "gbass:5"
+    # cut "-1 2"
+    # legato "[0 1]/4"
+    # speed "-0.5 1 0.5"
+    # gain 1.1
+
+t6 (xfadeIn 16 ) $ silence
+
+
+
+
+d1
+$ slow 2
+-- $ every 8 (juxBy 0.5 (zoom (0.5,0.75)).(fast 2).(#sustain 0.1).(#up 12) * (slow 0.5 saw))).(|+|up "<1 2 4 8 12 16>"))
+-- $ every 8 (juxBy 0.5 (zoom (0.5,0.75)).(fast 2).(#sustain 0.1).(#up ((fast 4 $ range (-12) 24 $ sine) * (slow 0.5 saw))).(|+|up "<1 2 4 8 12 16>"))
+$ every 4 (superimpose (slow 4).(|*| speed 0.5).(|+|up "1 2 4 8 12 16").(0.5 <~))
+$ every 2 (slow 2)
+$ s "[if(3,8), if:2(5,8)]"
+# sustain "0.5 1 0.15"
+# cut "-1"
+# gain 0.85
+
+t1 (clutchIn 16)
+
+d1
+$ every 8 (superimpose (|/| speed 2).(# cutoff ((range 800 2400 $ slow 1 $ sine) * (slow 0.5 saw))).(|+|shape 0.15).(slow 2))
+$ every 4 (superimpose (|/| speed 4).(slow 2).(0.5 <~))
+-- $ every 2 (juxBy 0.5 (fast 2))
+$ every 2 (juxBy 0.5 (slow 2).(|/|speed 2))
+$ slow 16
+$  sound "gabba"
+# sustain ( range 0.1 0.5 $ slow 8 $ saw)
+|+| shape ((slow 6 $ range  0.5 0.25 $ sine) * (slow 4 tri))
+# cut "-1 2"
+# gain 0.85
+-- # unit " s c r c"
+# speed 1 # shape 0.15
+
+d1 $ sound "bd*8" # pan (cat [square, sine])
+
+d1 $ sound "bd([4 8]/2,8,2)" # speed (slow 2 $ range 0.5 2 tri)
+
+
+    hush
