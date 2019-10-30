@@ -1,0 +1,500 @@
+d1  $ sound "bd sn:2 [~ bd] sn:2"
+
+do
+   d1 $
+    stack [
+      seqPLoop[
+        (0,3,every 2 (ghost) $
+        s "[ck:3,tk:1](<3 5 7 2>,8,<0 2>)")
+        ,
+        (4,29,every 2 (ghost) $
+        s "[vk:2,tk:1](<3 5 7 2>,8,<0 2>)")
+        ,
+        (30,31,every 2 (ghost) $
+        every 2 (rot "<0 0 1 3>").(every 2 (|* speed 2).(density "1.5").(# cut 1)) $
+        s "[vk:2,tk:1](<3 5 7 2>,8,<0 2>)")
+      ]
+      # cut "-1"
+      ,
+      every 2 (density 2) $
+      whenmod 7 5 (spread' (striate' 32) ((*0.05) <$> slow 4 sine)) $
+      whenmod 5 2 (trunc (3/8)) $
+      whenmod 8 6 (0.25 ~>) $
+      slow 2 $ s "sub*1 <b*<1 2 0> ~> bbss:3*2 sine:5*<1 2> "
+      |- up (every 4 (palindrome) $ "5 6 7")
+      # cut "1"
+      -- ,
+      -- every 4 (# s "~") $
+      -- -- whenmod 5 2 (trunc (3/8).(density 1.5)) $
+      -- slow 2 $
+      -- seqPLoop [
+      --   (0,15,whenmod 7 5 (spread' (striate' 12) ((*0.15) <$> slow 2 sine)) $
+      --   whenmod 6 3 (0.125 ~>) $
+      --   every 3 (density 2) $
+      --   every 2 (slow 2) $
+      --   s "tk*8 bp*4 toms*2 dp*2 "
+      --   # cut "-1 -1")
+      --   ,
+      --   (16,31,foldEvery [3,5] (0.125 ~>) $
+      --   -- # n (every 2 (palindrome) $ foldEvery [3,5] (density 2) $ run 6)
+      --   whenmod 6 3 (0.25 ~>) $
+      --   foldEvery [3,7] (density 1.5) $
+      --   every 2 (slow 2) $
+      --   s "tk*8 bp*8 toms*2 dp*8 "
+      --   # cut "-1 -1")
+      -- ]
+      -- |- up (every 2 (palindrome) $ foldEvery [3,5] (density 2) $ run 6)
+      -- |+ cut "-1"
+      -- ,
+      -- foldEvery [7,15] (# s "~") $
+      -- every 8 (# s "~") $
+      -- seqPLoop [
+      --   (0,7,foldEvery [3,5] (0.125 ~>) $
+      --   whenmod 6 3 (0.125 ~>) $
+      --   foldEvery [3,5] (density 2).(|* speed 2) $
+      --   slow 2 $
+      --   s "moto*<4 2> as*2 d*1 ugclap*4 "
+      --   # up (every 3 (palindrome) $ every 4 (palindrome) $ run 5)
+      --   |- cut "-1 2 4 3 2 4 3 3 1")
+      --   ,
+      --   (8,15,whenmod 6 3 (0.125 ~>) $
+      --   every 4 (0.25 <~) $
+      --   every 3 (# up "5") $
+      --   slow 2 $
+      --   s "moto*<1 0> as*2 d*<2 1 0> ugclap*8 "
+      --   # up (every 2 (0.25 <~) $ every 2 (rev) $ "10")
+      --   |- cut "2 1 4 1 2")
+      --   ,
+      --   (16,23,whenmod 6 3 (0.125 ~>) $
+      --   whenmod 5 2 (# up "3") $
+      --   every 4 (0.125 ~>) $
+      --   every 3 (# up "5 -2 -7") $
+      --   every 2 (slow 2) $
+      --   s "moto*1 as*8 d*8 ugclap*8 "
+      --   # up (every 4 (0.25 <~) $ foldEvery [3,5] (density 4) $ every 2 (density 4) $ run 1)
+      --   |- cut "2 1 4 1 2")
+      --   ,
+      --   (24,31,whenmod 5 2 (# up "3") $
+      --   whenmod 8 6 (((# delay "0.64 0.74 0.85") . (# delaytime "0.01 0.02") . (# delayfeedback "0.74"))) $
+      --   every 3 ((# up "-5").(density 1.5)) $
+      --   slow 2 $
+      --   s "moto*1 pl*8 ag*1 ts*2 "
+      --   # up (every 4 (0.25 <~) $ foldEvery [3,5] (density 4) $ every 2 (density 4) $ run 1)
+      --   |- cut "2 1 4 1 2")
+      --   ,
+      --   (32,39,every 3 (degrade) $
+      --   whenmod 5 2 (# up "3") $
+      --   whenmod 8 6 (((# delay "0.4 0.4 0.5") . (# delaytime "0.1 0.2") . (# delayfeedback "0.4"))) $
+      --   every 3 (# up "5") $
+      --   every 2 (slow 2) $
+      --   s "moto*1 pl*8 ag*2 ts*2 "
+      --   # up (foldEvery [3,5] (density 3) $ "3 4")
+      --   |- cut "1 -1 -1")
+      --   ,
+      --   (40,47,every 3 (degrade) $
+      --   whenmod 5 2 (# up "3") $
+      --   whenmod 5 2 (# accelerate "0.5 -0.25") $
+      --   slow 2 $
+      --   s "l*2 pl*8 moto*2 ts*2 "
+      --   # up (every 3 (0.25 ~>) $ run 9)
+      --   |- cut "1 -1 -1")
+      --   ,
+      --   (48,55,every 3 (degrade) $
+      --   whenmod 5 2 (# accelerate "0.5 -0.25") $
+      --   every 2 (slow 2) $
+      --   s "l*8 bm*4 moto*2 ts*2 "
+      --   # up (every 3 (0.25 ~>) $ run 9)
+      --   |- cut "1 -1 -1")
+      --   ,
+      --   (56,63,every 6 (((# delay "0.93") . (# delaytime "0.001 0.1") . (# delayfeedback "0.8"))) $
+      --   whenmod 5 2 (# accelerate "0.5 -0.25") $
+      --   every 3 (slow 2) $
+      --   s "l*8 bm*4 moto*2 ts*2 "
+      --   # up (every 3 (0.25 ~>) $ run 9)
+      --   |- cut "2")
+      --   ,
+      --   (64,71,every 6 (((# delay "0.83") . (# delaytime "0.001 0.1") . (# delayfeedback "0.68"))) $
+      --   foldEvery [3,5] (# coarse "12 4") $
+      --   slow 2 $
+      --   s "l*8 bm*4 moto*2 strings*8 "
+      --   # up (every 4 (density 3) $ every 3 (palindrome) $ "9 2 11 1")
+      --   |- cut "2")
+      --   ,
+      --   (72,87,every 5 (0.125 ~>) $
+      --   foldEvery [3,5] (# coarse "12 4") $
+      --   every 3 (slow 2) $
+      --   s " <ak*<1 2 4 0> bs:1<1 0 2>> moto*2 strings*8 ~"
+      --   # up (every 4 (density 3) $ every 3 (palindrome) $ "9 2 11 1")
+      --   |- cut "2")
+      --   ,
+      --   (88,105,every 5 (0.125 ~>) $
+      --   foldEvery [3,5] (# coarse "12 4") $
+      --   every 5 (chop 8) $
+      --   slow 2 $
+      --   s " <ak*<1 2 4 0> el:1<1 0 2>> af*2 strings*8 ~"
+      --   # up (every 4 (density 3) $ every 3 (palindrome) $ "9 2 11 1")
+      --   |- cut "4 3")
+      --   ,
+      --   (106,127,every 5 (0.125 ~>) $
+      --   foldEvery [3,4] (0.25 <~) $
+      --   foldEvery [3,5] (# coarse "12 4") $
+      --   every 5 (chop 8) $
+      --   every 3 (slow 2) $
+      --   s "l*8 el*8 af*2 strings*8"
+      --   # up (every 4 (density 3) $ every 3 (palindrome) $ "9 2 11 1")
+      --   |- cut "4 3")
+      -- ]
+      -- # cut 1
+      ,
+      every 8 (# s "~")$
+      every 5 (0.125 ~>) $
+      foldEvery [3,5] (0.125 <~) $
+      seqPLoop [
+        (0,15,whenmod 7 5 (stut' 3 (0.125*3) (|*| speed "1.5")) $
+        every 5 (striate 32) $
+        every 2 (slow 2) $
+        s "af:1*4 ps:2*8 af:3*2 bs:4*8 "
+        |- up (every 4 (density 3) $ every 3 (palindrome) $ "9 2 11 1"))
+        ,
+        (16,31,whenmod 7 5 (stut' 8 (0.125*3) (|*| speed "-1.25")) $
+        every 5 (striate 12) $
+        every 3 (slow 2) $
+        s "bf:3*4 foley:4*2 af:5*2 sub:3*8 "
+        |- up (every 4 (density 3) $ every 3 (palindrome) $ "9 2 11 1"))
+        ,
+        (32,63,foldEvery [7,11] (0.25 <~) $
+        whenmod 7 5 (stut' 12 (0.125*3) (|*| speed "1.5")) $
+        every 5 (striate 8) $
+        every 4 (slow 2) $
+        s "ck:1*4 temph:3*2 af:2*2 sine:5*8 "
+        |- up (every 2 (rev) $ run 3))
+      ]
+      |+ cut "-2 1 4 -1 3 1 0 1"
+      # cut "-1"
+      ]
+      # delay 0
+      # delayt 0
+      # delayfb 0
+
+  -- (5,6) : Yields the York-Samai pattern, a popular Arab rhythm.
+  -- (5,12) : The Venda clapping pattern of a South African children’s song.
+  -- (7,12) : A common West African bell pattern.
+  -- (13,24,5) : Another rhythm necklace of the Aka Pygmies of the upper Sangha.
+  -- (11,24,14) : A rhythm necklace of the Aka Pygmies of Central Africa.
+
+  -- (3,8) : The Cuban tresillo pattern.
+  -- (5,8) : The Cuban cinquillo pattern.
+  -- (5,16) : The Bossa-Nova rhythm necklace of Brazil.
+  -- (7,8) : A typical rhythm played on the Bendir (frame drum).
+  -- (7,16,14) : A Samba rhythm necklace from Brazil.
+  -- (9,16) : A rhythm necklace used in the Central African Republic.
+  -- (3,4) : The archetypal pattern of the Cumbia from Colombia, as well as a Calypso rhythm from Trinidad.
+
+  -- (4,11) : The metric pattern used by Frank Zappa in his piece titled Outside Now.
+  -- (5,11) : The metric pattern used by Moussorgsky in Pictures at an Exhibition.
+
+  -- (4,9) : The Aksak rhythm of Turkey.
+  -- (5,9) : A popular Arab rhythm called Agsag-Samai.
+
+  -- (3,7) : A Ruchenitza rhythm used in a Bulgarian folk-dance.
+  -- (4,7) : Another Ruchenitza Bulgarian folk-dance rhythm.
+  -- (5,7) : The Nawakhat pattern, another popular Arab rhythm.
+
+  -- (2,5) : A thirteenth century Persian rhythm called Khafif-e-ramal.
+  -- (3,5,2) : Another thirteenth century Persian rhythm by the name of Khafif-e-ramal, as well as a Rumanian
+
+
+d1 $
+  stack [
+    every 2 (slow 2).(every 2 (ghost)) $
+    -- foldEvery [13,15] (density 2).(# accelerate 1.5) $
+    -- every 8 (fast 2) $
+    every 4 (density 2).(every 2 (# s "~")) $
+    stack [
+      s "ak:3(3,5,2)"
+      ,
+      s "as(2,5)"
+    ]
+    # distort 0.01
+    # triode 0.2
+    ,
+    foldEvery [5,7] (density 1.5) $
+    whenmod 5 3 (jux (|* speed "-1")) $
+    every 2 (jux (|+ speed (sine)).(slow 2)) $
+    every 3 (|+| coarse "1 2 3 4") $
+    s "ap(2,5,<0 1>)"
+    ,
+    whenmod 16 12 (# s "~") $
+    every 4 ((density "2").(|* speed "2 0 1").(# accelerate 1)) $
+    s "ah:4(<3.5 7 8 5>,10,<0 1 2>)"
+  ]
+
+  d1 $
+  -- ghost $
+  every 2 (0.125 <~) $
+  whenmod 8 6 (jux (# delay 0.9).(# delaytime "0.01 0.02").(# delayfb 0.7).(# gain 0.7)) $
+  stack [
+    every 2 ((0.125 <~).(density 2)) $
+    foldEvery [3,5] (fast 2) $
+    every 4 (slow 2) $
+    stack [
+      s "as:4(3,7)"
+      -- # up "{12 0 -5}%3"
+      # gain 0.8
+      ,
+      every 4 (# s "~") $
+      s "[<ah:3 temph:5>,<ah:4 temph:4>](4,7)"
+      ]
+      # cut "-1"
+      # gain 0.8
+    ,
+    every 4 (0.25 ~>) $
+    every 2 (# accelerate "1 -1") $
+    rot "<0 0 2 3>" $
+    s "ak:4(5,7)"
+]
+# cps 0.5
+
+hush
+
+d1 $
+  stack [
+    -- whenmod 8 7 (# s "~") $
+    -- stack [
+      -- s "ck:1(3,8,<0 2>)"
+      -- ,
+      -- s "ck:3(5,8,<0 2 0>)"
+      -- ,
+      -- -- every 2 ((spin "<0 2 2>").(# triode (sine)).(every 2 (|+ coarse "0 1 2")).(|* gain 0.9).(|+ up (scan 8)).(fast "1 2 0.75 2")) $
+      -- every 4 ((zoom (0.25,0.75)).(0.25 <~).(# speed 2)) $
+      --  s "bh:3(<10 7 13 16>,16)" # up 14 # coarse 2 # gain 0.8
+      --  # up 24
+     -- ]
+     -- ,
+     -- every 16 (# s "~") $
+     -- every 2 (0.25 <~) $
+     -- s "ap:6(5,16,<0 1 2 3>)"
+     -- |+ up 14
+     -- # coarse 2
+     -- # bpf (slow 32 $ range 800 3200 cosine)
+     -- # bpq (slow 7 $ range 0 0.4 tri)
+     -- # lpf (slow 6 $ range 4000 8000 square)
+     -- # lpq (slow 9 $ range 0.3 0.1 isaw)
+     -- -- # comb 0.0
+     -- -- # gain 0.8
+     -- ,
+     -- rot "<0 0 1 0 0 2>" $
+     -- s "hold:1 <foleyperc:1 ~ foleyperc:2> ~ ~"
+     -- # up "<-12 -8 -7 0 0>/2"
+     -- # unit "c r"
+     -- ,
+     -- slow "<1 2 4>" $
+     -- s "waveguideFlute(7,16,14)"
+     -- |- note "7 12 36 24 33 21 -3 31 3 -1 27 12"
+     -- # freq "{200 400 500 320 420}%4"
+     -- # ipress "{0.3 0.38 0.19 0.24 0.1 0.4}%5"
+     -- # ifeedbk1 "{0.4 0.38 0.11 0.4 0.24 0.47 0.21 0.4 0.57}%3"
+     -- # ifeedbk2 "{0.5 0.47 0.2 0.4}%5"
+     -- # ibreath "{0.02 0.09 0.1 0.15 0.02 0.03}%4"
+     -- # scl "{0.2 0.4 0.5 0.1 0.7 0.2}%5"
+     -- # dur "1 2 4 4 1 1 3 0.1 0.4"
+     -- # gain 0.75
+     -- -- # cut 1
+     -- ,
+     -- s "blowbotl(7,8)"
+     -- # note "-1 -12 24"
+     -- # freq "{15 25 40 35 70 18 09 15 20}%5"
+     -- # rq "{0.1 0.2 0.3 0.1 0.4 0.1 0.4}%5"
+     -- # noise (slow 3 $ range 0 0.2 tri)
+     -- # vibFreq (slow 8 $ range 4 6 cosine)
+     -- # vibGain "{0.9 1.1 0.8 0.7 1 0.7}%2"
+     -- # gain 0.8
+     -- ,
+     seqPLoop [
+       (0,7, s "~")
+       ,
+       (8,31, whenmod 16 13 (# s "~") $
+       s "bbss:4(3,4)"
+       # gain 0.78
+       # cut 1
+       # up "{-3 -7 -4 1 3}%4")
+     ]
+     ,
+     every 8 (# s "~") $
+     every 2 ((# room "0.3 0.7 0.3 0.8 0").(# size "0.6 1.2 0.3 0.7 0")) $
+     s "jpnperc(9,16)"
+     # n "1 2 3 1 2 1 3 4"
+     # cut "-1"
+     # up "5 -5 5 0 5 -5"
+     # unit "c s r"
+     -- ,
+     -- s "superdrop(3,4)"
+     -- # cut 1
+     -- |+ freq "{10.6 31.2 60.4 100.2 290.5 12}%5"
+     -- # gain (slow 8 $ range 0 0.6 cosine)
+  ]
+  # cps 0.55
+
+hush
+
+let
+  superdrop = pF "superdrop"
+
+d1 $
+  stack [
+    -- every 8 (# s "~") $
+    every 7 (((3/11) <~).(hurry 2).(every 4(density 2).(|- up 8))) $
+    rot "<0 0 2>" $
+    s "ak:6(5,11)"
+    -- # triode 0.7
+    -- # distort 0.8
+    ,
+    every 2 (ghost) $
+    s "ah:6(6,11)"
+    ,
+    s "ac:5(<3 4>,11,<0 1>)"
+    ,
+    slow 8 $
+    s "lirgo"
+    # amp 1.7
+    -- # release 40
+    -- # sustain
+    -- # att 0.01
+    -- # decay 1
+  ]
+# gain 0.8
+
+d1 $ stack [
+  s "dk:2(5,6)"
+  ,
+  s "dc:2(5,12)"
+  ,
+  ghost $
+  every 2 (slow 2) $
+  s "dh:1(7,12)"
+  ,
+  foldEvery [2,3](slow 2) $
+  s "dp:1(13,24,5)"
+  ,
+  slow "<1 2 1>" $
+  s "[dt,dt:2](11,24,14)"
+  |- up (every 2 (density 2) $ "2 5 1 0 7 5 3 1")
+  -- # unit "<s c r>"
+  # cut "-1"
+  # gain 0.8
+]
+
+
+d1 $
+  stack [
+  s "dp:7(5,6)"
+  ,
+  s "ds:6(4,9)"
+  ,
+  s "dk:3(5,9)"
+  ]
+
+
+
+d1 $
+  stack [
+  every 8 (((5/12) <~).(hurry 2).(every 4(fast 2).(|- up 8))) $
+  rot "<0 0 2>" $
+  s "[ck:6,dk:6](5,6)"
+  # gain 0.8
+  # lpf 1200
+  ,
+  s "[dt,dt:6](5,12)"
+  ,
+  ghost $
+  s "dc:6(7,12)"
+  ,
+  whenmod 8 4 (# pan (cosine)) $
+  every 2 (slow 2) $
+  s "ap:7(13,24,5)"
+  # up "0 -12 -24"
+  # gain 0.8
+  ,
+  ghost $
+  slow 2 $
+  s "ah:8(11,24,14)"
+  ,
+  every 4 (ghost) $
+  s "brb(15,24,3)"
+  # n (irand 16)
+  # up "6 10 6 12"
+  ,
+  s "sub(7,12,<3 1>)"
+  |- up "6 3 4 9 6"
+  # lpf 800
+  # gain 0.9
+  ]
+
+d1 $
+  every 3 (hurry 2) $
+  every 2 (0.25 <~) $
+  stack [
+    every 4 (# s "~") $
+    s "ch:3(17,24,<0 2>)"
+    # up "10 13 <2 6>"
+    ,
+     every 16 (# s "~") $
+    s "[ck:2,vk](<8 5 3>*2,12,<2 0>)"
+    # gain 0.82
+    # comp 0.3
+    # wall 0.3
+    ,
+    foldEvery [7,8] (# s "~") $
+    s "dp:6(<3 7 1>,12,<2 0 2 0>)"
+    ,
+    -- slow 2 $
+    -- s "sub:14(<7 10 8 4>,24,<0 1 2>)"
+    -- |- up "1 5 3 8 1 2 3 1 3 1"
+    -- # gain 0.8
+    -- ,
+    -- every 2 (# accelerate "1 -2 3 -1 2 -3 -1") $
+    -- s "superx4(7,12,<0 1 2>)"
+    -- # gain 0.6
+    -- # pitch1 "800 120 200 300 1000 300"
+    -- # pitch2 "800 200 1000 2400 1200 400"
+    -- # freq "50 60 200 100"
+    -- |- note "12 15 23 -3 18 15 -2 11 11 15 -1 13 1"
+    -- ,
+    seqPLoop [
+      (0,7, s "~")
+      ,
+      (8,15, s"justwannahavefun(<8 5>,12,<0 1>)"
+      -- (8,15,s "jilet(<8 5>,12,<0 1>)"
+      -- -- # sinFreq "70 80 100"
+      -- |/ freq "4  2 1 0.5"
+      # sustain 1
+      # freq "400 420 300 260 180"
+      |+ decay "{1.3 2.1 0.8 0.1 1}%4"
+      # attack "0.1 0.3"
+      |+ rel "{0.5 0.1 0.3 0.7}%3"
+      -- |* endReflection "1.5 0.1 0.3 0.6 1.3"
+      -- |* jetReflection "0.5 0.25 0.1"
+      -- |* jetRatio "10.72 5 15 12"
+      -- |+ noiseGain "0.35 0.6 0.7 0.8"
+      -- |+ vibFreq "5.925 7 10 12"
+      -- |+ vibGain 0.04
+      -- |* gain 0.15
+      # ringTime "10 15.925 27 10 12"
+      -- |* amp 0.015
+      -- |- note "-2 -5 -9 0"
+      )
+    ]
+    ,
+    s "laserbeam(<3 8 10>,12)"
+    # gain 0.8
+    # freq "120 400 120 320"
+  ]
+
+let amp = pF "amp"
+
+d2 $ silence
+
+"HelloWorld".postln;
+
+
+hush
