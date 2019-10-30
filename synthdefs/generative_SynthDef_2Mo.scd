@@ -1,6 +1,6 @@
 (
 
-SynthDef(\nVirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 20, feedBack = 7.5, sawFreq1 = 32, sawFreq2 = 33, sawAmp = 0.2, bpff = 2, bpffModSpeed = 1.33, bpffModAmt = 4, delayTime = 2, decayTime = 40, doneAction = 2;
+SynthDef(\nvirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 20, feedBack = 7.5, sawFreq1 = 32, sawFreq2 = 33, sawAmp = 0.2, bpff = 2, bpffModSpeed = 1.33, bpffModAmt = 4, delayTime = 2, decayTime = 40, doneAction = 2;
 	var sig, env;
 	// env = Linen.kr(gate, att, 1, rel, doneAction);
 	env = EnvGen.ar(Env.linen(att, 1, rel), doneAction: doneAction);
@@ -17,7 +17,7 @@ SynthDef(\nVirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 20, feedBac
 	sig = CombN.ar(sig, 2, delayTime, decayTime);
 	LocalOut.ar(sig);
 	// OffsetOut.ar(out, sig * amp);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env))
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env));
 }).add;
 
 SynthDef(\talters, { arg out = 0, pan = 0, amp = 1, doneAction = 2;
@@ -33,7 +33,7 @@ SynthDef(\talters, { arg out = 0, pan = 0, amp = 1, doneAction = 2;
 		}!4).product
 	}!8).sum;
 	// OffsetOut.ar(out, sig * env * amp);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env * amp))
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env * amp));
 }).add;
 
 SynthDef(\bozkurt, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 10, impFreq = 0.25, freq1 = 4, freq2 = 6, delTime = 0.3, decTime = 50, feedBack = 1, doneAction = 2;
@@ -52,7 +52,7 @@ SynthDef(\bozkurt, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 10, impFre
 	LocalOut.ar(sig);
 	sig = Splay.ar(sig * env, amp);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 }).add;
 
 SynthDef(\mcld, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 10, impFreq = 10, hpfFreq = 440, doneAction = 2;
@@ -68,11 +68,11 @@ SynthDef(\mcld, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 10, impFreq =
 	sig = HPF.ar(sig, hpfFreq).clip2;
 	sig = Splay.ar(sig * env, amp);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 }).add;
 
 // new
-SynthDef(\rohrhuber, { arg out = 0, amp = 1, pan = 0, lfnFreq1 = 2, lfnFreq2 = 62, att = 0.01, rel = 2, doneAction = 2;
+/*SynthDef(\rohrhuber, { arg out = 0, amp = 1, pan = 0, lfnFreq1 = 2, lfnFreq2 = 62, att = 0.01, rel = 2, doneAction = 2;
 	var sig, env;
 	//env = Linen.kr(gate, att, 1, rel, doneAction);
 	env = EnvGen.ar(Env.linen(att, 1, rel), doneAction: doneAction);
@@ -80,29 +80,37 @@ SynthDef(\rohrhuber, { arg out = 0, amp = 1, pan = 0, lfnFreq1 = 2, lfnFreq2 = 6
 		SinOsc.ar(
 			BrownNoise.ar(30 ! 2, 200),
 			Ndef(\x).ar * LFNoise1.kr([17, 4], 1, 1)
-		)
-	});
+			)
+		});
 	sig = Ndef(\x) * LFNoise0.kr([lfnFreq1, lfnFreq2]) * env * amp;
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
-}).add;
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+	}).add;
+*/
+//
 
-SynthDef(\padovan, { arg out = 0, amp = 1, pan = 0, tridDur = 1, freq = 165, roomSize = 9, doneAction = 2;
+
+// 20 octobre
+// Server 'localhost' exited with exit code 0.
+// server 'localhost' disconnected shared memory interface
+
+/* SynthDef(\padovan, { arg out = 0, amp = 1, pan = 0, tridDur = 1, freq = 165, roomSize = 9, doneAction = 2;
 	var sig, env, input, mod, grainTr, sinMod;
 	// env = Linen.kr(gate, 0.1, 1, 5, doneAction);
 	env = EnvGen.ar(Env.linen(0,1, 1, 5), doneAction: doneAction);
 	sig = SinOsc;
 	mod = Trig.ar(
-		Saw.ar(freq),
-		tridDur
+	Saw.ar(freq),
+	tridDur
 	);
 	grainTr = sig.ar(mod * freq);
 	sinMod = sig.ar(mod);
 	sig = GrainIn.ar(2, grainTr, grainTr / 2, sinMod, mod * sinMod, -1, mul: env);
 	sig = GVerb.ar(sig, roomSize, mul: amp);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
-}).add;
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+	}).add;
+*/
 
 SynthDef(\batuhan, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, tridDur = 0.125, decayTime = 0.3, sawFreq = 8, brfFreq1 = 45.1, brfFreq2 = 45, doneAction = 2;
 	var sig, env, core;
@@ -118,14 +126,14 @@ SynthDef(\batuhan, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, tridDur
 	sig = BRF.ar(sig, core * 20 + [brfFreq1, brfFreq2], 0.1);
 	sig = LeakDC.ar(sig).tanh * env * amp;
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 }).add;
 
-SynthDef(\lirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, doneAction = 2;
+SynthDef(\lirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 1, gate = 1, doneAction = 0;
 	var sig, env, bpf;
 
-	// env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.linen(att, 1, rel), doneAction: doneAction);
+	env = Linen.kr(gate, att, 1, rel, doneAction);
+	//env = EnvGen.ar(Env.linen(att, 1, rel), doneAction: doneAction);
 	sig = Ndef('x', {
 		sig = Ndef('x').ar + 0.01;
 		bpf = BPF.ar(sig, 6 ** Latch.ar(sig, Dust.ar(sig)) * 150, 0.2).sin;
@@ -135,8 +143,8 @@ SynthDef(\lirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, doneActio
 		bpf + bpf.mean;
 	});
 	sig = sig * env * amp * 0.1;
-	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
+	OffsetOut.ar(out, sig);
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 }).add;
 
 SynthDef(\nozkurt, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, sinFreq = 55, impMin = 0.0002, impMax = 0.7, impFreq = 8, doneAction = 2;
@@ -148,7 +156,7 @@ SynthDef(\nozkurt, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, sinFreq
 	sig = AllpassC.ar(sig, 1, delayTime, 2);
 	sig = sig * env * amp;
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 }).add;
 
 SynthDef(\tirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, blipFreqMod = 2, blipHarmo = 400, brfFreq = 150, brfRq = 2, doneAction = 2;
@@ -167,7 +175,7 @@ SynthDef(\tirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, blipFreqM
 	sig = rainStep + thunder;
 	sig = sig * env * amp;
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 }).add;
 
 SynthDef(\lmcd, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, trigDur = 0.1, lfCubTu = 1, hpfFreq = 440, doneAction = 2;
@@ -181,7 +189,7 @@ SynthDef(\lmcd, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, trigDur = 
 	sig = sig * env;
 	sig = Splay.ar(sig, 1, amp);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan)
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 }).add;
 
 )
