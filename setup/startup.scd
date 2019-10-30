@@ -11,7 +11,7 @@ To be copied and pasted in your SC startup file (in SCIde, do File > Open startu
 // configure the sound server: here you could add hardware specific options
 // see http://doc.sccode.org/Classes/ServerOptions.html
 s.options.numBuffers = 2048 * 512; // increase this if you need to load more samples
-s.options.memSize = 2048 * 32; // increase this if you get "alloc failed" messages
+s.options.memSize = 2.pow(20); // increase this if you get "alloc failed" messages
 s.options.maxNodes = 1024 * 32; // increase this if you are getting drop outs and the message "too many nodes"
 s.options.numOutputBusChannels = 4; // set this to your hardware output channel size, if necessary
 s.options.numInputBusChannels = 2; // set this to your hardware output channel size, if necessary
@@ -33,5 +33,5 @@ s.waitForBoot {
 	~dirt.postSampleInfo(2, s);
 };
 
-s.latency = 0.64; // increase this if you get "late" messages
+s.latency = 0.69; // increase this if you get "late" messages
 );
