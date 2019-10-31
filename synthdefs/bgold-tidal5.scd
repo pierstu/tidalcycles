@@ -868,7 +868,7 @@ SynthDef("dirt_comb"++~dirt.numChannels, {|out, comb, combd, combdiff|
 	sig = sig + DelayL.ar(sig, 0.2, [combd/100+1e-4, (combd+combdiff)/100+1e-4], mul:comb);
 	ReplaceOut.ar(out, sig);
 }).add;
-
+/*
 ~dirt.addModule('chunk', {|dirtEvent| dirtEvent.sendSynth("dirt_chunk" ++ ~dirt.numChannels,
 [chunk: ~chunk, chunksharp: ~chunksharp, chunkspread: ~chunkspread, out: ~out])}, {~chunk.notNil});
 SynthDef("dirt_chunk"++~dirt.numChannels, {|out, chunk, chunksharp, chunkspread|
@@ -880,7 +880,7 @@ SynthDef("dirt_chunk"++~dirt.numChannels, {|out, chunk, chunksharp, chunkspread|
 	sig = Mix.ar(sig) / (4-(4*chunkspread).clip(0,3));
 	ReplaceOut.ar(out, sig);
 }).add;
-
+*/
 ~dirt.addModule('chorus2', {|dirtEvent| dirtEvent.sendSynth("dirt_chorus2" ++ ~dirt.numChannels,
 [chorus2: ~chorus2, sustain: ~sustain, out: ~out])}, {~chorus2.notNil});
 SynthDef("dirt_chorus2"++~dirt.numChannels, {|out, chorus2, sustain|
