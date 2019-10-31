@@ -1,5 +1,17 @@
-# `bgold-tidal5.scd` = bgold synthdefs
+- # BEFORE ANYTHING
+After you validated a synthdef in supercollider, if you want to control any of its args, head to your `.tidal` file (a more extended list can be passed in `BootTidal.hs` or any custom file you'll be calling) :
+> ` let pitch2 = pF "pitch2"`
+
+Then it's ok to modulate it as a control param.
+> `d1 $ s "superx3(3,8,2)" |+ pitch2 "< 3 4 5 0 [-1, 2]>"`
+
+
+If you didnt, it wont work ! Overwriting a function with a var having the same name will lead to a conflict.
+
+- # [`bgold-tidal5.scd`](https://github.com/pierstu/tidalcycles/blob/master/synthdefs/bgold-tidal5.scd) = bgold synthdefs
 are synthdefs that were already written for SuperDirt, i'm just mirroring them.
+
+__*update 10/31/19*__ commented `# chunk`  (L. 987) as `chunk $` is a native time shifting function in Tidalcycles, got conflicts - planning to rename it `hash` + corresponding args in weeks
 
 ## superclassic
 - sustain
@@ -351,7 +363,7 @@ are synthdefs that were already written for SuperDirt, i'm just mirroring them.
 - pan
 - freq
 
-# `coopt-synthdefs.scd` = coopt synthdefs
+# [`coopt-synthdefs.scd`](https://github.com/pierstu/tidalcycles/blob/master/synthdefs/coopt-synthdefs.scd) = coopt synthdefs
 taken from [https://github.com/theseanco/howto_co34pt_liveCode](https://github.com/theseanco/howto_co34pt_liveCode), ported to SD
 ## henon
 - freq = frequency
@@ -399,7 +411,7 @@ taken from [https://github.com/theseanco/howto_co34pt_liveCode](https://github.c
 - amp = overall volume
 - out = channels out
 
-# `synthdefs_extra.scd` = everythingwillbetakenaway synthdef pool
+# [`synthdefs_extra.scd`](https://github.com/pierstu/tidalcycles/blob/master/synthdefs/synthdefs_extra.scd) = everythingwillbetakenaway synthdef pool portage attempt
 taken form [https://github.com/everythingwillbetakenaway/Synthdefs](https://github.com/everythingwillbetakenaway/Synthdefs), ported to SD
 
 ## plastickystrings
@@ -741,3 +753,6 @@ taken form [https://github.com/everythingwillbetakenaway/Synthdefs](https://gith
 ## snare_oto309
 - amp=0.1
 - pan=0
+
+# [`generative_SynthDefs_2Mo.scd`](https://github.com/pierstu/tidalcycles/blob/master/synthdefs/generative_SynthDef_2Mo.scd)
+Generative stuff we use or plan to with [2Mo](https://2-mo.bandcamp.com/releases) __WIP__
