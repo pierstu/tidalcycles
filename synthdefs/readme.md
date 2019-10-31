@@ -1,3 +1,12 @@
+- [Read first](https://github.com/pierstu/tidalcycles/tree/master/synthdefs#before-anything)
+- [bgold-tidal5.scd](https://github.com/pierstu/tidalcycles/tree/master/synthdefs#bgold-tidal5scd--bgold-synthdefs)
+- [coopt-synthdefs.scd](https://github.com/pierstu/tidalcycles/tree/master/synthdefs#coopt-synthdefsscd--coopt-synthdefs)
+- [synthdefs-extra.scd](https://github.com/pierstu/tidalcycles/tree/master/synthdefs#synthdefs_extrascd--everythingwillbetakenaway-synthdef-pool-portage-attempt)
+- [generative_Synthdefs_2Mo.scd](https://github.com/pierstu/tidalcycles/tree/master/synthdefs#generative_synthdefs_2moscd)
+
+
+</br>
+
 - # BEFORE ANYTHING
 After you validated a synthdef in supercollider, if you want to control any of its args, head to your `.tidal` file (a more extended list can be passed in `BootTidal.hs` or any custom file you'll be calling) :
 > ` let pitch2 = pF "pitch2"`
