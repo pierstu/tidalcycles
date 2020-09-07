@@ -9,12 +9,12 @@ Default values :
 
 - squiz :
 
-`# pitchratio 1.0`
+  `# pitchratio 1.0`
 
 - spectraldelay :
 
-`# tsdelay 0.5`
+  `# tsdelay 0.5`
 
-`# xsdelay 0.5`
+  `# xsdelay 0.5`
 
 etc
