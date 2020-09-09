@@ -1,0 +1,28 @@
+
+d1 $ s "rimSd*8"
+  # amp 0.36
+  # tu 1.0
+  # envLev1 1.0
+  # envLev2 0.0
+  # envLev3 1.0
+  # envLev4 0.0
+  # atk 0.0
+  # dcy 0.004
+  # rls 0.1
+  # hpfRq 1.0
+  # lpfRq 0.5
+
+d1 $ s "rimnewSd*8"
+  # amp 0.1
+  # tu 1.0
+  # atk 0.0001
+  # rls 1.0
+  # freqTime1 0.001
+  # freqTime2 0.01
+
+d1 $ s "rim808Sd*8"
+  # amp 0.1
+  # atk 0.001
+  # rls 1.0
+  # tu 1.0
+  # tuf 1.0

@@ -1,0 +1,400 @@
+d1 $ s "cowSd*4"
+  # amp 0.3
+  # atk 0.001
+  # rls 1.0
+  # tu 0.1
+
+d1 $ s "notesSd*4"
+  # amp 0.4
+  # atk 0.01
+  # rls 0.1
+  # tu 1.0
+
+d1 $ s "notes2Sd*4"
+  # amp 0.5
+  # notes 68.0
+  # at 0.01
+  # sst 0.4
+  # snd 1.0
+
+d1 $ s "sinusSd*4"
+  # amp 0.5
+  # atk 0.0
+  # rls 0.1
+
+d1 $ s "prayerBellSd*4"
+  # amp 0.5
+  # sing_switch 0.0
+  # decayscale 0.1
+  # lag 0.0
+  # level 0.08
+  -- # i_doneAction 2.0
+
+d1 $ s "prayerBellBrSd*4"
+  # amp 0.5
+  # singSwitch 0.0
+  # decayScale 0.1
+  # lag 0.0
+
+d1 $ s "glockenspielSd*4"
+  # amp 0.3
+  # atk 0.001
+  # rls 6.0
+  # exciterRel 0.05
+
+d1 $ s "rissetBellSd*4"
+  # amp 0.4
+  # atk 0.005
+  # rls 2.0
+
+d1 $ s "sosBellSd*4"
+  # amp 0.1
+  # rls 2.0
+  # curve 1.0
+  # ringAmp 1.0
+  # ringRel 0.9
+  # wobbleDepth 0.6
+  # wobbleMin 1.0
+  # wobbleMax 1.8
+  # strikeAmp 1.0
+  # strikeDec 0.01
+  # strikeRel 0.04
+  # strikeDepth 0.028
+  # strikeHarmonic 8.0
+  # humAmp 0.5
+  # humAtt 0.5
+  # humDec 0.5
+  # humRel 1.0
+
+
+d1 $ s "tubularBellSd*4"
+  # amp 0.1
+  # atk 0.005
+  # rls 9.0
+  # exciterRel 0.05
+
+d1 $ s "waveguideFluteSd*4"
+  # amp 0.5
+  # scl 0.2
+  # ipress 0.9
+  # ibreath 0.09
+  # ifeedbk1 0.4
+  # ifeedbk2 0.4
+  # dur 1.0
+
+d1 $ s "justwannahavefunSd*4"
+  # amp 0.1
+  # ringTime 10.0
+
+d1 $ s "marimba1Sd*4"
+  # amp 0.5
+
+d1 $ s "kalimbaSd*4"
+  # amp 0.5
+  # atk 0.001
+  # mix 0.1
+  # minRel 2.5
+  # maxRel 3.5
+  # clickRel 0.01
+
+d1 $ s "pmCrotalesSd*4"
+  # amp 0.4
+  # atk 0.0
+  # rls 2.0
+  # curve "-6.0"
+  # tone 3.0
+  # modLo 5.25
+  # modHi 5.5
+
+d1 $ s "steelDrumSd*4"
+  # amp 0.4
+  # atk 0.01
+  # dcy 1.5
+  # curve "-6.0"
+  # filterHarmonic 6.0
+
+d1 $ s "noisyToneSd*4"
+  # amp 0.4
+
+d1 $ s "ping_mhSd*4"
+  # amp 0.4
+  # dur 0.1
+  # atk 0.001
+
+d1 $ s "pwmblingSd*4"
+  # amp 0.3
+  # lforate 4.85
+  # lfowidth 0.5
+  # rq 0.25
+
+d1 $ s "glaukSd*4"
+  # amp 0.4
+  # atk 0.01
+  # rls 2.0
+
+d1 $ s "scintySd*4"
+  # amp 0.4
+  # atk 0.01
+  # rls 10.0
+
+d1 $ s "bublybubSd*4"
+  # amp 1.0
+  # atk 0.01
+  # rls 10.0
+  # x 165.0
+
+d1 $ s "chdegaulleaboutSd*4"
+  # amp 1.0
+  # atk 0.01
+  # rls 10.0
+
+d1 $ s "t2001Sd*4"
+  # amp 1.0
+  # atk 0.01
+  # rls 10.0
+  -- # dcy 0.7
+  -- # sus 0.3
+  -- # attack 0.2
+  -- # decay 0.1
+  -- # sus 0.2
+  -- # rel 0.3
+
+d1 $ s "claudTweetSd*4"
+  # amp 0.4
+  # atk 0.01
+  # rls 10.0
+
+d1 $ s "ambitekSd*4"
+  # amp 0.5
+  # atk 0.01
+  # rls 10.0
+  # envSL1 0.0
+  # envSL2 0.72
+  # envSL3 0.16
+  # envSL4 0.0
+  # envST1 0.2
+  # envST2 0.6
+  # envST3 0.8
+  # envSCurve "-4.0"
+  # sawFreq 50.0
+  # delTime 0.1
+  # delDecay 2.0
+  # brfRq 2.0
+
+d1 $ s "mainSd*4"
+  # amp 0.5
+  # lev 10.0
+  # wnoiseAmp 1.0
+  # sinAmp 1.0
+  # sinFreq 30.0
+  # sel 0.0
+  # envLevel1 0.0
+  # envLevel2 1.0
+  # envLevel3 0.0
+  # levelScale 1.0
+  # levelBias 0.0
+  # atk 0.0
+  # rls 0.1
+  # timeScale 1.0
+  # noiseAmp 1.0
+  # revtime 3.0
+  # damp 0.5
+  # revMix 0.0
+
+d1 $ s "flashSd*4"
+  # amp 0.4
+  # fund 400.0
+  # dcy 4.0
+  # filter 1.0
+
+d1 $ s "elifmSd*4"
+  # mRatio 1.0
+  # cRatio 1.0
+  # index 1.0
+  # iScale 5.0
+  # amp 0.2
+  # atk 0.01
+  # rls 3.0
+  # cAtk 4.0
+  # cRel "-4.0"
+
+d1 $ s "polishFabSd*4"
+  # amp 0.4
+  # atk 11.0
+  # rls 6.0
+  # feedBack 2.0
+  # phmodFrq 0.5
+  # freq1 64.0
+  # freq2 23.0
+  # envfL1 0.0
+  # envfL2 500.0
+  # envfL3 20.0
+  # envfL4 0.0
+  # envfT1 0.2
+  # envfT2 0.01
+  # envfT3 0.12
+  # envfCure "-4.0"
+  # frqScale 0.5
+
+d1 $ s "slatechreSd*4"
+  # amp 1.0
+  # atk 0.01
+  # rls 3.0
+
+d1 $ s "ColleenSd*4"
+  # amp 1.0
+  # atk 0.35
+  # rls 2.0
+
+d1 $ s "zeynepSd*4"
+  # amp 1.0
+  # envL1 0.0
+  # envL2 0.03
+  # envL3 0.1
+  # envL4 0.2
+  # envL5 0.0
+  # envT1 1.0
+  # envT2 1.0
+  # envT3 4.0
+  # envT4 0.2
+  # dur 1.0
+  # beats 1.0
+
+d1 $ s "sosTomSd*4"
+  # amp 0.4
+  # drumRel 0.4
+  # stickRel 0.01
+  # drumModeAmp 0.25
+  # timbreIndex 0.77
+  # atk 0.005
+  # curve "-6.0"
+
+d1 $ s "beatingSd*4"
+  # amp 0.4
+  # atk 0.01
+  # dcy 1.0
+  # curve "-4.0"
+  # beatFreq 15.0
+
+d1 $ s "blip1Sd*4"
+  # amp 0.1
+  # atk 0.01
+  # rls 1.0
+  # numharm 10.0
+
+d1 $ s "laserbeamSd*4"
+  # amp 0.6
+  # atk 0.01
+
+d1 $ s "ping_mhSd*4"
+  # amp 0.4
+  # atk 0.001
+  # dur 1.0
+  # curve "-4.0"
+  # depth 0.03
+
+d1 $ s "pulseRissetSd*4"
+  # amp 0.1
+  # atk 0.01
+  # rls 11.0
+  # pulseFreq 8.0
+
+d1 $ s "pitchTrackSynthIxiSd*4"
+  # atk 0.51
+  # dcy 0.52
+  # sst 1.0
+  # rls 0.51
+  # curve "-4.0"
+
+d1 $ s "pitcherIxSdi*4"
+  # threshold 0.5
+
+d1 $ s "sin_pulsarSd*4"
+  # lev 0.3
+  # formantA 2.0
+  # formantB 6.0
+  # overlapA 2.0
+  # overlapB 2.0
+
+-- couilles de postwindow
+d1 $ s "fm_pulsarSd*4"
+  # vel 0.5
+  # dcy 0.02
+  # curve "-4.0"
+  # cf 2.0
+  # mf 2.0
+  # mIndMin 0.1
+  # mIndMax 2.3
+  # olapMin 1.0
+  # olapMax 8.0
+
+d1 $ s "pm4Sd*4"
+  # glis 0.0
+  # bend 0.0
+  # vrate 6.0
+  # vdepth 0.0
+  # detunehz 0.0
+  # vel 1.0
+  # op1curve 0.0
+  # op1atk 0.01
+  # op1dcy 0.01
+  # op1suslevel 1.0
+  # op1rls 1.0
+  # op1ratio 1.0
+  # op2curve 0.0
+  # op2atk 0.01
+  # op2dcy 0.01
+  # op2suslevel 1.0
+  # op2rls 1.0
+  # op2ratio 1.0
+  # op3curve 0.0
+  # op3atk 0.01
+  # op3dcy 0.01
+  # op3suslevel 1.0
+  # op3rls 1.0
+  # op3ratio 1.0
+  # op4curve 0.0
+  # op4atk 0.01
+  # op4dcy 0.01
+  # op4suslevel 1.0
+  # op4rls 1.0
+  # op4ratio 1.0
+  # m1_1 0.0
+  # m1_2 0.0
+  # m1_3 0.0
+  # m1_4 0.0
+  # m2_1 0.0
+  # m2_2 0.0
+  # m2_3 0.0
+  # m2_4 0.0
+  # m3_1 0.0
+  # m3_2 0.0
+  # m3_3 0.0
+  # m3_4 0.0
+  # m4_1 0.0
+  # m4_2 0.0
+  # m4_3 0.0
+  # m4_4 0.0
+  # op1coef 0.5
+  # op2coef 0.5
+  # op3coef 0.5
+  # op4coef 0.5
+  # op1 1.0
+  # op2 1.0
+  # op3 1.0
+  # op4 1.0
+  # op1pan 0.0
+  # op2pan 0.0
+  # op3pan 0.0
+  # op4pan 0.0
+  # hpfres 0.0
+  # lpfres 0.0
+  # amp 0.1
+
+d1 $ s "sawFiltKymaSd*4"
+  # amp 0.4
+  # cf 100.0
+  # wobble 3.0
+  # t_bd 0.0
+  # t_sd 0.0
+  # pw 0.4

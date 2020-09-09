@@ -1,0 +1,49 @@
+# lpg 0.0
+# lpga 0.001
+# lpgr 0.01
+# lpgg 1.0
+# lpgres 0.0
+
+# whammy 0.0
+# whammyshift 0.0
+# whammyfreq 0.0
+# whammydelay 0.0
+
+# schmidt 0.0
+
+# zpulse 0.0
+
+# enc 0.0
+
+# match 0.0
+# matchf 440.0
+# matchw 20.0
+
+# median 0.0
+
+# chorus2 0.0
+
+# chorus 0.0
+
+# digidest 0.0
+
+# djfilt 0.0
+
+# fshift2 0.0
+# fshiftphase2 0.0
+# fshiftnote2 0.0
+
+# amdist 0.0
+# amdistf 0.0
+
+# allpass 0.0
+
+# sparkle 0.0
+# sparklef 0.0
+
+# wall 0.0
+# walllev 0.5
+
+# comp 0.0
+# compa 0.0
+# compr 0.0

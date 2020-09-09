@@ -1,0 +1,207 @@
+d1 $ s "~ sdSd*4"
+  # amp 1.0
+  # ffreq 12000.0
+
+d1 $ s "snareSd*4"
+  # amp 0.1
+  # tu 1.0
+  # rq 0.5
+
+d1 $ s "snarenewSd*4"
+  # amp 0.8
+  # tu 1.0
+  # envpL1 110.0
+  # envpL2 109.0
+  # envpL3 29.0
+  # envpT1 0.01
+  # envpT2 0.2
+  # curvep "-4.0"
+  # envL1 0.5
+  # envL2 1.5
+  # envL3 0.5
+  # envL4 0.0
+  # envT1 0.005
+  # envT2 0.058
+  # envT3 0.261
+  # curve "-4.0"
+  # mixNoise 0.5
+  # hpFreq 80.0
+  # rqhpf 0.8
+  # freq1bpf 1527.0
+  # freq2bpf 1530.0
+  # rq1bpf 0.5
+  # rq2bpf 0.5
+  # rqlpf 0.8
+  # mixBpf 0.1
+
+d1 $ s "snare2Sd*4"
+  # amp 1.0
+
+d1 $ s "snare2newSd*4"
+  # amp 0.4
+  # tu 1.0
+  # envAtt 0.1
+  # envRel 0.1
+  # enfL1 1600.0
+  # enfL2 177.0
+  # enfL3 190.0
+  # enfT1 0.01
+  # enfT2 0.1
+
+d1 $ s "jungleSnareSd*4"
+  # amp 0.2
+  # envL1 1.0
+  # envL2 0.0
+  # envL3 1.0
+  # envL4 0.0
+  # envT1 0.0
+  # envT2 0.004
+  # envT3 0.05
+  # envCurve "-4.0"
+  # envfL1 1600.0
+  # envfL2 5600.0
+  # envfL3 800.0
+  # envfL4 250.0
+  # envfT1 0.001
+  # envfT2 0.001
+  # envfT3 0.001
+  # envfCurve "-4.0"
+  # envnAtt 0.01
+  # envnRel 1.0
+  # envnCurve "-4.0"
+  # noiseAmp 1.0
+  # tu 1.0
+  # kracter 10.0
+  # hpfRq 1.0
+  # lpfRq 0.5
+
+d1 $ s "t5snareSd*4"
+  # amp 0.3
+  # tu 1.0
+  # hpfRq 0.5
+  # lpfRq 0.5
+
+d1 $ s "snare808Sd*4"
+  # amp 0.1
+  # tu 1.0
+  # rq 0.5
+
+d1 $ s "snaremedSd*4"
+  # level 1.0
+  # noise 1.0
+  # dc 1.0
+  # env0L1 1.0
+  # env0L2 1.0
+  # env0L3 1.0
+  # env0L4 1.0
+  # atkEnv0 0.01
+  # decEnv0 0.2
+  # rlsEnv0 0.16
+  # fratio 1.5
+  # env1L1 150.0
+  # env1L2 30.0
+  # env1L3 90.0
+  # env1T1 0.31
+  # env1T2 0.2
+  # curve1 "-4.0"
+  # curve2 "-12.0"
+  # curve3 "-14.0"
+  # phase 0.19
+  # oamp 0.91
+  # owhich2 0.20
+  # ochoose 0.0
+
+d1 $ s "snareAwSd*4"
+  # amp 0.4
+  # sinfreq 180.0
+  # ffreq 2000.0
+
+d1 $ s "snareySd*4"
+  # amp 0.4
+
+d1 $ s "snarySd*4"
+  # amp 0.75
+  # curve "-5.0"
+
+d1 $ s "kraftySnareSd*4"
+  # amp 1.0
+  # rq 3.0
+  # dcy 0.2
+  # curve "-6.0"
+
+d1 $ s "neuroSnareSd*4"
+  # amp 0.1
+  # curve "-4.0"
+  # preamp 1.4
+  # clickatk 0.001
+  # clicksst 0.01
+  # clickrls 0.001
+  # clickamp 1.0
+  # hipass 300.0
+  # lopass 8000.0
+  # bodyatk 0.04
+  # bodyrls 0.2
+  # bodyamp 2.0
+  # rattlehold 0.01
+  # rattleatk 0.05
+  # rattlerls 0.2
+  # rattleamp 0.7
+  # rattlefreq 4000.0
+  # rq 0.5
+  # rattlepeak 3.0
+  # sweepatk 0.001
+  # sweeprls 0.02
+  # sweepamp 1.0
+  # sweepstart 3000.0
+  # sweepend 1500.0
+
+d1 $ s "snare909Sd*4"
+  # amp 0.5
+  # curve "-2.0"
+  # toneRel 0.075
+  # toneAmp 0.25
+  # noiseRel 0.4
+  # noiseAmp 0.2
+  # nyquist 2200.0
+  # lpFreq 7040.0
+  # hpFreq 523.0
+
+d1 $ s "snareElectroSd*4"
+  # amp 0.4
+  # curve "-4.0"
+  # popfreq 160.0
+  # sweep 0.01
+  # noisefreq 810.0
+  # rq 1.6
+  # blend 0.41
+
+d1 $ s "snareSteinSd*4"
+  # amp 1.0
+  # curve "-4.0"
+  # tonerls 0.075
+  # noiserls 0.2
+  # noisetop 7040.0
+  # noisebottom 523.0
+  # noiseamp 0.2
+  # tonelo 185.0
+  # tonehi 330.0
+  # toneamp 0.5
+
+
+  # blend 0.2
+
+d1 $ s "sosSnareSd*4"
+  # amp 0.8
+  # curve "-4.0"
+  # drumModeAmp 0.25
+  # timbreIndex 0.385
+  # modHarmonic 0.452
+  # snareAmp 40.0
+  # nyquist 1700.0
+  # snareRez 1000.0
+  # ffreq 2000.0
+  # rq 0.1
+  # bwr 1.0
+
+
+#cps 0.86

@@ -1,0 +1,130 @@
+d1 $ slow 16 $ s "nvirgoSd"
+  # amp 1.0
+  # atk 0.01
+  # rls 20.0
+  # feedBack 7.5
+  # sawFreq1 32.0
+  # sawFreq2 33.0
+  # sawAmp 0.2
+  # bpff 2.0
+  # bpffModSpeed 1.33
+  # bpffModAmt 4.0
+  # delayTime 2.0
+  # decayTime 40.0
+
+d1 $ slow 16 $ s "taltersSd"
+  # amp 0.4
+
+d1 $ slow 16 $ s "bozkurtSd"
+  # amp 0.4
+  # atk 0.01
+  # rls 10.0
+  # impFreq 0.25
+  # freq1 4.0
+  # freq2 6.0
+  # delTime 0.3
+  # decTime 50.0
+  # feedBack 1.0
+
+d1 $ slow 16 $ s "mcldSd"
+  # amp 0.4
+  # atk 0.01
+  # rls 10.0
+  # impFreq 10.0
+  # hpfFreq 440.0
+
+d1 $ slow 16 $ s "lirgoSd"
+  # amp 0.6
+  # atk 0.01
+  # rls 1.0
+
+d1 $ slow 16 $ s "nozkurtSd"
+  # amp 0.6
+  # atk 0.01
+  # rls 5.0
+  # sinFreq 55.0
+  # impMin 0.0002
+  # impMax 0.7
+  # impFreq 8.0
+
+d1 $ slow 16 $ s "tirgoSd"
+  # amp 0.6
+  # atk 0.01
+  # rls 5.0
+  # blipFreqMod 2.0
+  # blipHarmo 400.0
+  # brfFreq 150.0
+  # brfRq 2.0
+
+d1 $ slow 16 $ s "lmcdSd"
+  # amp 0.6
+  # atk 0.01
+  # rls 5.0
+  # trigDur 0.1
+  # lfCubTu 1.0
+  # hpfFreq 440.0
+
+d1 $ slow 16 $ s "salledutempsSd"
+  # amp 0.5
+  # atk 1.0
+  # rls 4.0
+  # tu 1.0
+  # dur 9.0
+
+d1 $ slow 16 $ s "salledutemps1Sd"
+  # amp 0.5
+  # atk 1.0
+  # rls 4.0
+  # tu 1.0
+  # myst 55.0
+  # dur 9.0
+
+d1 $ slow 16 $ s "cormanSd"
+  # amp 0.4
+  # atk 1.0
+  # rls 10.0
+  # tu 1.0
+  # dur 9.0
+
+d1 $ slow 16 $ s "corman1Sd"
+  # amp 0.4
+  # atk 1.0
+  # rls 10.0
+  # tu 1.0
+  # dur 9.0
+
+d1 $ slow 16 $ s "LiljedMystSd"
+  # amp 0.6
+  # atk 0.01
+  # rls 4.0
+  # pNoiseFreq 0.005
+  # hpfFreq 10.0
+  # modDur 9.0
+  # lfnFreq 0.05
+  # ringFreq 55.0
+  # ringDec 0.2
+  # revSize 70.0
+  # revTime 99.0
+
+d1 $ slow 16 $ s "LiljedRainSd"
+  # amp 0.6
+  # atk 0.01
+  # rls 2.0
+  # nFrqR 0.08
+  # lfnFrqR1 0.3
+  # lfnFrqR2 0.2
+  # lpfR 7000.0
+  # hpfR 400.0
+  # revSizeR 250.0
+  # revTimeR 100.0
+  # revDampR 0.25
+  # dryLevR 0.3
+  # modDurR 10.0
+  # lfnFrqT1 3.0
+  # lfnFrqT2 2.0
+  # hpfT 20.0
+  # revSizeT 270.0
+  # revTimeT 30.0
+  # revDampT 0.7
+  # dryLevT 0.5
+  # modDurT 30.0

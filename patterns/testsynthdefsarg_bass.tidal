@@ -1,0 +1,65 @@
+
+d1 $ s "bass1Sd*4"
+-- args pourris
+
+d1 $ s "bass3Sd*4"
+  # amp 0.7
+  # rls 0.1
+  # tu 1.54
+
+d1 $ s "bassSd*4"
+  # amp 0.4
+  # dis 0.5
+  # tu 1.0
+  # atf 80.0
+  # rls 1.0
+
+d1 $ s "sinBassSd*4"
+  # amp 0.5
+  # loopNode 0.0
+  # atk 0.2
+  # rls 4.0
+  # curve "-4.0"
+  # envLevel1 0.0
+  # envLevel2 40.0
+  # envLevel3 32.0
+  # envLevel4 50.0
+  # envLevel5 0.0
+  # envLevel6 60.0
+  # envTime1 0.5
+  # envTime2 0.3
+  # envTime3 0.25
+  # envTime4 1.0
+  # envTime5 0.5
+
+d1 $ s "moogbasstone2Sd*4"
+  # amp 0.4
+  # attackTime 0.2
+  # fenvamount 0.5
+
+d1 $ s "moogBassSd*4"
+  # amp 0.36
+  # lagamount 0.01
+  # atk 0.001
+  # dcy 0.3
+  # sst 0.9
+  # rls 0.2
+  # chorus 0.7
+
+d1 $ s "tweetAnaBassSd*4"
+  # amp 0.4
+  # atk 0.01
+  # rls 2.0
+  # ffreq 60.0
+  # tu 9.0
+  # compTresh 0.5
+
+d1 $ s "triangleWaveBellsSd*4"
+  # amp 0.4
+  # atk 0.01
+  # dcy 0.1
+  # sst 1.0
+  # rls 0.5
+  # lforate 10.0
+  # lfowidth 0.0
+  # rq 0.5

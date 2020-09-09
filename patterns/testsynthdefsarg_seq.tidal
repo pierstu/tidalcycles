@@ -1,0 +1,141 @@
+
+d1 $ slow 16 $ s "virgoSd"
+  # amp 0.2
+  # atk 0.01
+  # rls 1.0
+  # feedback 7.5
+  # freq1 32.0
+  # freq2 33.0
+  # delaytime 2.0
+  # decaytime 40.0
+
+d1 $ slow 16 $ s "scratchiSd"
+  # amp 1.0
+  # atk 0.01
+  # rls 2.0
+
+d1 $ slow 16 $ s "seqPureSd"
+  # amp 1.0
+  # atk 0.01
+  # rls 2.0
+
+d1 $ slow 16 $ s "seqModulSd"
+  # amp 1.0
+  # atk 0.01
+  # rls 2.0
+
+d1 $ slow 16 $ s "nathanielVirgoSd"
+  # amp 1.0
+  # feedBack 7.5
+  # sawFreq1 32.0
+  # sawFreq2 33.0
+  # sawAmp 0.2
+  # bpff 2.0
+  # bpffModSpeed 1.33
+  # bpffModAmt 4.0
+  # delayTime 2.0
+  # decayTime 40.0
+
+d1 $ slow 16 $ s "talters1Sd"
+  # amp 1.0
+  # atk 0.01
+  # rls 10.0
+  # feedBack 1.0
+  # envL1 0.0
+  # envL2 2.0
+  # envL3 4.0
+  # envL4 16.0
+  # envT1 0.01
+  # envT2 0.2
+  # envT3 0.12
+  # envCurve "-4.0"
+  # decDens 0.25
+  # decTimeFreq 0.1
+  # decamp 999.0
+
+d1 $ slow 16 $ s "padovanSd"
+  # amp 1.0
+  # tridDur 1.0
+  # roomSize 9.0
+
+d1 $ slow 16 $ s "LiljedDrumSeqSd"
+  # amp 1.0
+  # atk 0.0001
+  # rls 4.0
+  # sawFrq 4.0
+  # plcTrigRate 1.0
+  # plcDelay 1.0
+  # plcDecay 0.85714285714286
+  # pCntTrigRate 12.0
+  # pCntResetRate 5.0
+  # krpsLpfFrq 2500.0
+  # krpsHpfFrq 750.0
+  # kickLpfFrq 3000.0
+  # kickHpfFrq 40.0
+  # ringFrq 60.0
+  # ringDec 0.8
+
+d1 $ slow 16 $ s "LiljedKickSeqSd"
+  # amp 1.0
+  # atk 0.01
+  # rls 2.0
+  # trgChance1 0.5
+  # trgChance2 0.3
+  # trgChance3 0.9
+  # trgRate1 4.0
+  # trgRate2 12.0
+  # trgRate3 6.0
+  # rFreq1 45.0
+  # rFreq2 50.0
+  # rDec1 0.6
+  # rDec2 0.1
+  # rDec3 1.0
+  # rDec4 0.3
+  # rAmp1 9.0
+  # rAmp2 2.0
+  # rAmp3 3.0
+  # rAmp4 1.0
+
+d1 $ slow 16 $ s "LiljedMetalicSd"
+  # amp 0.4
+  # atk 0.01
+  # rls 2.0
+  # rTrgRate 1.0
+  # rFreq1 40.0
+  # rFreq2 200.0
+  # rFreq3 234.0
+  # rFreq4 889.0
+  # rDec 0.7
+  # revSize 5.0
+  # revTime 2.0
+  # revDamp 0.7
+
+d1 $ slow 16 $ s "LiljedMetalic1Sd"
+  # amp 0.4
+  # atk 0.01
+  # rls 2.0
+  # rTrgRate 1.0
+  # rFreq1 40.0
+  # rFreq2 200.0
+  # rFreq3 234.0
+  # rFreq4 889.0
+  # rFreq5 1320.0
+  # rFreq6 150.0
+  # rDec 0.7
+  # revSize 5.0
+  # revTime 2.0
+  # revDamp 0.7
+
+d1 $ slow 16 $ s "LiljedSoftRytmSd"
+  # amp 0.6
+  # atk 0.01
+  # rls 2.0
+  # impSigRate 8.0
+  # sawFreq 3.0
+  # impRevRate 4.0
+  # impRevPh 0.5
+  # blipFreq 4.9
+  # blipHarm 7.0
+  # blipAmp 0.4
+  # revSize 1.0
+  # revTime 1.0

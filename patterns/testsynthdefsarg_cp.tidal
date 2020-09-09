@@ -1,0 +1,77 @@
+
+d1 $ s "clapSd*4"
+-- pas d'args validables !!
+
+d1 $ s "clappingSd*4"
+  # amp 0.5
+  # atkSig 0.01
+  # rlsSig 1.0
+  # atkEnv 0.003
+  # rlsEnv 0.035
+  # noiseAmp 1.0
+  # filterfreq 120.0
+  # rq 0.1
+  # sinAmpStart 1.0
+  # sinAmpEnd 0.01
+  # sinAmpDur 4.0
+  # lpfFreq 400.0
+  # hpfFreq 120.0
+  # delMix 1.0
+  # delTimeL 0.03
+  # delDecL 0.031
+  # delTimeR 0.03016
+  # delDecR 0.06
+
+d1 $ s "clap_oto309Sd*4"
+  # amp 0.5
+
+d1 $ s "oneclap_thorSd*4"
+  # amp 0.1
+  # filterfreq 1000.0
+  # rq 0.1
+  # attackTime 0.003
+  # releaseTime 0.035
+
+d1 $ s "oneclapThorBrSd*4"
+  # amp 0.1
+  # atk 0.01
+  # rls 1.0
+  # atkT 0.003
+  # rlsT 0.00035
+  # tone 0.4
+  # noiseAmp 1.0
+  # rq 0.1
+  # echohz1 33.333
+  # echohz2 33.156
+  # curve "-4.0"
+  # dcy 0.06
+  # shelfFreq 7000.0
+  # rs 0.5
+  # db "-3.0"
+  # mix 0.23
+  # damp 0.5
+
+d1 $ s "clapySd*4"
+  # amp 0.5
+  # atk 0.02
+  # rls 0.3
+  # curve1 0.0
+  # curve2 "-4.0"
+  # hpf1 600.0
+  # hpf2 1000.0
+  # bpf1 2000.0
+  # bpf2 1200.0
+
+d1 $ s "clapGraySd*4"
+  # amp 0.5
+  # atk 0.001
+  # rls 0.25
+  # curve "-4.0"
+  # spreadRate 75.0
+  # minDelay 0.025
+  # maxDelay 0.05
+  # dcy 0.15
+  # rq 0.4
+  # blend 0.7
+  # reverb 0.1
+  # damp 1.0
