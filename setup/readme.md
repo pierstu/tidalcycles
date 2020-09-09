@@ -7,7 +7,7 @@ _update 09/20 : vars for ORBM synthdefs + bgold extra fx_
 
 # [startup.scd](https://raw.githubusercontent.com/pierstu/tidalcycles/master/setup/startup.scd)
 
-update 09 2020 
+__updated 09/20 __
 
 The SC conf I use, default config slightly modified: 
 - automatic SD startup, 
