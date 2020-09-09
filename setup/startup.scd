@@ -29,8 +29,11 @@ s.waitForBoot {
   // midi hardware output via soundcard, set it up according to your needs below, here it will be named midi //
 	~midiOut = MIDIOut.newByName("UMC404HD 192k", "UMC404HD 192k MIDI 1").latency_(s.latency);
 	~dirt.soundLibrary.addMIDI(\midi, ~midiOut);
+	// pd
+	~pdOut = MIDIOut.newByName("Pure Data", "Pure Data Midi-In 1").latency_(s.latency);
+	~dirt.soundLibrary.addMIDI(\pd, ~pdOut);
   // display more info about loaded samples in SC postwindow (bgold) https://github.com/bgold-cosmos/SuperDirt-extra/blob/master/Tidal5.scd //
-	~dirt.postSampleInfo(2, s);
+	// ~dirt.postSampleInfo(2, s);
 };
 
 s.latency = 0.69; // increase this if you get "late" messages
