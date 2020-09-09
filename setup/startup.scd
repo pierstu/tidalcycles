@@ -1,5 +1,6 @@
 /*
 //
+Updated 09/20
 This is an example startup file. You can load it from your startup file
 (to be found in Platform.userAppSupportDir +/+ "startup.scd")
 To be copied and pasted in your SC startup file (in SCIde, do File > Open startup file)
