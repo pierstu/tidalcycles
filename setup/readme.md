@@ -21,6 +21,7 @@ The SC conf I use, default config slightly modified:
 Can be copied and pasted through `File > Open Startup file` in SCIde.
 
 _update 10/19 : increase `memSize`_
+
 _update 09/20 : MIDI ports_
 
 # [try-load-extra-synths.scd](https://raw.githubusercontent.com/pierstu/tidalcycles/master/setup/try-load-extra-synths.scd)
