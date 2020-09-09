@@ -26,7 +26,7 @@ Synthdefs pour 2Mo
 
   `# xsdelay 0.5`
 
-etc, you might want to read [All effects and synths](https://tidalcycles.org/index.php/All_effects_and_synths) on Tidalcycles.org
+etc, you might want to read [All effects and synths](https://tidalcycles.org/index.php/All_effects_and_synths) on Tidalcycles.org. Same for [default-synths-extra](https://github.com/pierstu/tidalcycles/raw/master/library/default-synths-extra.scd) (and I should make room here in days).
 
 ## [bgold_fx](https://github.com/pierstu/tidalcycles/raw/master/library/bgold_fx.scd)
 
@@ -127,3 +127,7 @@ Only the ones I kept to spare mem.
   `# compa 0.0`
   
   `# compr 0.0`
+  
+  ## [2Mo_SynthDef_from_ORBM](https://github.com/pierstu/tidalcycles/raw/master/library/2Mo_SynthDef_from_ORBM.scd)
+  
+Preparing for an antimaterialist antiutopia, which is not a historical construction anymore. Definition files for its soundtrack when it finally arrives. That's our kitchen yet, sorry.
