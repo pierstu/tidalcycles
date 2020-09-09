@@ -5,7 +5,7 @@ You might mangle a bit in your Melpa files if using Emacs
 
 _update 09/20 : vars for ORBM synthdefs + bgold extra fx_
 
-# [statup.scd](https://raw.githubusercontent.com/pierstu/tidalcycles/master/setup/startup.scd)
+# [startup.scd](https://raw.githubusercontent.com/pierstu/tidalcycles/master/setup/startup.scd)
 
 update 09 2020 
 
