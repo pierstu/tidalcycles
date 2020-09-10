@@ -130,4 +130,4 @@ Only the ones I kept to spare mem.
   
 ## [2Mo_SynthDef_from_ORBM](https://github.com/pierstu/tidalcycles/raw/master/library/2Mo_SynthDef_from_ORBM.scd)
   
-Preparing for an antimaterialist antiutopia, which is not a historical construction anymore. Definition files for its soundtrack when it finally arrives. That's our kitchen yet, sorry.
+???
