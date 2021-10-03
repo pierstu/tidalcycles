@@ -1,0 +1,491 @@
+-- done 0702
+clutchIn 1 2$
+  stack [
+    listen 1 $
+    s "~ neuroSnareSd*<2 4>"
+    # curve "-1.0"
+    # preamp 0.4
+    # clickatk 0.1
+    # clicksst 0.21
+    # clickrls 0.321
+    -- # clickamp 1.0
+    # hipass 12300.0
+    # lopass 2000.0
+    # bodyatk "0.03 0.005 0.01"
+    # bodyrls "0.2 0.01 0.1 0.12"
+    # bodyamp 0.6
+    # rattlehold "0.1 0.05 0.01"
+    # rattleatk "{0.05 0.01 0.1}%4"
+    # rattlerls 0.3
+    # rattleamp 0.7
+    # rattlefreq 12000.0
+    # rq ((segment 6 $ slow 6 $ range "0.1 0.5" 0.8 saw) * (cat [square, tri, isaw] ))
+    # rattlepeak 21.0
+    # sweepatk 0.001
+    # sweeprls 0.01
+    # sweepamp 1.0
+    # sweepstart "1000.0 3400 12000"
+    # sweepend 12800.0
+  ,
+  listen 1 $
+  whenmod 19 15 (degradeBy "0.32 0.54") $
+  swingBy "0.375 1 0.714" "<0.4 0.6>" $
+  s "haty48Sd*8"
+  # amp 0.75
+  # atk 0.0
+  # rls 0.12
+  # curve "-4.0"
+  # envaL1 1
+  # envaL2 0.3
+  # envaL3 0.52
+  # envaL4 0.85
+  # envaL5 0.0
+  # envaT1 0.01
+  # envaT2 "<0.02 0.028>"
+  # envaT3 0.01
+  # envaT4 0.03
+  # envaCrv "3.54 8 -16"
+  # envpL1 0.0
+  # envpL2 14536.0
+  # envpL3 1279.0
+  # envpL4 0
+  # envpT1 0.0
+  # envpT2 0.33
+  # envpT3 0
+  # envpT4 "0.53 0.03 0.2"
+  # envpCrv "<-0.64 -0.9>"
+  # modFreq 1.0
+  # modAmt 1.4
+  # sinfAdd 1.7
+  # sinPhase 0.28
+  # sinpAdd 1.7
+  # rf1Freq 16938.8
+  # rf1Rq 0.26
+  # rf2Freq 765.0
+  # rf2Rq 0.62
+  # hpfFreq 3699.0
+  ,
+  listen 1 $
+  -- whenmod 14 10 (const $ s "~") $
+  sometimesBy 0.3
+  ((# squiz "0.5 0.25 <2 4>") . (ghost' 1.9)) $
+  s "{cymnew1Sd ~ <cymnew1Sd? [~ cymnew1Sd]>}%<8 ! 16>"
+  # envL1 "0.0 0.1 0.025 0"
+  # envL2 "{1.0 0.9 1.1}%2"
+  # envL3 "{0.4 0.3 0.5 1}%5"
+  # envL4 0.0
+  # envT1 "{0.01 0.02 0.01 0.04}%6"
+  # envT2 0.002
+  # envT3 0.33
+  # curve "-12"
+  # tu "5 {2.4 10 8.0}%4 [6 4 2]"
+  # amp 0.41
+  ,
+  listen 1  $
+  -- slow 7 $
+  s "lumbricostSd(<17/2 14>,16)"
+  # amp 0.27
+  # atk "{0.1 0.2 0.01 0.3 0.1}%2"
+  # attTim 0.001
+  # rlsTim "1.5 0.25 0.1 1"
+  -- # sustain "0.002 0.09"
+  # timescale 20.0
+  # widthmod 0.8
+  # width 0.9
+  # abc ((segment 17 $ slow 6 $ range 0.1 0.7 tri) * (segment 5 $ slow 2 $ range 0.5 1 tri))
+  # randLo 1170.0
+  # randHi 10000.0
+  # bprq 2.0
+  -- # feedBack (segment 16 $ slow 7 $ range 0.1 0.8 saw)
+  ,
+  listen 1 $
+  every 4 rev $
+  s "kikAwSusSd(3, <4 8>, <1 2>)"
+  # amp 0.42
+  # sustain "0.5 <0.7 0.6>"
+  # basefreq "50 "
+  # ratio "<7.0 3 9>"
+  # sweeptime "0.05 0.03"
+  # envL1 2.0
+  # envL2 1.2
+  # envL3 0.0
+  # envT1 "0.3 <0.8 0.5>"
+  # envT2 0.15
+  # hpf 45
+  ,
+  listen 1 $
+  rot "<1 2>" $
+  s "<kickParallaxSusSd [~@1.25 kickParallaxSusSd ~?0.42]> kickParallaxSusSd/6"
+  # sustain 0.8
+  # envAmpAtt 0.01
+  # envAmpRel "{0.3 0.5 0.4}%2"
+  # envFrqAtt 0.022
+  # envFrqRel 0.035
+  # kharm1 1.0
+  # kharm2 2.0
+  # kharm3 3.0
+  # kharm4 4.0
+  # kamp1 0.05
+  # kamp2 0.05
+  # kamp3 0.05
+  # kamp4 0.05
+  # kring1 1.0
+  # kring2 1.0
+  # kring3 1.0
+  # kring4 1.0
+  # frqScale 1.7
+  # decScale 0.8
+  # resoMix 0.75
+  # hpf 80
+  # amp 0.25
+    ]
+    -- |* gain 1
+    # cps 0.85
+    # wall 0
+    -- # walllev 1
+
+
+ -- done 0702
+
+
+clutchIn 1 3 $
+  stack [
+    listen 1 $
+    whenmod 10 7 (# gain (slow 3 isaw)) $
+    voice ("[4, 7, 12, 16] [[5, 9, 14, 17] [5, 9, 14, -17]] [7, 11, -16, 19] [9, 12, 16, 19] ~ [12, 16, 19]" * "-9? [9 3 6 12]/2" )#
+    s "superfm"
+    -- # gain 0.2
+    # amp 0.06
+    # sus "0.2 0.6"
+    # att ((slow 3 $ segment 6 $ range 0.01 0.095 saw) * "{0.2 0.6 0.15}%5")
+    # rel "{[0.2 0.6] [0.7 0.2]}%1.5"
+    # decay "{0.9 0.5 0.2 0.6}%6"
+    # pitch1 ((slow 7 $ segment 4 $ range 0.01 1 saw) * (segment 6 $ range 0.5 1 cosine ))
+    # n (((slow 15 $ segment 4 $ range 0.3 12 isaw) / 15) - 0.4)
+    -- # amp1 1 --(op1 as carrier with full volume)
+    # ratio2 ((slow 3 $ segment 5 $ range  "{1 0.3 0.6 1.3 2}%3"  "{2.3 2.5 4}%4"  saw) * "<0.5 0.75 1>") --(op2 frequency ratio)
+    # mod11 ((slow 9 $ segment 12 $ range "{0.1 0.25 0.45 0.01}%2.5"   "{0.5 1 1.5}%2" cosine  ) * (slow 6 $ segment 8 $ cosine )) --(op1 feedback)
+    # mod12 (slow 3.45 $ segment 7 $ range "{0.33 0.46 0.15}%2"   "{0.5 0.85 0.78}%1.75" tri ) --(op1 modulation amount by op2)
+    # detune1 (slow 8 $ segment 12 $ range "{0.1 0.07 0.085}%4"   "{0.2 0.15 0.1}%5"  saw) --(op1 detune)
+    # eglevel12 (slow 7 $ segment 13 $ range "{0.01 0.05 0.075}%2"   "{0.1 0.09 0.085}%5" tri ) --(op1 EG level2)
+    # egrate11 "0.01 0.02 0.03 0.1"
+    -- |/| voice "60 45"
+    # slide (segment 6 $ slow 10 $ range 0.1 2 saw)
+    # hpf 150
+    # lpf "6200 8200 700"
+    ,
+    listen 1 $
+    every 5 (slow 2) $
+    every 3 (listen 0 ) $
+    every 2 (off 2 ((chunk 4 (fast 2)).("<0.25 0.75>" <~))) $
+    foldEvery [5,17](off 2 ((slow 2).(0.33 <~).(# accelerate "-1"))) $
+    stack [
+      n ("[9 ~ 7] [7 ~ 7] [[2, 7] ~ 7] [7 ~ 7]" / "<5 10 7.5>") #
+      s "sossnare"
+      # decay ((segment 5 $ slow 4 $ range 0.5 2 saw) * (slow 7 $ segment 4 $ range 0.1 0.45 saw))
+      |*| n "<[10 5] {[2 3] [1 10]}%3>"
+      # freq "{<[200 300] 400 [250 450] 400>}%2.5"
+      # accelerate ((segment 7 $ slow 9 $ range 0 1 saw) * (segment 9 $ slow 7 $ range 0.1 1 cosine ))
+      # resonance (segment 8 $ slow 12 $ range 0.03 0.5 saw)
+      # pitch1 ((slow 17 $ segment 4 $ range 0.01 1 saw) * (segment 6 $ slow 3.5 $ range 0.5 2000 cosine ))
+      # semitone (segment 8 $ slow 15 $ range 0.3 0.65 saw)
+      ,
+      note "[-5 <~ 2 ~> -5] [~ <~ ~ 2 ~> -5] ~ [~ [<2 ~>, ~] -5]"  #
+      s "sostoms"
+      # voice ((slow 7 $ segment 4 $ range "-2" 2 saw) * (segment 6 $ slow 5 $ range "-0.15" 1 cosine ))
+      # freq ((segment 32 $ slow 16 $ range 0.1 2 saw) * (slow 13 $ segment 21 $ range 80 150 saw))
+      # sustain ((segment 9 $ slow 7 $ range 0.5 0.98 saw) * "{0.5 0.7 [0.1 0.8]}%3")
+    ]
+    # gain 0.95
+    -- # amp 0.37
+    ,
+    listen 1 $
+    whenmod 8 4 (listen 0) $
+    every 4 (# s "~") $
+    whenmod 16 14
+    (inside 4 (fast (0.5 * "{<[1 2] [2 1] 2>}%3"))) $
+    every 3 ((1/3) <~) $
+    sometimesBy 0.25
+    (slow "<0.3333333333 0.6666666666>") $
+    s "super808*4"
+    # n "{[0.2 2 1] [0.5 0 2.1]}%3"
+    # rate "{1 2 3 5}%10"
+    # gain 0.85
+    # hpf 70
+    # voice (segment 8 $ slow 12 $ range 0.3 0.5 saw)
+  ]
+  -- # cps 0.75
+  -- # wall 0.7
+  -- # walllev 0.7
+  |* gain 0.97
+   -- # amp 0.25
+   -- # cps (slow 36 $ range 0.6 0.85 $ slow 2 square)
+   # cps 0.85
+
+
+xfadeIn 1 12  silence
+
+--fin repet
+-- done 0702
+clutchIn 1 2  $
+  every' 7 3 (spreadChoose ($)[scramble 2, iter "1 2", linger "<0.5 0.75 0.25>", off 4 (# s "~"), (0.25 <~)]) $
+  stack [
+    listen 1 $
+    weaveWith 1
+      (
+        wedge (8/2)
+        ("kick2newSusSd(<9 13 15>,16,20)"
+          # envfT1 ((segment 8 $ slow 6 $ range 0.05 0.02 saw) * (segment 7 $ slow 2 $ cosine))
+          # envfT2 ((segment 5 $ slow 8 $ range 0.02 0.1 saw) * (segment 12 $ slow 10 $ range 0.1 0.9 isaw))
+          # bpeqf1 ("13081.0 8082" * (segment 8 $ slow 6 $ range 0.75 1 saw))
+          # bpeqf2 ("<800 1800 400 800>" * (fast 4 $ segment 9 $ range 0.5 1 saw))
+          -- # amp "0.3 0.4 "
+          # hpf "40 50"
+        )
+        (
+          every 5 (ghost) $
+          "kick2newSusSd(<14 25/2 17/2 11/2>,16,<5 15>)"
+          -- # amp "0.4 0.3"
+          # hpf ((segment 10 $ slow 7 $ range 50 60 saw) * (segment 12 $ slow 12 $ range 0.5 0.9 tri))
+          # enc (slow 4 $ segment 8 $ range 0 0.1 isaw)
+          )
+      )
+      [
+        -- (# envfT1 "<0.05 0.007 0.02 0.03 0.06>"),
+        (# rls "1.0 0.7 0.3 0.2 0.3 0.3 1.1"),
+        (# tu "<1.33 1.20>"),
+        (# atk "0.005 0.1 0.02 0.05 0.1 0.001 0.1"),
+        (# bpeqrq1 (slow 8 $ segment 12 $ range 0.5 0.71 saw)),
+        (# bpeqamp1 "-54.0"),
+        (# bpeqrq2 10.0),
+        (# bpeqamp2 "-12.0"),
+        (# hpff 81.0)
+      ]
+      ,
+      whenmod 8 5 (spreadChoose ($)[bite 1 "1 2 3 4", chew 1 "2 3 4 1", off 4 (0.25 <~), inside 4 (off 0.25 (# s "~"))]) $
+      s "~ sosSnareSusSd(<4 [4 2]> <2 4>,8) ~ ~"
+      # atk 0.005
+      # rls 0.1
+      # curve "-4.0"
+      # drumModeAmp "[0.25 0.5] 0.7"
+      # timbreIndex (segment 16 $ slow 5 $ range "<0.385 0.6>" 0.75 tri)
+      # modHarmonic ((segment 10 $ slow 6 $ range 0.352 0.55 saw) * (slow 6 $ range 0.4 1 cosine ))
+      # snareAmp 40.0
+      # nyquist (segment 16 $ slow 6 $ range 2500 10000 tri)
+      # snareRez 8000.0
+      # ffreq ("12000 8000 2000 3000" * (segment 6 $ slow 5 $ range 0.75 1.25 saw))
+      # rq "0.3 0.1 0.5"
+      # bwr "0.1 [0.2 0.01] 0.1"
+      # enc 0
+  ]
+  # cps 0.68
+  |* gain 0.98
+
+
+
+
+
+xfadeIn 1 3 $ silence
+
+
+-- done 0702
+  clutchIn 1 2 $
+  every' 7 3 (spreadChoose ($)[scramble 2, iter "1 2", linger "<0.5 0.75 0.25>", off 4 (# s "~"), (0.25 <~)]) $
+    stack [
+      listen 1 $
+        interlace(
+          whenmod 10 7 ((slowspread ($)[scramble "<[0 1] [2 0]>", bite 2 "<[2 1] 0 [1 2? 0]?>", off "<0.25 1 4>" (3.125e-2 <~) , inside 4 (# s "~") ]).(slow "<1 2>")) $
+          foldEvery [3,7] (|* click (segment 12 $ fast 3 $ range 0.5 0.25 isaw)) $
+          s "technokickSusSd*[1 0 1 1 0 1 0 0]"
+          -- # amp 0.3
+          # atk "0.01 0.05 0.02"
+          # rls 0.6
+          # dcy 0.3
+          # click (segment 24 $ slow 5 $ range 0.0013 0.8 saw)
+          # damp (segment 19 $ slow 7 $ range 0.31 0.4 tri)
+        )
+        (
+          foldEvery [3,7] (inside 4 (+| rls "0.1 0.06 0.6 0.2")) $
+          whenmod 15 10 ((slow "<2 3 2 4>").(outside "<0.25 2 0.5>" (bite 1 "<1 2> <2 0 1>")).(every 2 (linger 0.25))) $
+          foldEvery [9,13](|*| click (slowspread ($)([fast 1.25,slow 1.5]) $ range 0.25 1.15 saw)) $
+          s "technokickSusSd(<9 12 10 6>,16,10)"
+          -- # amp 0.3
+          # rls 0.2
+          # dcy 0.1
+          # click (slow 3 $ range 0.008 0.1 tri)
+          # damp (slow 12 $ range 0.23 0.6 saw)
+        )
+        # shape 0.1
+        # amp 0.6
+        # hpf 60
+        ,
+      listen 1 $
+      whenmod 15 13 (bite 2 "0 1 2 3 1") $
+      weaveWith 16 (
+        whenmod 15 11 (# enc (segment 24 $ slow 16 $ range 0.01 0.28 tri)) $
+        whenmod 12 5 (* a (chooseBy "3 4 6 1"[0.2, 0.3, 0.4, 0.5])) $
+        whenmod 15 9 (slowspread ($)[iter "<[0 1] 2>", (# zpulse (slow 3 $ range 0 0.6 tri))]) $
+        whenmod 16 13 (# allpass (slow 7 $ range 8000 10150 saw )) $
+        whenmod 12 7 (* freq ((slow 3 $ sine) * "0.32 0.61 0.5 0.93")) $
+        slow 2 $ s "noise2SusSd(<10 12 15>,32)"
+        # note "10 12 3 4 8 10"
+        # amp 0.4
+        # atk ((segment 24 $ slow 3 $ saw) * "0.6 0.1 [[0.06 0.2] 0.6 0.04]")
+        # sustain ((segment 12 $ slow 5 $ tri) / 1.5 + "0.1 0.05 0.3 [0.7 0.1]")
+        # dcy "[0.1 0.2] 0.06 0.07"
+        # rls (segment 16 $  slow 7 $ range 0.1 0.9 saw)
+        # a "-1 {2 0.6}%3 -4.0"
+        -- # centerFreq ((slow 4 $ range 12000 7000 isaw) * (slow 2 $ cosine ))
+        -- (* modamp ((slow 5 $ range 0.5 1.5 cosine) * (slow 4 $ saw))) $
+        -- # modamp (slow 2 $ range 10 25 tri)
+        -- # echohz1 (slow 7 $ range 10 55 tri)
+        -- # rq ((slow 11 $ range 0 0.8 saw) * (slow 7 $ sine))
+        # freq (segment 12 $ slow 5 $ range 110 420 saw)
+      )
+      [
+        ((# whammy (segment 12 $ slow 8 $ range 0 0.7 saw)) . (# whammyshift "<-0.1 0.2 0.3 0.7 1 0.6 -0.9>"). (# whammyfreq (slow 8 $ range 2 24 tri)).(# whammydelay (fast 3 $ range 0.001 0.07 saw))),
+        ((# lpg (slow 4 $ range 0 0.7 tri)).(# lpga (slow 3 $ range 0.001 0.004 saw)).(# lpgres (slow 10 $ range 0 1 tri))),
+        layer [
+        every 7 ((slow 2).(# enc (segment 12 $ fast 3 $ range 0 0.3 tri))) ,
+          every 9 (inside 2 (linger "<0.25 0.5>")),
+          every 13 (inside 4 (splice 2 "1 2")),
+          -- rot "<1 2>",
+          (# amdist (segment 12 $ slow 5 $ range 0.01 0.9 saw)).(# amdistf (slow 14 $ range 20 130 tri)),
+          every 2 ((# fshift (fast 2 $ range 0 0.7 tri)).(# fshiftnote (fast 3 $ range "-0.51" 2.5 saw)).(# fshiftphase (fast 5 $ range "-0.7" 0.2 tri))),
+          every 3 ((# sparkle (fast 3 $ range "-0.5" 0.7 tri)).(# sparklef (fast 7 $ range 0.01 0.3 saw))),
+          every 4 (0.25 <~),
+          -- (/ freq (slow 3 $ range 1.5 3 tri)),
+          (+| atk (slow 2 $ range 0.01 0.002 isaw)) ,
+          (whenmod 16 9 (spreadChoose ($) [chunk 4 (# djfilt (fast 3 $ range "-1" 1 saw)), inside 3 (# median (slow 3 $ range "-0.4" 0.2 tri)),(# s "~")]))
+        ]
+      ]
+      ,
+      listen 1 $
+      whenmod 24 22 (chew "1 2 1" "0 1 0 1 0") $
+      slow 2 $
+      foldEvery [4,9] (ghost) $
+     weave 6
+       (pitch1 (segment 12 $ slow 4 $ range "-0.5" 2 square ))
+       [
+          sometimesBy 0.0125 (0.25 <~) $
+          s "super808(<22 20 24 18>,32,<18 28>)"
+          # n ((segment 16 $ slow 4 $ range 0 1 tri) * ((segment 4 $ slow 2 $ range 0.25 1 cosine ) ))
+          # voice (segment 12 $ slow 2 $ range 0.1 0.8 isaw)
+         ,
+         whenmod 8 6 (# voice (segment 4 $ slow 2 $ range 0.1 0.9 isaw) ) $
+         foldEvery [5,11](0.25 ~>) $
+          s "super808(<14 12 10>,16)"
+          # n "[0 0.1] [0.05 0.25]"
+       ]
+     # voice (slow 3 $ range 0.1 0.9 tri)
+     # pitch1 ((slow 3 $ range 0.2 1.5 cosine) * sine)
+     # amp 0.05
+     ,
+     listen 1 $
+     whenmod 7 5 (slowspread ($)[(fast "1.5? 0.5 {2}%4").(# accelerate "-0.25"), density "3/2 1 2/3", (# s "~")]) $
+     s "superhat(<14 12 15>,16,<22 12 28>)"
+     # pitch1 (slow 3 $ range 0.2 0.71 saw)
+     # sustain (slow 2 $ "0.01 {0.07}%3 {[0.02 0.05] 0.1?}%4")
+     # n "0 1 0.5 0.1 0.9"
+     # accelerate (slow 2 $ range "-0.25" 1 tri)
+     # amp 0.2
+   ]
+   |* gain 0.92
+   -- # wall 0.6
+   -- # walllev "0.1 -0.1"
+   # cps 0.68
+
+
+   clutchIn 1 2 $
+  every 3 (slice 3 "1 2 [3 4] <[1 2] [2 3] [3 4]>") $
+  stack
+      [
+        foldEvery [4,7] (slow 2).(spreadChoose ($) [bite 3 "1 2 <2 4>", bite 2 "2 4 1", off 0.125 ((# xsdelay (fast 4 $ range 0.05 0.75 sine)).(# tsdelay (fast 7 $ range 0.8 0.1 isaw)).(+| voice "<1 2 3 4>")), ((# squiz (fast 16 $ range 1 0.5 isaw)).(# pitchratio (fast 8 $ range "-0.5" 1 tri)))]) $
+        -- sometimesBy 0.0875 (# zpulse (slow 4 $ range 0 1 saw)) $
+        interlace (
+        listen 1 $
+        whenmod 18 10 (inside 2 (every 2 (slow 2)).(slow 2).(off "<2 3 4>"(slice 3 "2 3 4"))) $
+        fix ((* gain 0.75).(/| freq "<110 [55 165] 165 230?>"))(s "sostoms") $
+        s "<soshats sostoms>(<7 10 5>,16,<10 25>)"
+        # pitch1 ((fast 7 $ range 0.1 0.7 saw) * "[2 1] 3 1 2 1")
+        # sus "1 0.6 0.8 0.3"
+        # freq "20 200 300 100"
+        # decay 1
+        # rel 1
+        # attack "<0 0.01>"
+        # voice "<0 0.01 2 1>"
+        # lpg (fast 4 $ range 0 1 tri)
+        # lpga (slow 2 $ range 0.001 0.1 cosine)
+        # lpgr "0.01 0.05 0.1"
+        # lpgg 1.0
+        # lpgres (slow 12 $ range 0.0 0.7 saw)
+        )
+        (
+        every 2 (spread ($)[stripe 2, slow 2, (# s "~")]) $
+        -- whenmod 17 12 (slow 2).(every 2 (spreadChoose ($) [density (1/2), density (2/3), slow "<2 3>"])).(spreadChoose ($) [bite 3 "<[3 2 1] 2 3> 1", chew 2 "<[2 3 4] 1> 2"]) $
+        s "sossnare(<[5 7] [8 6]>,8,10)"
+        # pitch1 (slow 4 $ range 50 250 (square * rand) )
+        # semitone "-0.1 -0.25"
+        # voice ((fast 3 $ range "-1" 1 sine) * "<[0.75 1] 1.5 2 [2 3]>")
+        # amp 0.1
+        )
+        # shape 0.6
+        ,
+        listen 1 $
+        -- every 5 ((0.25 <~).(every 2 (zoom (0.75,1)).(iter 2))) $
+        -- whenmod 12 8 (stutWith 4 (0.1666)((# cut 1).(# match (fast 3 $ range 0.2 0.4 cosine)). (# matchf "220 110 550 660").(# matchw (fast 4 $ range 0 1 saw)))) $
+        -- whenmod 7 4 (# enc (slow 3 $ range 0 0.8 sine)) $
+        -- foldEvery [7,13] ((splice 2 "4 3 2 1").(every 2 (gap "16 32 64"))) $
+        slow 2 $
+        s "~ henonSusSd(<6 5 3 7>,<4*<2 3> 8 16>)"
+        -- # triode "0.13 0 0.1?"
+        # sustain 1.2
+        # freq "110 60 90 120"
+        # digidest "0 0.1 0.2?"
+        # amp 0.1
+        # a (fast 4 $ range 0.5 1.3 cosine )
+        # b (slow 2 $ range 0.1 0.7 tri)
+        # x0 (slow 6 $ range 0.30501993062401 0.7 saw)
+        # x1 (slow 7 $ range 0.10938865431933 0.3 cosine )
+        # atk 0.6
+        # sst 1.0
+        # rls 1.4
+        # ts (slow 16 $ range 0.05 1.1 tri)
+        -- # amp 0.1
+        ,
+        listen 0 $
+        slow 2 $
+        -- every 3 (slice 4 "0 1 2 3 4") $
+        s "tweetKickIntSusSd(<9 10 25/2>,16)"
+        # amp 0.3
+        # sustain 1.05
+        # attack 0.001
+        # release 0.8
+        # atk 0.01
+        # rls 0.6
+        # impfreq 0.7
+        # phRate 20.2
+        # lagFreq 100.01
+        # inAmt 10
+        # coef1 1
+        # coef2 0.4
+        # hpf 50
+        -- # impfreq (slow 5 $ range 0.5 2.0 saw)
+        -- # phRate (slow 8 $ range 64.0 100 cosine )
+        -- # lagFreq (slow 10 $ range 0.1 2.0 isaw)
+        -- # inAmt (slow 12 $ range 10 30.0 tri)
+        -- # coef1 (slow 14 $ range 0.1 0.9 tri)
+        -- # coef2 (slow 15 $ range 0.25 0.99 sine )
+        ,
+        every 3 (density "[<1 0.75><0.5 0.25>]") $
+        whenmod 10 7 (listen 0) $
+        listen 1 $
+        s "hat909SusSd(<24 16 6>,<32 16>,<3 2>)"
+        # envL3 "0.8 1.1 1"
+        # envT3 "0.1 0.21 0.41"
+        # envL2 "1.2 1.5 0.8"
+        # envT2 "0.1 0.01 0.2"
+        # amp 0.27
+      ]
+      # cps 0.85
+      |* gain 1.12

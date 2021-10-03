@@ -1,0 +1,293 @@
+-- done 0702
+ d1 $
+   stack [
+    listen 1 $
+    whenmod 7 5 (gap 11 . slow 2) $
+    s "resSusSd(5,11,<2 3>)"
+    # rls "<0.1 0.5> 0.4"
+    # freqSin "9502 6400"
+    # ampSin "0.8 <1 0.8> "
+    # freqSaw "9122 9600 4800"
+    # ampSaw "<0.5 0.6 1> 0.8"
+    # oscMix " 0.1 0.8"
+    # freqClc "73 102 120 60"
+    # harmClc "20 40 36 300"
+    # ampClc "0.015 0.05 0.01"
+    # maxL "0.01"
+    # t1Clc "0.001 0.002"
+    # t2Clc "0.03 0.03"
+    # t3Clc "0.04 0.01 0.05"
+    # gFreq "180 1200 50"
+    # damp "0 0.63 0 0.1"
+    # fric "<0.001 0.021> 0.002 0.005"
+    # hpf 4500
+    # amp 0.25
+    # pan (slow 9 $ range 0.1 0.9 tri)
+    # sustain ("1.4 0.7 1.2" * 0.7)
+    ,
+    slow 2 $
+    listen 1 $
+    slow 3 $
+    s "~ clapySusSd(<9 5 7 3>,11 22,3) ~"
+    # curve1 "0.2 0.6 0.1"
+    # rls "0.4 0.6 0.3"
+    # bpf1 "3600 4800"
+    # bpf2 "1800 6400 4000"
+    # sustain "{1.3 [0.4 0.9]}*5"
+    # amp 0.4
+    ,
+    listen 0 $
+    s "fabHi1SusSd(<0 2 6> 5,11/2)"
+    # wamp "0.5 0.6 0.1"
+    # envNatk "0.001 0.1 0.3"
+    # envNrls "0.2 0.6"
+    # wbpfFreq "2800 6000"
+    # wbpfRq "1 0.8"
+    # lfo1Frq "32 164"
+    # lfo1Amnt "0 0.2 0.5"
+    # lfo2Frq "64 48"
+    # lfo2Amnt "0.1 0.4 0.5"
+    # sinFrq1 "2120 1860"
+    # sinFrq2 "12423 96000"
+    # sinPh1 "0 0.5 0.025"
+    # sinPh2 "0.02 0.2 0.7"
+    # sinLev1 "0.7"
+    # sinLev2 "1.2"
+    # envSatk "0.01 0.002"
+    # envSrls "0.2 0.6 1"
+    # mix "0.5 1 0"
+    # envL1 "0 0.02 0.3"
+    # envL2 "1 0.06"
+    # envL3 "0.75"
+    # envL4 "0.2 0.6"
+    # envT1 "0.1 0.01 0.25"
+    # envT2 "0.02 0.1"
+    # envT3 "0.2 0.02"
+    # sustain ("1.2 0.6" * 0.5)
+    # amp 0.2
+    ,
+    listen 0 $
+    -- amp 0.9 #
+    seqPLoop [
+      (0,12, s "kickParallaxSusSd(<5 7>,11,2)"
+      # hpf "190 360 220"
+      # envAmpAtt "0.01 0.002 0.04"
+      # envAmpRel ("0.03 0.1 0.08 0.14" * "4 3")
+      # envFrqAtt "0.01 0.003 0.1"
+      # envFrqRel "0.02 0.1"
+      # freq "155 90"
+      # kharm1 "1 0.1 0.4 2"
+      # kharm2 "2 1 0.6"
+      # kharm3 "3"
+      # kharm4 "4"
+      # kamp1 "0.05 0.14"
+      # kamp2 "0.08 0.3"
+      # kamp3 "0.01 0.2"
+      # kamp4 "0.05 0.2 0.01"
+      # kring1 "1 1.5 1.7"
+      # kring2 "1 1.9"
+      # kring3 "1 3"
+      # kring4 "1"
+      # frqScale "1 1.4 1.8 0.5"
+      # sustain "1 1.4 1.7"
+      # resoMix "0.5 0.7"
+      # amp 0.08)
+      ,
+      (13,27,
+        foldEvery [5,11] (listen 0) $
+        s "kickParallaxSusSd(<5 7>,11,2)"
+      # hpf "360 60 120"
+      # envAmpAtt "0.01 0.1 0.4"
+      # envAmpRel ("0.3 0.8 0.4" * "1 0.76 1")
+      # envFrqAtt "0.2 0.03 0.3"
+      # envFrqRel "0.02 0.1"
+      # freq "55 180"
+      # kharm1 "1 0.1 0.4 1.2"
+      # kharm2 "0.2 0.1 0.2 0.8"
+      # kharm3 "1 0.3 2 2 0.3"
+      # kharm4 "0.4 1.3 0.4"
+      # kamp1 "0.05 0.14"
+      # kamp2 "0.2 0.05 0.1"
+      # kamp3 "0.2 0.05 0.1 0.1"
+      # kamp4 "0.05 0.3 0.04"
+      # kring1 "1 1.5 1.7"
+      # kring2 "2.1 0.9 0.2 1"
+      # kring3 "1 0.3 0.1"
+      # kring4 "1 0.5 "
+      # frqScale "1 1.4 1.8 0.5 3"
+      # decScale "1 1.4 0.7"
+      # sustain "1.5 0.7"
+      # amp 0.09)
+    ]
+    # hpf 90
+    ,
+    listen 1 $
+    every 5 ((gap "<11 11/2> 2").(slow 2)) $
+    every 3 (chop 11) $
+    s "cowSusSd(<1 2 3>,7)"
+    # fshift "0.1 0.5 1"
+    # fshiftnote "1 0.6 3"
+    # fshiftphase "1 2 3"
+    # tu "8 7.2 6 0.84"
+    # atk "0.2 0.1"
+    # amp 0.09
+    # sustain "1.3"
+    # release 0.1
+    -- # fadeTime "0.1 0.3 0.8"
+    -- # rel "0.4 0.3"
+    ,
+    listen 0 $
+    every 5 (listen 0) $
+    every 3 (slow 2) $
+    foldEvery [3,5] ((1/11) <~) $
+    s "snare2SusSd(3,11,<2 4>)"
+    # sustain "1.3"
+    # comp 1
+    # compa 0.001
+    # compr 1
+    # wall 1
+    # walllev 1
+    # amp 0.25
+    # hpf 60
+    # release 0.9
+   ]
+   |* gain 1.0987
+   # cps 0.8
+
+
+d1 $
+  stack [
+  listen 1 $
+  every 5 ((2/11) <~) $
+  whenmod 8 5 (slow 2 . listen 0) $
+  rot "0 0 1 2" $
+  s "~ rimSusSd(<3 5 4 8>,11,5)"
+  # sustain "0.5 0.8 1"
+  # tu "[0.71 0.2 0.6 0.1 1.5] [0.3 0.5 0.4 0.2 0.9]"
+  # envLev1 "0.5 0.19 0.58 0.42 "
+  # envLev2 "0.1 0 0.15"
+  # envLev3 "1 0.28 0"
+  # envLev4 "0.2 0  0.18 0"
+  # atk "0 0.01 0.2"
+  # dcy "0.004 0.1"
+  # rls "0.1 0.2 0.08"
+  # amp 0.3
+  ,
+  listen 1 $
+  slow 2 $
+  every 4 (listen 0) $
+  s "~ oneclap_thorSusSd(<7 3 2 0>,11,5)"
+  # amp "0.2 0.15"
+  # attackTime "0.05 0.04 0.1"
+  # filterfreq "120 600 180"
+  # releaseTime "0.5 0.7 0.8 0.2"
+  # sustain "<1 1.2 0.8>"
+  # rq "[0.71 0.65 0.82 0.51]/2"
+  ,
+  every 2 (listen 0 ) $
+  listen 1 $
+  s "rissetBellSusSd(<1 2 3 6>,11,3)"
+  # sustain "0.5 1 0.4 0.7"
+  # pan "0 0.1 0.5 -1 0.8"
+  # atk "0.01 <0.1 0.7> 0.2 0.05"
+  # rls "1 0.2 0.4 1.2 0.7 "
+  # freq "1024 2048 <6075 360 720>/5"
+  # amp 0.12
+  ,
+  listen 1 $
+  -- whenmod 8 5 (listen 0) $
+  every 3 (density  1.5) $
+  s "plouxSusSd(<1 3 5>,22,<3 4 1>)"
+  # sustain "1 2.5 1.2 3 1.7"
+  # atk "0.05 0.001 0.002 0.05"
+  # sst "1 1.5 1.25"
+  # dcy "0.7 1.2 0.6"
+  # rls "0.5 0.21 0.18 0.5"
+  # fbPost "0.5 0.34 1.2"
+  # feedBack "0.5 1 0.82"
+  # dustfreq "21.5 42 20.5"
+  # frq "300 500 150 6900 500"
+  # fmfreq "150 200 600 100"
+  # folAtt "0.1 0.2 0.05"
+  # folDec "0.3 0.2 0.6 0.1"
+  # a "1 1.5 2"
+  # b "5 6 3 4"
+  # xi "0.5 0.1 0.6 0.8 1.2"
+  # yi " 1.5 3 0.5"
+  # sinMix (slow 22 $ range 0.3 1 $ tri)
+  # amp 0.3
+  ,
+  listen 1 $
+  every 3 (listen 0) $
+  foldEvery [5, 13] (slow 2 . chop 12 . (every 2 ((3/11) <~))) $
+  s "hat909SusSd(4,11,2)"
+  # sustain "1.4 2.2"
+  # envL1 "0 0.1 0.05 0"
+  # envL2 "0.98 0.5 1 0.05"
+  # envL3 "0.12 0.07 0.5"
+  # envL4 "0.9 1 0.5"
+  # envT1 "0.2 0.05 0.4 0.15"
+  # envT2 "0.01 0.1 0.4 0.08"
+  # envT3 "0.32 0.8 0.1"
+  # envCurve "[-4 -2 -0.5 -8]/2"
+  # freq "230 120 560 7200"
+  # hpf "6500 8000"
+  # amp 0.15
+  ,
+  listen 1 $
+  s "rim808SusSd(<3 8 1 4 2>,11,<5 7>)"
+  # sustain "0.5 0.31"
+  # tu ("0.8 0.6 0.5 0.7 " / (slow 3 $ range 1.25 4 $ saw) )
+  # tuf "0.1 1 [2 0.3 4 0.5]"
+  # atk "0.001 0.005 0.1"
+  # rls "1 1.2 0.6 0.4 1"
+  # amp 0.1
+  # hpf 340
+  ,
+  slow "<2 <1 3> 2>" $
+  listen 1 $
+  foldEvery [4,6] (slow 2 . listen 0) $
+  s "feedbackOscSusSd(<13 7 16>,22,<5 1 3>)"
+  # atk "<0.01 0.05> 0.01 0.005"
+  # rls "1 0.8 0.7 1 "
+  # mFrq "[ 313  <512 760 120>? ]"
+  # mFB " 1 0.8 1.6"
+  # frq " [100 1000 100] 100"
+  # fB " [1 0.8 1.2] 1"
+  # width " [0 0.2 0.5] 1 0"
+  # mul " [500 5000] 1500 500"
+  # ffreq "[1000 10 10000] 8000"
+  # rq "[1 0.6 0.1] [1 1.2 1]"
+  # sustain "[<0.31 0.5 0.7>*2 0.2 0.5 0.6 0.8]/3"
+  # amp 0.06
+  ,
+  listen 0 $
+  whenmod 8 3 (rot "<1 2 3 4> 1 2 3") $
+  every 7 (listen 0 . slow 2) $
+  slow "2 2 [<3 4> 0.5]" $
+  s "kick2newSusSd(14,22,<7 12>)"
+  # sustain 1
+  # amp 0.8
+  # freq 120
+  # tu "1.2 1.5"
+  # envfT1 "0.008 0.005 0.002 0.01"
+  # envfT2 "0.1 [0.01 0.2 0.05] 0.1"
+  # bpeqf1 "8000"
+  # bpeqrq1 "1 2 3 1"
+  # bpeqf2 "800 1800 3800 800"
+  # rls "1.2 1"
+  # hpf 70
+  # shape 0.4
+  ]
+  # cps 0.3
+  |* gain 1.01
+
+-- break
+let
+ freqSaw = pF "freqSaw"
+ freqPls = pF "freqPls"
+ wPls = pF "wPls"
+ rlpfRq = pF "rlpfRq"
+ lfnFreq = pF "lfnFrq"
+ lfnMul = pF "lfnMul"
+ lfnAdd = pF "lfnAdd"

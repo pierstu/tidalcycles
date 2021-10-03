@@ -1,0 +1,463 @@
+-- en 9
+clutchIn 1 1 $ stack [
+  listen 1 $
+  whenmod 17 12 ((# fshift2 (fast 3 $ range 0 1 tri)).(# fshiftphase2 (fast 5 $ range 0 0.6 cosine )).(# fshiftnote2 (fast 6 $ range "-0.5" 0.3 sine )).(+ coarse "1 2 3")) $
+  seqPLoop [
+  (0,14, cat [
+    cat [s "IkedaBassSusSd(<1 3 2>,3) IkedaBassSusSd(<2 3>,3)", s "IkedaBassSusSd(<1 2 3>,6) IkedaBassSusSd(<4 5 2>,6)"]
+    # decay 0.6
+    # sustain 1.2
+    # release 0.7
+    # attack "0.01 <0.0001?0.14 0.01> 0.01 0.0001?0.2 0.01"
+    # amp 1.2
+    # envL1 0.2
+    # envL2 0.5
+    # envL3 0.4
+    # envL4 0.0
+    # envT1 0.0
+    # envT2 0.2
+    # envT3 0.01
+    # envCurve "-5.0"
+    # sweep1 "52.8 55.9"
+    # sweep2 "<559 139.5 528> <279.5 139.5>"
+    # vol1 2.0
+    # vol2 0.05
+    ,
+    cat [s "IkedaBreathSusSd(<3 5 1>,6)", s "IkedaBreathSusSd(<4 2 5>,6,<1 2 3>)"]
+    # freq "52.8 55.9 52.8"
+    # amp 1.0
+    # dcy 0.1
+    # attack 0.0001
+    # sst 1
+    # rls 0.3
+    # curve "-5.0"
+    # iphase 0.0
+    ])
+    ,
+  (15,27, cat [
+    cat [s "IkedaBassSusSd(<1 3 2>,3) IkedaBassSusSd(<2 3>,3)", s "IkedaBassSusSd(<1 2 3>,6) IkedaBassSusSd(<4 5 2>,6)"]
+    # dcy 0.6
+    # sst 1.2
+    # rls 0.7
+    # atk "0.01 <0.0001?0.14 0.01> 0.01 0.0001?0.2 0.01"
+    # amp 1.2
+    # envL1 0.2
+    # envL2 0.5
+    # envL3 0.4
+    # envL4 0.0
+    # envT1 0.0
+    # envT2 0.2
+    # envT3 0.01
+    # envCurve "-5.0"
+    # sweep1 "52.8 55.9"
+    # sweep2 "<559 139.5 528> <279.5 139.5>"
+    # vol1 2.0
+    # vol2 0.05
+    ,
+    cat [s "IkedaBreathSusSd(<3 5 1>,6)", s "IkedaBreathSusSd(<4 2 5>,6,<1 2 3>)"]
+    # freq "52.8 55.9 52.8"
+    # amp 1.0
+    # dcy 0.1
+    # attack 0.0001
+    # sustain 1
+    # release 0.3
+    # curve "-5.0"
+    # iphase 0.0
+    ])
+  ]
+  # hpf 80
+  ,
+  listen (slow 2 $ "<0 1 0>") $
+  s "tc:1*<[3 6] 0? 6 12? 0?>"
+  # gain 0.9
+  # allpass (slow 5 $ range "-1" 1 tri)
+  -- # cut 1
+  ,
+  listen 1 $
+  every 5 (listen 1) $
+  foldEvery [5,7] ((# digidest (fast 5 $ range 0 0.6 tri)).(every 2 (# chorus2 (fast 2 $ range 0 1 cosine )))) $
+  foldEvery [12,27] (
+    chunk 6 (
+  (# attTh "<0.02 0.004 0.02>").
+  (# rlsTh "0.03 <0.045 0.049> 0.03 0.04").
+  (# freq1 "<[627.0 120 120] 140>").
+  (# freq2 "<1000 1800 2961.0> [3000 2320]").
+  (# freq3 "<4000 3000> [4000 7824.0]").
+  (# freq4 "<[476.0 500] [600 550]>").
+  (sometimesBy 0.16666666 (fast 2))
+  )) $
+  whenmod 15 12
+  ((# binshift "0.3 0.6") . (zoom (1/6, 4/6))) $
+  sometimesBy 0.2
+  (bite 4 (irand 3)) $
+  s "cymbalicMcldSusSd*12"
+    # amp 0.6
+    # sustain 1
+    # release 0.46
+    # attLowf 2
+    # rlsLowf 1.0
+    # lowNoiseLev 0.1
+    # attHif 0.3
+    # rlsHif 3.0
+    # hiNoiseLev 1.3
+    # attHi 0.1
+    # rlsHi 2.0
+    # hiLev 3.25
+    # attTh "<0.01 0.001 0.0001>"
+    -- # relTh "0.03 0.001"
+    # freq1 627.0
+    # freq2 2961.0
+    # freq3 7824.0
+    # freq4 476.0
+    # gain 0.6
+  ,
+  listen 1 $
+  every 4 (listen 0 . slow 2) $
+  -- whenmod 17 4 (# s "~") $
+  s "~ tweetErosionSusSd(<3 4>,12,<9 10>)"
+  # amp 0.3
+  # atk 0.01
+  # rls 10.0
+  # feedBack "1.0 0.9"
+  ,
+  listen 1 $
+  every 3 (listen 0) $
+  whenmod 16 7 (# median (slow 7 $ range 0 1 tri)) $
+  s "lumbricostSusSd([<3 4> <6 3>],12,<0 1 2>)"
+  # amp 0.7
+  # attTim "1.0 0.9 0.8 <1.1 1> 1"
+  # rlsTim 2.5
+  # timescale "<7.5 10.0> <11 6.8> 10"
+  # widthmod "0.4 0.5 0.6 0.35"
+  # width "0.2 0.25 0.26 0.19"
+  # abc "0.0 0.1 0.05 0.01"
+  # randLo "0.0 0.01 0.1"
+  # randHi (slow 8 $ range 10000 20000 tri)
+  # bprq (slow 27 $ range 0.1 1.0 saw)
+  ,
+  listen 0 $
+  foldEvery [7,15] (listen 1) $
+  whenmod 17 4 (# enc (slow 12 $ range 0 1 cosine )) $
+  someCyclesBy 0.6
+  ((fast "<2 3> 6") . (# binshift (range 0.3 0.9 $ slow 2 square)) . (degradeBy "<0.4 0.21>") . (# release "0.2 0.1")) $
+  slow 2 $
+  s "dStowellSusSd(<4 3>, <6 3>, <2 3 5>)"
+    # sustain 0.24
+    # release 0.7
+    # amp 1.0
+    # width (range 0 0.03 $ fast 2 saw)
+    # gain 0.96
+    ,
+    listen 0 $
+    every 3 (listen 1) $
+    s "ultraHiSummerSusSd(<1 3 6>,<9 4.5>,3)"
+    # amp 0.3
+    # curve "-4.0"
+    # blpFreq1 "16000 12000 15000"
+    # blpFreq2 "16150 12000"
+    # seqRate "0.2 0.3"
+    # seqVal1 "70 50 10 30 40"
+    # seqVal2 "10 09 12 22 30.0"
+    # seqVal3 "0.0 0.1 0.2 0"
+]
+# cps 0.86
+|* gain 0.94
+
+
+clutchIn 1 4 $ silence
+-- en 9
+
+xfadeIn  1 8 $
+  stack [
+      cat [
+      listen 1 $
+      s "ultraHiSummerSusSd(<1 3 6>,<9 9/2>,3)"
+      # amp 0.3
+      # curve "-4.0"
+      # blpFreq1 "16000 12000 15000"
+      # blpFreq2 "16150 12000"
+      # seqRate "0.2 0.3"
+      # seqVal1 "70 50 10 30 40"
+      # seqVal2 "10 09 12 22 30.0"
+      # seqVal3 "0.0 0.1 0.2 0"
+      ,
+      listen 1 $
+      s "cymnew1SusSd(<4 2 6>,9,<1 2>)"
+      # amp 0.2
+      # envL1 "0.0 0.01 0.1 0.2"
+      # envL2 "[1.0 1.2] <[0.85 0.9] 1>"
+      # envL3 "<0.4 0.5 0.2> 0.3"
+      # envL4 (slow 8 $ range 0.0 0.3 tri)
+      # envT1 (slow 6 $ range 0.12 0.3 cosine )
+      # envT2 0.2
+      # envT3 0.23
+      # curve "-8.0 -5"
+      # tu "<6.0 5.0><[5 6] [4 5]>"
+      ]
+    ,
+    listen 0 $
+    every 3 (id
+      )
+       $
+    -- s "kickRingzSd(<[2 3] [4 1 2] [5 3]>,9, <1 3>)"
+    s "<kickRingzSusSd [<~ kickRingzSusSd> [~@0.25 kickRingzSusSd]]> ~ <kickRingzSusSd [~@0.75 kickRingzSusSd]> ~@1.5"
+    # amp 1.4
+    # envL1 0.1
+    # envL2 0.7
+    # envL3 2.0
+    # envL4 2.1
+    # envL5 0.1
+    # envT1 0.00001
+    # envT2 2
+    # envT3 2.4
+    # envT4 1
+    # curve "48.0"
+    # envpL1 1.2
+    # envpL2 1.2
+    # envpL3 "0.8 1.6?0.18 1.2"
+    # envpL4 0.4
+    # envpT1 0.1
+    # envpT2 0.01
+    # envpT3 1.2
+    # curvep "<-4.0 -12>"
+    # dcy "0.5 <0.9 1.3> 0.2"
+    # release 0.4
+    # sustain 0.7
+    # decay 0.7
+    # ffreq 1000.0
+    # hpf 100
+    ,
+  listen 1 $
+  whenmod 10 7 (slow 2 . (0.2 <~). every 2 (slow 2 . (const $ s "~"))) $
+  s "sosHatsSusSd(<8 12 14>,9)"
+  # curve "-4.0 <[-6 -2] -12>"
+  # rootIndex ("[1238.5 2800 200] <600 400 250 120> 1200" * (slow 9 $ segment 6 $ saw) * (segment 5 $ sine))
+  # rq (slow 8 $ segment 6 $ range 0.3 1 isaw)
+  # initAtt "0.005 [0.1 0.006] <0.05 0.003>"
+  # initRel "0.1 0.2 0.065"
+  # initAmp 1.0
+  # initStart "12000.0 9000"
+  # initEnd "8000.0 6000 1200"
+  # bodyAtt "0.005 0.006"
+  # bodyRel 0.1
+  # bodyAmp 1.0
+  # bodyStart "{9000.0 [11000 6000] 3400 12000}%2.5"
+  # bodyEnd "{12000 7000 10000 7900 10000}%3"
+  # envAtt "0.01 0.1 0.001"
+  # envRel "[1.0 0.2] [0.1 1]"
+  # envCurve "-4.0"
+  ,
+    listen 1 $
+    every 3 (rev . (density "<1.6 2 6>")) $
+    fast 2 $
+    s "[fabHiSusSd [~@1.5 fabHiSusSd] fabHiSusSd, fabHiSusSd ~@0.5]"
+      # amp 0.3
+      # wamp 0.5
+      # envNatk 0.0001
+      # envRel 0.002
+      # wbpfFreq 800.0
+      # wbpfRq 0
+      # sinFrq1 "<12120.0 400 1400>"
+      # sinFrq2 (range 12800 13945 $ fast "2 4" square)
+      # sinPh1 1.3
+      # sinPh2 0.2
+      # sinLev1 0.12
+      # sinLev2 1.0
+      # envSatk 0.001
+      # envSrls "0.02 0.2 0.05"
+      # mix 0.9
+      # envL1 2.0
+      # envL2 1.0
+      # envL3 0.75
+      # envT1 0.1
+      # envT2 0.02
+      # envT3 0.2
+      # ffreq "200 600.0"
+      # zpulse (slow 7 $ range "-0.6" 0.7 tri)
+      ,
+      listen 1 $
+      every 5 (listen 0) $
+      foldEvery [5,7] ((# digidest (fast 5 $ range 0 0.6 tri)).(every 2 (# chorus2 (fast 2 $ range 0 1 cosine )))) $
+      foldEvery [12,27] (
+        chunk 6 (
+          (# attTh "<0.02 0.004 0.02>").
+          (# rlsTh "0.03 <0.045 0.049> 0.03 0.04").
+          (# freq1 "<[627.0 120 120] 140>").
+          (# freq2 "<1000 1800 2961.0> [3000 2320]").
+          (# freq3 "<4000 3000> [4000 7824.0]").
+          (# freq4 "<[476.0 500] [600 550]>").
+          (sometimesBy 0.16666666 (fast 2))
+          )) $
+          whenmod 15 12
+          ((# binshift "0.3 0.6") . (zoom (1/6, 4/6))) $
+          sometimesBy 0.2
+          (bite 4 (irand 3)) $
+          s "cymbalicMcldSusSd*12"
+          # amp 0.6
+          # sustain 1
+          # release 0.46
+          # attLowf 2
+          # rlsLowf 1.0
+          # lowNoiseLev 0.1
+          # attHif 0.3
+          # rlsHif 3.0
+          # hiNoiseLev 1.3
+          # attHi 0.1
+          # rlsHi 2.0
+          # hiLev 3.25
+          # attTh "<0.01 0.001 0.0001>"
+          -- # relTh "0.03 0.001"
+          # freq1 627.0
+          # freq2 2961.0
+          # freq3 7824.0
+          # freq4 476.0
+          # gain 0.6
+    ]
+    # cps 0.86
+    |* gain 0.93
+
+clutchIn 1 640 $ silence
+
+-- done
+clutchIn 1 2 $
+  stack [
+    listen 1 $
+    whenmod 14 6 (soak 4 (spin 2 . iter 4 . every 2 (listen 1 . slow 2))) $
+    someCyclesBy (3/18) (slow 2 . listen 0) $
+    s "snapkickSusSd(3,9,7)"
+    # amp 0.3
+    # bdFrqL1 1261.0
+    # bdFrqL2 50.0
+    # bdFrqL3 151.0
+    # bdFrqT1 0.0035
+    # bdFrqT2 "0.12 0.09 0.01"
+    # bdFrqC "-4.0"
+    # bdAmpAtt 0.005
+    # bdAmpSus "0.1 0.38 0.28"
+    # bdAmpRel "0.3 0.01 0.8 0.1"
+    # bdAmpLev 1.0
+    # bdAmpCurve 1.0
+    # popFrqSt "750.0 2600 10000"
+    # popFrqEnd "261.0 8000? 500"
+    # popFrqDur "[0.02 0.1] 0.001"
+    # popAmpAtt 0.001
+    # popAmpSus 0.02
+    # popAmpRel "0.001 0.1 0.3"
+    # popAmpLev "0.15 0.3 0.6"
+    # clkAmpAtt 0.001
+    # clkAmpRel "0.01 0.1 0.3"
+    # clkAmpLev 0.15
+    # clkAmpCurve "-4.0"
+    # clkfFundFreq "10.0 20 -2"
+    # clkfFormFreq "4760.0 10000"
+    # clkfBwFreq "2110.0 800 200"
+    # clkLpfFreq "3140.0 50 1000"
+    ,
+    listen 1 $
+    s "cymbal808ryanSusSd*3 _ <cymbal808ryanSusSd ~>"
+    # amp 0.4
+    # sustain 2
+    # release 0.6
+    # baseFreq 700.0
+    # penvL1 0.2
+    # penvL2 0.6
+    # ptime 0.3
+    # pcurve "-4.5"
+    # pulsew 302
+    # rlpfFrq 5810.0
+    # rlpfRq "3.7999"
+    # rhpfFrq 400.0
+    # rhpfRq 0.02
+    # envL1 0.0
+    # envL2 1
+    # envL3 0.4
+    # envL4 0.0
+    # envL5 0.0
+    # envT1 2.0
+    # envT2 250.0
+    # envT3 "<50.0 80>"
+    # envT4 500.0
+    # envC1 0.0
+    # envC2 "-5"
+    # envC3 0.0
+    # envC4 "-50.0"
+    # hpf 80
+    # lpf 2900
+    # gain 0.05
+    ,
+    listen 1 $
+    loopAt "1 2" $
+    sometimesBy 0.17
+    (within (2/9, 5/9) (gap "2 3")) $
+    s "<[{cym1SusSd ~ <cym1SusSd [~ cym1SusSd ~]> _ cym1SusSd}%18] [{~ cym1SusSd}%9]>"
+      # amp 0.2
+      # envL1 0.0
+      # envL2 1.0
+      # envL3 0.3
+      # envL4 0.0
+      # levScale 1.0
+      # envT1 "0.001 0.06 0.02"
+      # envT2 0.02
+      # envT3 0.01
+      # envC1 "-8.0"
+      # envC2 "<-200 -21> 4.0"
+      # envC3 "-4"
+      # tu "2400 5400 <430 1239>"
+      # gain 0.8
+      ,
+      listen 1 $
+      someCyclesBy (2/9) (spin 2) $
+      someCyclesBy (5/9) (slow 2 . listen 0) $
+      (loopAt "1 2") $
+      s "rimnewSusSd(<3 9 27?>,9)"
+      # amp 0.061
+      # sustain 1
+      # release 0.2
+      # tu (("<0.25 0.3> 0.2") * (segment 4 $ range 0.8 1.5 tri))
+      # atk 0.0001
+      # rls "[0.6 0.3] 0.1"
+      # freqTime1 "0.0022 0.001"
+      # freqTime2 0.002 -- ("0.5 0.02" * (segment 6 $ slow 2 $ range 0.5 1 isaw))
+      # hpf 120
+      # hpq 0.1
+      # bpf "1200 800 60"
+      # bpq 0.01
+    ,
+    listen 1 $
+    someCyclesBy (1/9) (listen 0) $
+    whenmod 10 8
+    (scramble "5 <4 3>" . bite 5 ("2 4 3 0 1" * "<1/2 2>")) $
+    every 3
+    (within (0, 2/9) (wchoose [((2/9), 0.3), ((5/9), 0.7)] ~>)) $
+    s "kick808newSusSd [~ kick808newSusSd ~] <~ [~@2 kick808newSusSd]>"
+      # amp 0.8
+      # envL1 1.0
+      # envL2 1.0
+      # envL3 0.0
+      # envT1 0.0
+      # envT2 1.0
+      # envCurve "-8.0"
+      # enfL1 7000.0
+      # enfL2 30.0
+      # enfL3 "32 50.0 32"
+      # enfT1 (0.005 * "<1 0.9 1.2>")
+      # enfT2 0.001
+      # enfCurve "-4.0 20"
+      # tu "2.0 <1 2> 5?0.12"
+      # sin2Frq "10.0 230?0.12"
+      # sin2Amp 50.0
+      # gain 0.92
+      ,
+      listen 1 $
+      someCyclesBy (1/9) (spreadChoose ($) [slow 2, listen 1]) $
+      s "IkedaClickSusSd(7 4 6,9,3)"
+      # gain 0.75
+      # amp 0.3
+      # centerFreq "{15000.0 [8500 12000] 20000}%5"
+      # rq (slow 9 $ segment 27 $  range 0.02 0.05 isaw)
+      # modamp "25.0 30"
+  ] #  cps 0.87
+  |* gain 1.035
+
+
+hush
