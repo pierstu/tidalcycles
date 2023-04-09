@@ -1,18 +1,22 @@
 -- revu 15 5 ok!
 -- revu 22 5 fini!
 -- fev 23 revu
--- xfadeIn 1 22 $ silence
+xfadeIn 1 12 $ silence
+
+-- joué
 d1 $
   -- someCyclesBy 0.21
-  -- (stutWith 2 (2/7) ((3/7) ~>)) $
+  -- -- (stutWith 2 (2/7) ((3/7) ~>)) $
+  -- (inside (2/7) ((3/7) ~>)) $
+  -- someCyclesBy (inside 7 (density "[0.75 | 1.25]")) $
   stack [
     -- listen 0 $
     listen (1 - (cF 1 "23")) $
-    listen "<1 1 1 0?>" $
-    someCyclesBy 0.1 (listen 0 . every 2 (slow 2)) $
+    -- listen "<1 1 1 0?>" $
+    -- someCyclesBy 0.1 (listen 0 . every 2 (slow 2)) $
     every' "<4 5>" "<1 2>" (loopAt 2 . listen 0) $
-    someCyclesBy 0.21
-    (stutWith 2 (2/7) ((3/7) ~>)) $
+    -- someCyclesBy 0.21
+    -- (inside (2/7) (spin 2 . ((3/7) ~>))) $
     fast "1 2 1" $
     randcat [
       -- someCyclesBy (1/9) (loopAt "<1 2>" . every 4 ((1/9) ~>) .  someCyclesBy 0.13 (listen 0)) $
@@ -211,11 +215,15 @@ d1 $
   ] # cps 0.5
   |* gain 0.91
 
+-- resetCycles
+-- joué
 d1 $
   -- every 6 (inside 5 (hurry " [0.75  1.5]"). (# legato 2)) $
   -- whenmod 23 19
   -- (every 2 (slow 2) . slowspread ($) [
   --   slow 5 . striate "[[10  5] | [5 15]]" . (# hpf 70) . (|* gain 0.9)
+  --   ,
+  --   someCyclesBy 0.1 (inside 6 (density "0.75 | 1.25"))
   --   -- ,
   --   -- slow "[[2 3] | 2]*5" . striate "[15 5 | 20 3] 10" . (|* gain 0.86) . (# hpf 120)
   --   -- ,
@@ -466,9 +474,13 @@ d1 $
   |* gain 1.065
 # cps 0.5833333 -- (175/60/5)
 
+
+-- joué
 -- copié 040323
 -- niveaux ?
 d1 $
+  -- every 6 (spread ($) [off 7 (density 0.25), spin "2/6"]) $
+  -- someCyclesBy 0.15 (inside 6 (density "0.75 | 1.25")) $
   stack [
     listen (1 - (cF 1 "23")) $
     -- listen 0 $
@@ -555,7 +567,7 @@ d1 $
       -- edit 170323
       # sus ("[0.3 | 0.5 | 0.1]!6" + ((cF 0 "37") * 0.4)) -- "[0.3 | 0.5 | 0.1]!6"
       # orbit 2
-      # gain 0.96
+      # gain 0.9
     ,
     listen (1 - (cF 1 "28")) $
     -- listen 0 $
@@ -682,6 +694,7 @@ d1 $
 # cps 0.6
 
 
+-- joué
 d1 $
   -- clutchIn 1 12 $ silence
   someCyclesBy 0.16
@@ -691,8 +704,8 @@ d1 $
       inside 5
       (spreadf [
           brak ,
-  --         ply "1 <2 [2 1]>",
-  --         -- slow 4 . gap "<12 [24 6] [12 3]>",
+          ply "1 <2 [2 1]>",
+          -- slow 4 . gap "<12 [24 6] [12 3]>",
           append "~"
       ]))
   ) $
@@ -907,11 +920,15 @@ d1 $
 |* gain 1.03
 # cps 0.75
 
+
+resetCycles
+
 -- le tube // à sauver
 -- fin des cymbales dans 2Mo_synthdefs_with_timescale
 --  en cours 1106, seq niveaux ok, rajouter fonctions / silences
 d1 $
 -- clutchIn 1 10 $ silence
+  -- someCyclesBy 0.125 (inside 7 (density "[0.75 | 1.26]")) $
   -- whenmod 9 6 (spreadf [sometimesBy 0.111111111 (iter' 1), slow 2, listen 0] ) $
   -- someCyclesBy (1/9) ((slowSqueeze "<0.166666 0.111111111 5.555555555555555e-2 4.16666666666666666664e-2>") . (# gain 0.85)) $
   stack [
@@ -1127,6 +1144,8 @@ d1 $
   ] # cps 0.75
   |* gain 1.08
 
+
+-- joué
 -- xfadeIn 1 22 $
 d1 $
   every 9 (slow 2 . gap  "<[6 3] 3>") $
@@ -1136,6 +1155,7 @@ d1 $
     -- listen 0 $
     every 6 (chunk 3 (hurry 2)) $
     every 4 (slow 2) $
+    foldEvery [13,19] (slow 1.5 . listen "1 0") $
     -- (<| envT3 "0.3*6") $
     (<| envT3 ( "0.6 [0.52 0.2]*<2 1> [~ [0.52 0.2]] [0.6 | ~] [~ | 0.2] [0.6 0.2]*<1 2>")) $
     s "kick_oto309BrSusSd"
@@ -1282,19 +1302,20 @@ d1 $
 # cps 0.6
 |* gain 0.865
 
+-- joué
 -- 180223
 -- xfadeIn 1 16 $ silence
 d1 $
   -- every 6
-  -- someCyclesBy 0.24
-  -- (
-  --   (chunk 5 (spreadf [spin 2, hurry "2 0.5"]))
-  --   . fix (# hpf 120) (s "Sd_kick3new")
-  --   . fix (|* gain 0.5) (s "Sd_hat808")
-  --   . every 2 (loopAt "<1 2>")
-  --   . sometimes ((|* speed 3) . (|* gain 0.91))
-  --   . (# legato 1.2)
-  -- ) $
+  someCyclesBy 0.24
+  (
+    (chunk 5 (spreadf [spin 2, hurry "2 0.5"]))
+    . fix (# hpf 120) (s "Sd_kick3new")
+    . fix (|* gain 0.5) (s "Sd_hat808")
+    . every 2 (loopAt "<1 2>")
+    . sometimes ((|* speed 3) . (|* gain 0.91))
+    . (# legato 1.2)
+  ) <$
   stack [
      -- listen 0 $
      listen (1 - (cF 1 "23") ) $
@@ -1308,7 +1329,7 @@ d1 $
        -- 090223
        -- # sustain 1
        -- # release 1
-       # hpf 90 -- 80
+       # hpf 130 -- 80
        # gain 1.03
      ,
      -- listen 0 $
@@ -1415,9 +1436,9 @@ d1 $
        # sustain 10.0
        # freq  180.0
        # rq 0.031
-       # hpf 70
+       # hpf 270
        # orbit 1
-       # gain 1.06
+       # gain 0.68 -- 1.06
     ,
     -- listen 0 $
     listen (1 - (cF 1 "27")) $
@@ -1560,24 +1581,28 @@ d1 $
 |* gain 1.23
 # cps 0.56
 
+
+resetCycles
+
+-- joué
 --  niveaux ok 040323
 -- en 10
 d1 $
-  -- whenmod 20 15
-  -- (slowspread ($)
-  --   [
-  --   (bite 5 ( every 2 ((1/5) ~>) "0 3 1 2 4"))
-  --   ,
-  --   ((chunk' "<5 10>" (hurry 2)))
-  --   ,
-  --   (linger "<1/5 1/2>")
-  --   ,
-  --   (inside 5 (iter' 2 . every 2 (slow 2)))
-  --   ,
-  --   (slow "<[0.5 1] [1 2]>" . every 2 (listen 0))
-  --   ]
-  -- ) $
-  -- every 15 (bite 5 ( every 2 ((1/5) ~>) "0 3 1 2 4")) $
+  whenmod 20 15
+  (slowspread ($)
+    [
+    (bite 5 ( every 2 ((1/5) ~>) "0 3 1 2 4"))
+    ,
+    ((chunk' "<5 10>" (hurry 2)))
+    ,
+    (linger "<1/5 1/2>")
+    ,
+    (inside 5 (iter' 2 . every 2 (slow 2)))
+    ,
+    (slow "<[0.5 1] [1 2]>" . every 2 (listen 0))
+    ]
+  ) $
+  every 15 (bite 5 ( every 2 ((1/5) ~>) "0 3 1 2 4")) $
   every 13 (linger "<2/5 3/10>") $
   whenmod 12 10 (inside 5 (iter' 2 . every 2 (slow 2))) $
   every 9 ((chunk' "<5 10>" (hurry 2))) $
@@ -1786,3 +1811,6 @@ d1 $
       # freq4 3350 -- 476.0
   ]
 # cps 0.56
+
+
+clutchIn 1 16 $ silence
