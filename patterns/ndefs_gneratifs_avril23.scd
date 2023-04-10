@@ -1,5 +1,3 @@
-// reprends L 1081
-
 (
 ~lcmnoisePreset =  (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, spread: 1, GHsize: 1.6); // default
 )
@@ -1076,42 +1074,92 @@ Ndef(\lcm2Gene).play(2);
 
 Ndef(\lcm2Gene).release(14);
 
-
-
-/*
 (
-Ndef(\lcm2, { arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls =
-	0.2, sustain = 1, mod1 = 3.09431, mod2 = 54.0487, gate = 1, doneAction =
-	2;
+~lcm2Preset = (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, mod1: 3.09431, mod2: 54.0487);
+// default
+)
+
+(
+~lcm2Preset = ( 'rls': 0.35175914764404, 'mod2': 52.63974693085, 'atk': 0.046337085008621, 'mod1': 3.004041007688, 'amp': 0.1, 'sustain': 1 )
+)
+
+(
+~lcm2Preset = ( 'rls': 0.45175914764404, 'mod2': 32.63974693085, 'atk': 0.0146337085008621, 'mod1': 2.004041007688, 'amp': 0.1, 'sustain': 1 )
+)
+
+(
+~lcm2Preset = ( 'rls': 0.25828251838684, 'mod2': 35.203470209682, 'atk': 0.0180271938562393, 'mod1': 2.3404990996182, 'amp': 0.1, 'sustain': 1 )
+)
+
+(
+~lcm2Preset = (amp: 0.1, atk: rrand(0.001, 0.1), rls: rrand(0.2, 0.6), sustain: 1, mod1: rrand(1.4, 3.09431), mod2: rrand(20, 54.0487));
+// rrand
+)
+
+
+(
+Ndef(\lcm2, {
+	// amp = 0.1, atk = 0.001, rls = 0.2, sustain = 1, mod1 = 3.09431, mod2 = 54.0487;
 	var sig, sig1, sig2, env;
 
-	env = EnvGen.kr(Env.asr(atk, 1, rls), gate, timeScale: sustain,
-		doneAction: doneAction);
+	env = EnvGen.kr(Env.asr(~lcm2Preset[\atk], 1, ~lcm2Preset[\rls]), timeScale: ~lcm2Preset[\sustain]);
 
-	mod1 = mod1.min(1000).max(1);
-	mod2 = mod2.min(1000).max(1);
+	~lcm2Preset[\mod1] = ~lcm2Preset[\mod1].min(1000).max(1);
+	~lcm2Preset[\mod2] = ~lcm2Preset[\mod2].min(1000).max(1);
 
-	sig1 = Saw.ar(mod1).range(-100,100).round(1);
-	sig2 = LFCub.ar(mod2).range(-100,100).round(1);
+	sig1 = Saw.ar(~lcm2Preset[\mod1]).range(-100,100).round(1);
+	sig2 = LFCub.ar(~lcm2Preset[\mod2]).range(-100,100).round(1);
 
 	sig = tanh(lcm(sig1, sig2) * 0.001);
 
 	sig = sig * env;
-	sig = Pan2.ar(sig, pan, amp);
-	OffsetOut.ar(out, sig);
+	sig = Pan2.ar(sig * ~lcm2Preset[\amp]);
+	// OffsetOut.ar(out, sig);
 });
 )
+
+Ndef(\lcm2).fadeTime_(19);
+
+Ndef(\lcm2).play(2);
+
+Ndef(\lcm2).release(10);
+
+(
+~modelBitsPreset = (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, mod1: 1, mod2: 1);
+// default
+)
+
+(
+~modelBitsPreset = ( 'rls': 0.38701448440552, 'mod2': 0.94951220750809, 'atk': 0.099110740423203, 'mod1': 0.7352654337883, 'amp': 0.1, 'sustain': 1 )
+)
+
+(
+~modelBitsPreset = ( 'rls': 0.43033952713013, 'mod2': 0.97577879428864, 'atk': 0.072004798531532, 'mod1': 0.61842906475067, 'amp': 0.1, 'sustain': 1 )
+)
+
+(
+~modelBitsPreset = ( 'rls': 0.25742192268372, 'mod2': 0.93238798379898, 'atk': 0.031174141168594, 'mod1': 0.60378706455231, 'amp': 0.1, 'sustain': 1 )
+)
+
+(
+~modelBitsPreset = ( 'rls': 0.50352067947388, 'mod2': 0.97035672664642, 'atk': 0.030132615804672, 'mod1': 0.52691388130188, 'amp': 0.1, 'sustain': 1 )
+)
+
+(
+~modelBitsPreset = (amp: 0.1, atk: rrand(0.001, 0.1), rls: rrand(0.2, 0.6), sustain: 1, mod1: rrand(0.5, 1), mod2: rrand(0.7, 1));
+// rrand
+)
+
 (
 // need this: s.options.memSize_(16384*10);
-SynthDef(\modelBits, { arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls
-	= 0.2, sustain = 1, mod1 = 1, mod2 = 1, gate = 1, doneAction = 2;
+Ndef(\modelBits, {
+	// arg amp = 0.1, atk = 0.001, rls = 0.2, sustain = 1, mod1 = 1, mod2 = 1 ;
 	var sig, sig1, sig2, count1, count2, env;
 
-	env = EnvGen.kr(Env.asr(atk, 1, rls), gate, timeScale: sustain,
-		doneAction: doneAction);
+	env = EnvGen.kr(Env.asr(~modelBitsPreset[\atk], 1, ~modelBitsPreset[\rls]), timeScale: ~modelBitsPreset[\sustain]);
 
-	count1 = PulseCount.ar(Impulse.ar(8e3 * mod1));
-	count2 = PulseCount.ar(Impulse.ar(7009 * mod2));
+	count1 = PulseCount.ar(Impulse.ar(8e3 * ~modelBitsPreset[\mod1]));
+	count2 = PulseCount.ar(Impulse.ar(7009 * ~modelBitsPreset[\mod2]));
 
 	sig1 = HPF.ar(
 		(
@@ -1130,42 +1178,95 @@ SynthDef(\modelBits, { arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls
 	sig2 = sig2 * sig1;
 	sig = Splay.ar(Limiter.ar(Greyhole.ar(sig1 + sig2, sig1, 0.5, sig1),
 		0.5).flatten);
-	sig = Pan2.ar(sig * env, pan, amp);
-	OffsetOut.ar(out, sig);
-}).add;
+	sig = (sig * env * ~modelBitsPreset[\amp]);
+	// OffsetOut.ar(out, sig);
+});
 )
+
+Ndef(\modelBits).fadeTime_(8);
+
+Ndef(\modelBits).play(2);
+
+Ndef(\modelBits).release(10);
+
+
  // fin gene_afinir
 // generative_sd_2mo
 
-SynthDef(\nVirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 20, feedBack = 7.5, sawFreq1 = 32, sawFreq2 = 33, sawAmp = 0.2, bpff = 2, bpffModSpeed = 1.33, bpffModAmt = 4, delayTime = 2, decayTime = 40, gate = 1, doneAction = 2;
+(
+~nVirgoPreset = (amp: 1, att: 0.01, rel: 20, feedBack: 7.5, sawFreq1: 32, sawFreq2: 33, sawAmp: 0.2, bpff: 2, bpffModSpeed: 1.33, bpffModAmt: 4, delayTime: 2, decayTime: 40);
+// default
+)
+
+(
+~nVirgoPreset = ( 'att': 0.089472068548203, 'sawAmp': 0.2, 'bpffModAmt': 3.0938064455986, 'rel': 15, 'sawFreq2': 552, 'bpff': 2, 'delayTime': 1.8205498456955, 'feedBack': 5.5620234012604, 'bpffModSpeed': 2.9549210321903, 'decayTime': 40, 'amp': 0.2, 'sawFreq1': 225 )
+)
+
+(
+~nVirgoPreset = ( 'att': 0.11469817638397, 'sawAmp': 0.2, 'bpffModAmt': 2.12881731987, 'rel': 12, 'sawFreq2': 524, 'bpff': 2, 'delayTime': 1.1182125210762, 'feedBack': 0.84835304915905, 'bpffModSpeed': 2.9216046774387, 'decayTime': 40, 'amp': 0.2, 'sawFreq1': 69 )
+)
+
+(
+~nVirgoPreset = ( 'att': 0.17509307265282, 'sawAmp': 0.2, 'bpffModAmt': 3.5155351161957, 'rel': 13,
+  'sawFreq2': 279, 'bpff': 2, 'delayTime': 0.257721811532974, 'feedBack': 0.6553511619568, 'bpffModSpeed': 1.3605163013935,
+  'decayTime': 40, 'amp': 0.2, 'sawFreq1': 166 )
+)
+
+(
+~nVirgoPreset = ( 'att': 0.11383947849274, 'sawAmp': 0.2, 'bpffModAmt': 1.4050741195679, 'rel': 6, 'sawFreq2': 444, 'bpff': 2, 'delayTime': 1.8397490978241, 'feedBack': 1.61629204154015, 'bpffModSpeed': 2.0261113810539, 'decayTime': 40, 'amp': 0.2, 'sawFreq1': 188 )
+)
+
+(
+~nVirgoPreset = ( 'att': 0.18990749120712, 'sawAmp': 0.2, 'bpffModAmt': 2.2081257104874, 'rel': 13, 'sawFreq2': 694, 'bpff': 2, 'delayTime': 0.87268024682999, 'feedBack': 2.393406867981, 'bpffModSpeed': 2.7786209928989, 'decayTime': 40, 'amp': 0.2, 'sawFreq1': 105 )
+)
+
+(
+~nVirgoPreset = (amp: 0.2, att: rrand(0.01, 0.2), rel: rrand(1,20), feedBack: rrand(4, 7.5), sawFreq1: rrand(32, 230), sawFreq2: rrand(33, 820), sawAmp: 0.2, bpff: 2, bpffModSpeed: rrand(1.33, 3), bpffModAmt: rrand(0.5, 4), delayTime: rrand(0.5, 2), decayTime: 40);
+// rrand à faire
+)
+
+(
+Ndef(\nVirgo, {
+	// arg amp = 1, att = 0.01, rel = 20, feedBack = 7.5, sawFreq1 = 32, sawFreq2 = 33, sawAmp = 0.2, bpff = 2, bpffModSpeed = 1.33, bpffModAmt = 4, delayTime = 2, decayTime = 40;
 	var sig, env;
 	// env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.asr(att, 1, rel), gate, doneAction: doneAction);
+	env = EnvGen.ar(Env.asr(~nVirgoPreset[\att], 1, ~nVirgoPreset[\rel]));
 	// var env = EnvGen.ar(Env.linen(0.002, 0.996, 0.002, 1,-3), timeScale:sustain, doneAction:2);
-	sig = LocalIn.ar(2) * feedBack + Saw.ar(
-		[sawFreq1, sawFreq2],
-		sawAmp
+	sig = LocalIn.ar(2) * ~nVirgoPreset[\feedBack] + Saw.ar(
+		[~nVirgoPreset[\sawFreq1], ~nVirgoPreset[\sawFreq2]],
+		~nVirgoPreset[\sawAmp]
 	) * env;
 	sig = BPF.ar(
 		sig,
-		bpff ** LFNoise0.kr(bpffModSpeed, bpffModAmt) * 300,
+		~nVirgoPreset[\bpff] ** LFNoise0.kr(~nVirgoPreset[\bpffModSpeed], ~nVirgoPreset[\bpffModAmt]) * 300,
 		0.1
 	).distort;
-	sig = CombN.ar(sig, 2, delayTime, decayTime);
+	sig = CombN.ar(sig, 2, ~nVirgoPreset[\delayTime], ~nVirgoPreset[\decayTime]);
 	LocalOut.ar(sig);
 	// OffsetOut.ar(out, sig * amp);
-	OffsetOut.ar(out, DirtPan.ar(sig * amp, ~dirt.numChannels, pan, env))
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig * amp, ~dirt.numChannels, pan, env))
+	sig = (sig * ~nVirgoPreset[\amp] * env);
+});
+)
 
+Ndef(\nVirgo).fadeTime_(19);
+
+Ndef(\nVirgo).play(2);
+
+Ndef(\nVirgo).release(10);
 
 // edit 08 03 22 : remplace Env.linen par Env.asr() ok
 // rajouter des gate = 1 comme dans batuhan
+(
+~taltersPreset = (amp: 0.1);
+)
 
-
-SynthDef(\talters, { arg out = 0, pan = 0, amp = 1, gate = 1, doneAction = 2;
+(
+Ndef(\talters, {
+	// amp = 1;
 	var sig, env;
 	// env = Linen.kr(gate, 0.01, 1, 10, doneAction);
-	env = EnvGen.ar(Env.asr(0.01, 1, 10), gate, doneAction: doneAction);
+	env = EnvGen.ar(Env.asr(0.01, 1, 10));
 	sig = ({
 		|k|
 		({
@@ -1175,126 +1276,343 @@ SynthDef(\talters, { arg out = 0, pan = 0, amp = 1, gate = 1, doneAction = 2;
 		}!4).product
 	}!8).sum;
 	// OffsetOut.ar(out, sig * env * amp);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env * amp))
-}).add;
+	sig = (sig * env * ~taltersPreset[\amp])
+});
+)
 
-SynthDef(\bozkurt, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 10, impFreq = 0.25, freq1 = 4, freq2 = 6, delTime = 0.3, decTime = 50, feedBack = 1, gate = 1, doneAction = 2;
+Ndef(\talters).play(2);
+
+Ndef(\talters).release(9);
+
+(
+~bozkurtPreset = (amp: 0.21, att: 0.01, rel: 10, impFreq: 0.25, freq1: 4, freq2: 6, delTime: 0.3, decTime: 50, feedBack: 1);
+// default
+)
+
+(
+~bozkurtPreset = ( 'delTime': 0.25894921898842, 'rel': 4.3807460069656, 'att': 0.053788027763367, 'feedBack': 0.85149073600769, 'freq1': 9.2091425895691, 'decTime': 31.394058465958, 'amp': 0.21, 'impFreq': 0.36753037571907, 'freq2': 8.2406767845154 )
+)
+
+(
+~bozkurtPreset = ( 'delTime': 0.16357867717743, 'rel': 6.9976888895035, 'att': 0.091488406658173, 'feedBack': 0.73556730747223, 'freq1': 11.467145872116, 'decTime': 34.696674346924, 'amp': 0.21, 'impFreq': 0.74586114287376, 'freq2': 7.4439162254333 )
+)
+
+(
+~bozkurtPreset = ( 'delTime': 0.21283552646637, 'rel': 6.5413566827774, 'att': 0.016543077230453, 'feedBack': 0.79398288726807, 'freq1': 5.8135765552521, 'decTime': 40.379449725151, 'amp': 0.21, 'impFreq': 0.80025678873062, 'freq2': 8.3558935403824 )
+)
+
+(
+~bozkurtPreset = ( 'delTime': 0.27248809337616, 'rel': 3.4016854763031, 'att': 0.088343280553818, 'feedBack': 0.80513486862183, 'freq1': 3.3835899829865, 'decTime': 39.665528535843, 'amp': 0.21, 'impFreq': 0.92727735638618, 'freq2': 7.4780132770538 )
+)
+
+(
+~bozkurtPreset = (amp: 0.21, att: rrand(0.01, 0.1), rel: rrand(1.5, 10), impFreq: rrand(0.25, 1), freq1: rrand(4, 12.4), freq2: rrand(6, 10.2), delTime: rrand(0.1, 0.43), decTime: rrand(25.0, 50), feedBack: rrand(0.4, 1));
+// rrand
+)
+
+(
+Ndef(\bozkurt, {
+	//  amp = 1, att = 0.01, rel = 10, impFreq = 0.25, freq1 = 4, freq2 = 6, delTime = 0.3, decTime = 50, feedBack = 1;
 	var sig, env, input, ctrl;
 	//env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.asr(att, 1, rel), gate, doneAction: doneAction);
-	input = LocalIn.ar(2).tanh * feedBack;
-	ctrl = Latch.kr(input[0].abs, Impulse.kr(impFreq));
-	sig = Blip.ar([freq1, freq2], 100 * ctrl + 50, 0.9);
+	env = EnvGen.ar(Env.asr(~bozkurtPreset[\att], 1, ~bozkurtPreset[\rel]));
+	input = LocalIn.ar(2).tanh * ~bozkurtPreset[\feedBack];
+	ctrl = Latch.kr(input[0].abs, Impulse.kr(~bozkurtPreset[\impFreq]));
+	sig = Blip.ar([~bozkurtPreset[\freq1], ~bozkurtPreset[\freq2]], 100 * ctrl + 50, 0.9);
 	sig = CombC.ar(
 		sig,
 		1,
-		ctrl * delTime,
-		decTime * input
+		ctrl * ~bozkurtPreset[\delTime],
+		~bozkurtPreset[\decTime] * input
 	);
 	LocalOut.ar(sig);
-	sig = Splay.ar(sig * env, 1, amp);
+	sig = Splay.ar(sig * env, 1, ~bozkurtPreset[\amp]);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+});
+)
 
-SynthDef(\mcld, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 10, impFreq = 10, hpfFreq = 440, gate = 1, doneAction = 2;
+Ndef(\bozkurt).fadeTime_(19);
+
+Ndef(\bozkurt).play(2);
+
+Ndef(\bozkurt).release(10);
+
+(
+~mcldPreset = (amp: 0.21, att: 0.01, rel: 10, impFreq: 10, hpfFreq: 440);
+// default
+)
+
+(
+~mcldPreset = ( 'amp': 0.21, 'att': 0.18903653979301, 'rel': 15, 'impFreq': 7.5887405872345, 'hpfFreq': 276.54161472321 )
+)
+
+(
+~mcldPreset = ( 'amp': 0.21, 'att': 0.1143148291111, 'rel': 15, 'impFreq': 17.715059459209,
+  'hpfFreq': 370.55721702576 )
+)
+
+(
+~mcldPreset = ( 'amp': 0.21, 'att': 0.17803493738174, 'rel': 7.5, 'impFreq': 12.890402913094, 'hpfFreq': 391.78939743042 )
+)
+
+(
+~mcldPreset = (amp: 0.21, att: rrand(0.01, 0.2), rel: rrand(5, 15), impFreq: rrand(4.5, 20), hpfFreq: rrand(230.4, 440));
+// rrand
+)
+
+(
+Ndef(\mcld, {
+	// amp = 1, att = 0.01, rel = 10, impFreq = 10, hpfFreq = 440;
 	var sig, env, input;
 	// env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.asr(att, 1, rel), gate, doneAction: doneAction);
+	env = EnvGen.ar(Env.asr(~mcldPreset[\att], 1, ~mcldPreset[\rel]));
 	input = LocalIn.ar.clip2(LFPulse.kr([1,2,1/8]).sum/2)**100*100;
 	sig = DynKlank.ar(
 		`[input],
-		Impulse.ar(impFreq)
+		Impulse.ar(~mcldPreset[\impFreq])
 	);
 	LocalOut.ar(sig);
-	sig = HPF.ar(sig, hpfFreq).clip2;
-	sig = Splay.ar(sig * env, level: amp);
+	sig = HPF.ar(sig, ~mcldPreset[\hpfFreq]).clip2;
+	sig = Splay.ar(sig * env, level: ~mcldPreset[\amp]);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+});
+)
 
-SynthDef(\padovan, { arg out = 0, amp = 1, pan = 0, tridDur = 1, freq = 165, roomSize = 9, gate = 1, doneAction = 2;
+Ndef(\mcld).fadeTime_(9);
+
+Ndef(\mcld).play(2);
+
+Ndef(\mcld).release(10);
+
+(
+~padovanPreset = (amp: 0.21, tridDur: 1, freq: 165, roomSize: 9)
+// default
+)
+
+(
+~padovanPreset = ( 'roomSize': 3.6036995053291, 'freq': 245.55842895508, 'tridDur': 0.65141571164131, 'amp': 0.21 );
+
+(
+~padovanPreset = ( 'roomSize': 8.4315677285194, 'freq': 224.36461868286, 'tridDur': 0.86605371832848, 'amp': 0.21 );
+)
+
+(
+~padovanPreset = ( 'roomSize': 5.2112172245979, 'freq': 299.78749885559, 'tridDur': 0.8859096467495, 'amp': 0.21) ;
+)
+
+(
+~padovanPreset = (amp: 0.21, tridDur: rrand(0.65, 1), freq: rrand(165, 320.2), roomSize: rrand(0.5, 9))
+// rrand
+)
+
+
+(
+Ndef(\padovan, {
+	// amp = 0.21, tridDur = 1, freq = 165, roomSize = 9;
+
 	var sig, env, input, mod, grainTr, sinMod;
 	// env = Linen.kr(gate, 0.1, 1, 5, doneAction);
-	env = EnvGen.ar(Env.asr(0,1, 1, 5), gate, doneAction: doneAction);
+	env = EnvGen.ar(Env.asr(0,1, 1, 5));
 	sig = SinOsc;
 	mod = Trig.ar(
-		Saw.ar(freq),
-		tridDur
+		Saw.ar(~padovanPreset[\freq]),
+		~padovanPreset[\tridDur]
 	);
-	grainTr = sig.ar(mod * freq);
+	grainTr = sig.ar(mod * ~padovanPreset[\freq]);
 	sinMod = sig.ar(mod);
 	sig = GrainIn.ar(2, grainTr, grainTr / 2, sinMod, mod * sinMod, -1, mul: env);
-	sig = GVerb.ar(sig, roomSize, mul: amp);
+	sig = GVerb.ar(sig, ~padovanPreset[\roomSize], mul: ~padovanPreset[\amp]);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+});
+)
 
-SynthDef(\batuhan, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, tridDur = 0.125, decayTime = 0.3, sawFreq = 8, brfFreq1 = 45.1, brfFreq2 = 45, gate = 1, doneAction = 2;
+Ndef(\padovan).fadeTime_(12);
+
+Ndef(\padovan).play(2);
+
+Ndef(\padovan).release(12);
+
+(
+~batuhanPreset = ( 'rel': 4.7409770965576, 'att': 0.086210913658142, 'brfFreq2': 43, 'tridDur': 0.070336336493492, 'amp': 0.1, 'brfFreq1': 23.311715126038, 'sawFreq': 8.8473773002625, 'decayTime': 0.28642593860626 )
+)
+
+(
+~batuhanPreset = (amp: 0.1, att: 0.01, rel: 5, tridDur: 0.125, decayTime: 0.3, sawFreq: 8, brfFreq1: 45.1, brfFreq2: 45)
+// default
+)
+
+(
+~batuhanPreset = ( 'rel': 4.1670804977417, 'att': 0.068860658407211, 'brfFreq2': 32, 'tridDur': 0.163059398531914, 'amp': 0.1, 'brfFreq1': 50.390841627121, 'sawFreq': 9.8006906509399, 'decayTime': 0.36700299620628 )
+)
+
+(
+~batuhanPreset = (amp: 0.1, att: rrand(0.01, 0.1), rel: rrand(3.4, 5), tridDur: rrand(0.0625, 0.12), decayTime: rrand(0.23, 0.4), sawFreq: rrand(6.0, 18), brfFreq1: rrand(20, 45.1), brfFreq2: rrand(30, 45))
+// rrand
+)
+
+(
+Ndef(\batuhan, {
+	// amp = 1, att = 0.01, rel = 5, tridDur = 0.125, decayTime = 0.3, sawFreq = 8, brfFreq1 = 45.1, brfFreq2 = 45;
 	var sig, env, core;
 	// env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.asr(att, 1, rel), gate, doneAction: doneAction);
-	core = Duty.kr(tridDur, 0, Drand([0, Drand((0.4,0.5..1))], inf));
+	env = EnvGen.ar(Env.asr(~batuhanPreset[\att], 1, ~batuhanPreset[\rel]));
+	core = Duty.kr(~batuhanPreset[\tridDur], 0, Drand([0, Drand((0.4,0.5..1))], inf));
 	sig = Decay2.kr(
 		core,
 		0.01,
-		decayTime
+		~batuhanPreset[\decayTime]
 	);
-	sig = Saw.ar(sawFreq, sig) ** 1.5;
-	sig = BRF.ar(sig, core * 20 + [brfFreq1, brfFreq2], 0.1);
-	sig = LeakDC.ar(sig).tanh * env * amp;
+	sig = Saw.ar(~batuhanPreset[\sawFreq], sig) ** 1.5;
+	sig = BRF.ar(sig, core * 20 + [~batuhanPreset[\brfFreq1], ~batuhanPreset[\brfFreq2]], 0.1);
+	sig = LeakDC.ar(sig).tanh * env * ~batuhanPreset[\amp];
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+});
+)
 
-SynthDef(\nozkurt, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, sinFreq = 55, impMin = 0.0002, impMax = 0.7, impFreq = 8, gate = 1, doneAction = 2;
+Ndef(\batuhan).fadeTime_(19);
+
+Ndef(\batuhan).play(2);
+
+Ndef(\batuhan).release(10);
+
+(
+~nozkurtPreset = (amp: 0.21, att: 0.01, rel: 5, sinFreq: 55, impMin: 0.0002, impMax: 0.7, impFreq: 8);
+// default
+)
+
+(
+~nozkurtPreset = ( 'impMin': 0.0003625140786171, 'att': 0.043915095329285, 'rel': 5, 'impFreq': 13, 'impMax': 0.64299078464508, 'amp': 0.21, 'sinFreq': 56 )
+-> Ndef('nozkurt')
+)
+
+(
+~nozkurtPreset = ( 'impMin': 0.00020394860506058, 'att': 0.012375417947769, 'rel': 5, 'impFreq': 14, 'impMax': 0.31409510111809, 'amp': 0.21, 'sinFreq': 55 )
+)
+
+(
+~nozkurtPreset = (amp: 0.21, att: rrand(0.01, 0.1), rel: 5, sinFreq: rrand(55, 90), impMin: rrand(0.0002, 0.0005), impMax: rrand(0.254, 0.7), impFreq: rrand(8, 18));
+// rrand
+)
+
+(
+Ndef(\nozkurt, {
+	// amp = 1, att = 0.01, rel = 5, sinFreq = 55, impMin = 0.0002, impMax = 0.7, impFreq = 8;
 	var sig, env, delayTime;
 	// env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.asr(att, 1, rel), gate, doneAction: doneAction);
-	sig = SinOsc.ar(sinFreq).tanh;
-	delayTime = TExpRand.ar(impMin, impMax, Impulse.ar(impFreq)).round([2e-3, 4e-3]);
+	env = EnvGen.ar(Env.asr(~nozkurtPreset[\att], 1, ~nozkurtPreset[\rel]));
+	sig = SinOsc.ar(~nozkurtPreset[\sinFreq]).tanh;
+	delayTime = TExpRand.ar(~nozkurtPreset[\impMin], ~nozkurtPreset[\impMax], Impulse.ar(~nozkurtPreset[\impFreq])).round([2e-3, 4e-3]);
 	sig = AllpassC.ar(sig, 1, delayTime, 2);
-	sig = sig * env * amp;
+	sig = sig * env * ~nozkurtPreset[\amp];
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+});
+)
 
-SynthDef(\tirgo, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, blipFreqMod = 2, blipHarmo = 400, brfFreq = 150, brfRq = 2, gate = 1, doneAction = 2;
+Ndef(\nozkurt).fadeTime_(9);
+
+Ndef(\nozkurt).play(2);
+
+Ndef(\nozkurt).release(10);
+
+(
+~tirgoPreset = (amp: 0.21, att: 0.01, rel: 5, blipFreqMod: 2, blipHarmo: 400, brfFreq: 150, brfRq: 2);
+// default
+)
+
+(
+~tirgoPreset = ( 'brfRq': 0.93783041238785, 'att': 0.044967068433762, 'rel': 4, 'brfFreq': 326, 'amp': 0.21, 'blipHarmo': 471, 'blipFreqMod': 3.0236197412014 );
+)
+
+(
+~tirgoPreset = ( 'brfRq': 1.7299792766571, 'att': 0.020413483381271, 'rel': 3, 'brfFreq': 237,  'amp': 0.21, 'blipHarmo': 201, 'blipFreqMod': 0.87983870506287 );
+)
+
+(
+~tirgoPreset = ( 'brfRq': 1.8334934711456, 'att': 0.091781142950058, 'rel': 4, 'brfFreq': 298, 'amp': 0.21, 'blipHarmo': 515, 'blipFreqMod': 2.7309162318707);
+)
+
+(
+~tirgoPreset = (amp: 0.21, att: rrand(0.01, 0.1), rel: rrand(3,5), blipFreqMod: rrand(0.75, 4), blipHarmo: rrand(200, 600), brfFreq: rrand(150, 400), brfRq: rrand(0.9, 2))
+// rrand
+)
+
+(
+Ndef(\tirgo, {
+	// amp = 1, att = 0.01, rel = 5, blipFreqMod = 2, blipHarmo = 400, brfFreq = 150, brfRq = 2;
 	var sig, noise, thunder, rainStep, env, delayTime;
 	// env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.asr(att, 1, rel), gate, doneAction: doneAction);
+	env = EnvGen.ar(Env.asr(~tirgoPreset[\att], 1, ~tirgoPreset[\rel]));
 	noise = PinkNoise.ar(1!2);
-	rainStep = noise + Blip.ar(noise + blipFreqMod, blipHarmo);
+	rainStep = noise + Blip.ar(noise + ~tirgoPreset[\blipFreqMod], ~tirgoPreset[\blipHarmo]);
 	rainStep = BRF.ar(
 		rainStep,
-		brfFreq,
-		brfRq,
+		~tirgoPreset[\brfFreq],
+		~tirgoPreset[\brfRq],
 		0.1
 	);
 	thunder = LPF.ar(FreeVerb2.ar(*LPF.ar(noise + 0.2 * Dust.ar(0.1), 60) ++ [1, 1, 0.2, 1e4]).tanh, 2000);
 	sig = rainStep + thunder;
-	sig = sig * env * amp;
+	sig = sig * env * ~tirgoPreset[\amp];
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+});
+)
 
-SynthDef(\lmcd, { arg out = 0, amp = 1, pan = 0, att = 0.01, rel = 5, trigDur = 0.1, lfCubTu = 1, hpfFreq = 440, gate = 1, doneAction = 2;
+Ndef(\tirgo).fadeTime_(9);
+
+Ndef(\tirgo).play(2);
+
+Ndef(\tirgo).release(12);
+
+
+(
+~lmcdPreset = (amp: 0.21, att: 0.01, rel: 5, trigDur: 0.1, lfCubTu: 1, hpfFreq: 440);
+// default
+)
+
+(
+~lmcdPreset = ( 'att': 0.036224783658981, 'hpfFreq': 440, 'lfCubTu': 0.83353449106216, 'rel': 4.0325203537941, 'trigDur': 0.067111976146698, 'amp': 0.21 )
+)
+
+(
+~lmcdPreset = ( 'att': 0.080523428916931, 'hpfFreq': 440, 'lfCubTu': 0.96023582220078, 'rel': 4.3934026360512, 'trigDur': 0.036587396860123, 'amp': 0.21 )
+)
+
+(
+~lmcdPreset = ( 'att': 0.054452003240585, 'hpfFreq': 440, 'lfCubTu': 0.2589919090271, 'rel': 4.8915323615074, 'trigDur': 0.012462729215622, 'amp': 0.21 )
+)
+
+(
+~lmcdPreset = (amp: 0.21, att: rrand(0.01, 0.1), rel: rrand(2.5, 5), trigDur: rrand(0.01, 0.1), lfCubTu: rrand(0.1, 1), hpfFreq: 440);
+// rrand
+)
+
+(
+Ndef(\lmcd, {
 	var sig, noise, thunder, rainStep, env, delayTime;
 	// env = Linen.kr(gate, att, 1, rel, doneAction);
-	env = EnvGen.ar(Env.asr(att, 1, rel), gate, doneAction: doneAction);
-	sig = Duty.kr(trigDur, 0, Dseq(fib(32).wrap(20, 55).midicps, inf));
-	sig = LFCub.ar([-1, sig, sig / 3, -2] * lfCubTu);
+	env = EnvGen.ar(Env.asr(~lmcdPreset[\att], 1, ~lmcdPreset[\rel]));
+	sig = Duty.kr(~lmcdPreset[\trigDur], 0, Dseq(fib(32).wrap(20, 55).midicps, inf));
+	sig = LFCub.ar([-1, sig, sig / 3, -2] * ~lmcdPreset[\lfCubTu]);
 	sig = LeakDC.ar(sig) * 9;
-	sig = HPF.ar(sig, hpfFreq).clip2 / 9;
+	sig = HPF.ar(sig, ~lmcdPreset[\hpfFreq]).clip2 / 9;
 	sig = sig * env;
-	sig = Splay.ar(sig, 1, amp);
+	sig = Splay.ar(sig, 1, ~lmcdPreset[\amp]);
 	// OffsetOut.ar(out, sig);
-	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
-}).add;
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
+});
+)
 
+Ndef(\lmcd).fadeTime_(10);
 
+Ndef(\lmcd).play(2);
 
-*/
+Ndef(\lmcd).release(12);
 
 // pb syntaxe ?
 
