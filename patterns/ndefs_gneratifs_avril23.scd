@@ -143,6 +143,20 @@ Ndef(\mod2).fadeTime_(4);
 // default
 )
 
+(
+~raisonnePreset = ( 'bwr': 0.004189851512312889, 'atk': 0.000175008106231689, 'dcy': 6.7661636948586, 'stn': 1, 'amp': 1, 'rls': 2.7912724018097, 'frq': 51 )
+)
+
+(
+~raisonnePreset = ( 'bwr': 0.0065117617845535, 'atk': 0.00088335227966309, 'dcy': 9.3432914495468, 'stn': 1, 'amp': 1, 'rls': 4.8408409953117, 'frq': 68 )
+)
+
+(
+~raisonnePreset = (amp:1, atk: rrand(0.0, 0.02), dcy: rrand(4.3, 8), stn: 1, rls: rrand(2.5, 5), frq: rrand(30, 90), bwr: rrand(0.0005, 0.01));
+// rrand
+)
+
+
 // pourquoi ne sort que sur la gauche? mystère à résoudre
 (
 Ndef(\raisonne,{
@@ -151,8 +165,8 @@ Ndef(\raisonne,{
 	env = EnvGen.kr(Env.adsr(~raisonnePreset[\atk], ~raisonnePreset[\dcy], ~raisonnePreset[\stn], ~raisonnePreset[\rls]));
 	n = 50;
 	sig = Mix.fill(n, {|i| Resonz.ar(Dust2.ar(5), ~raisonnePreset[\frq] * (i + 1), ~raisonnePreset[\bwr], 300)}) * n.reciprocal; // scale to ensure no clipping
-	// sig = Pan2.ar(sig, pan, amp) * env;
-	sig * ~raisonnePreset[\amp] * env;
+	sig = (sig * ~raisonnePreset[\amp] * env);
+	// sig * ~raisonnePreset[\amp] * env;
 	// OffsetOut.ar(out, sig);
 })
 )
@@ -164,15 +178,27 @@ Ndef(\raisonne).release(6);
 Ndef(\raisonne).fadeTime_(8);
 
 
-// fait dans le train, à tester
+// ok
+(
+~bigraphPreset = ( 'crv': -12, 'atk': 6.8707007169724e-05, 'trig1Freq': 0.045016779899597, 'amp': 0.1, 'modulo2Offset': 96, 'dcy': 0.071771189570427, 'modulo1': 128, 'noteOffset': 30, 'envPow': 0.7401768684387, 'modulo2Mul': 5.7536766052246, 'modulo2Freq': 1.8303462028503, 'stn': 1, 'trig2Freq': 0.054256244897842, 'rls': 1.8505662679672, 'srcFreq': 14, 'modPhaseMul': 2.2369314063435 )
+)
 
 
 (
-~bigraphPreset = (amp: 0.1, pan: 0, atk: 0.0001, dcy: 0.1, stn: 1, rls: 2, crv: (-12), envPow: 1, trig1Freq: 0, trig2Freq: 0, modulo1: 128, modulo2Freq: 3, modulo2Mul: 9, modulo2Offset: 99, noteOffset: 33, srcFreq: 9, modPhaseMul: 3.1415926535898);
+~bigraphPreset = (amp: 0.1, atk: 0.0001, dcy: 0.1, stn: 1, rls: 2, crv: (-12), envPow: 1, trig1Freq: 0, trig2Freq: 0, modulo1: 128, modulo2Freq: 3, modulo2Mul: 9, modulo2Offset: 99, noteOffset: 33, srcFreq: 9, modPhaseMul: 3.1415926535898);
 ) // default
 
 (
-~bigraphPreset = (amp: 0.1, pan: 0, atk: rrand(0.00005, 0.0001), dcy: rrand(0.025, 0.1), stn: 1, rls: rrand(1.5, 2), crv: (-12), envPow: rrand(0.01, 1), trig1Freq: rrand(0, 12.0), trig2Freq: rrand(0.1, 7), modulo1: 128, modulo2Freq: rrand(0.1,3), modulo2Mul: rrand(0.8,9), modulo2Offset: rrand(12,99), noteOffset: rrand(12,33), srcFreq: rrand(4,9), modPhaseMul: rrand(1.12, 3.1415926535898));
+~bigraphPreset = ( 'crv': -12, 'atk': 8.2314211130142e-05, 'trig1Freq': 0.067522730827332, 'amp': 0.1, 'modulo2Offset': 43, 'dcy': 0.074790847301483, 'modulo1': 128, 'noteOffset': 53, 'envPow': 0.67135314583778, 'modulo2Mul': 1.8178494691849, 'modulo2Freq': 0.7831169128418, 'stn': 1, 'trig2Freq': 0.16879383325577, 'rls': 1.9973884224892, 'srcFreq': 67, 'modPhaseMul': 2.8165145701781 )
+)
+
+
+(
+~bigraphPreset = ( 'crv': -12, 'atk': 9.4498956203461e-05, 'trig1Freq': 2.34856629371643, 'amp': 0.1, 'modulo2Offset': 87, 'dcy': 0.2085665157437325, 'modulo1': 128, 'noteOffset': 39, 'envPow': 0.8292261826992, 'modulo2Mul': 5.8483431577682, 'modulo2Freq': 2.3814787745476, 'stn': 1, 'trig2Freq': 0.18152314662933, 'rls': 1.8441705107689, 'srcFreq': 39, 'modPhaseMul': 3.9519720880263 )
+)
+
+(
+~bigraphPreset = (amp: 0.1, atk: rrand(0.00005, 0.0001), dcy: rrand(0.025, 0.1), stn: 1, rls: rrand(1.5, 2), crv: (-12), envPow: rrand(0.01, 1), trig1Freq: rrand(0, 0.120), trig2Freq: rrand(0,0.17), modulo1: 128, modulo2Freq: rrand(0.1,3), modulo2Mul: rrand(0.8,9), modulo2Offset: rrand(12,99), noteOffset: rrand(12,53), srcFreq: rrand(4,89), modPhaseMul: rrand(1.12, 3.1415926535898));
 )
 
 (
@@ -192,7 +218,7 @@ Ndef(\bigraph, {
 			~bigraphPreset[\modPhaseMul]
     );
 		sig = (SinOsc.ar(~bigraphPreset[\srcFreq], modPhase) / 3) * env;
-		// sig = Pan2.ar(Splay.ar(sig), pan, amp);
+	sig = (Splay.ar(sig) * ~bigraphPreset[\amp]);
 		// OffsetOut.ar(out, sig);
 });
 )
@@ -204,15 +230,26 @@ Ndef(\bigraph).release(8);
 Ndef(\bigraph).fadeTime_(8);
 
 // fonctionne
+(
+~modelAixPreset = ( 'atk': 0.0010641890645027, 'pan': 0, 'revtSel': 1, 'out': 2, 'amp': 0.1, 'rls': 0.25551299858093, 'sustain': 1 )
+)
+
 
 (
-~modelAixPreset = (out: 2, amp: 0.1, pan: 0, atk: 0.001, rls: 0.2, sustain: 1, revtSel: 0)
+~modelAixPreset = (out: 2, amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, revtSel: 0)
 ) // default
+
+(
+~modelAixPreset = ( 'atk': 0.00071098121404648, 'revtSel': 1, 'out': 2, 'amp': 0.1, 'rls': 0.16832694339752, 'sustain': 1 )
+)
+
+(
+~modelAixPreset = ( 'atk': 0.0008523430109024, 'pan': 0, 'revtSel': 0, 'out': 2, 'amp': 0.1, 'rls': 0.16422292542458, 'sustain': 1 )
+)
 
 (
 ~modelAixPreset = (out: 2, amp: 0.1, pan: 0, atk: rrand(0.0005, 0.0012), rls: rrand(0.162, 0.3), sustain: 1, revtSel: rrand(0,1))
 ) // rrand
-
 
 (
 Ndef(\modelAix, {
@@ -245,7 +282,7 @@ Ndef(\modelAix).play(2);
 
 Ndef(\modelAix).release(8);
 
-Ndef(\modelAix).fadeTime(9);
+Ndef(\modelAix).fadeTime_(9);
 
 (
 ~dannySimplePreset = (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, add1: 0, add2: 0, div1: 0.03, div2: 5, rng1Lo: (-3), rng1Hi: 2, rng2Lo: (-2), rng2Hi: 3 )
@@ -299,9 +336,12 @@ Ndef(\dannySimple).play(2);
 
 Ndef(\dannySimple).release(10);
 
-Ndef(\dannySimple).fadeTime_(9);
+Ndef(\dannySimple).fadeTime_(19);
 
 // fonctionne
+(
+~dannySimplePreset = ( 'add2': 607, 'pan': 0, 'rng1Lo': -3.3587653636932, 'rng2Lo': -4, 'amp': 0.51, 'sustain': 1, 'atk': 0.0026928461182117, 'rng1Hi': 2.1515865325928, 'div2': 28, 'add1': 698, 'div1': 37, 'out': 2, 'rng2Hi': 4, 'rls': 0.13813012003899 )
+)
 
 (
 ~dannySimple1Preset = (out: 2, amp: 0.4, pan: 0, atk: 0.001, rls: 0.2, sustain: 1, add1: 970, add2: 1030, div1: 30, div2: 30, rng1Lo: (-4), rng1Hi: 4, rng2Lo: (-4), rng2Hi: 4)
@@ -324,7 +364,6 @@ Ndef(\dannySimple).fadeTime_(9);
 ~dannySimple1Preset = (out: 2, amp: 0.51, pan: 0, atk: rrand(0.00051,0.01), rls: rrand(0.1,0.23), sustain: 1, add1: rrand(430, 1970), add2: rrand(230, 1930), div1: rrand(15, 50), div2: rrand(20,35), rng1Lo: rrand(-4, -1.2), rng1Hi: rrand(1.3, 4.5) , rng2Lo: (-4), rng2Hi: 4)
 // rrand
 )
-
 
 (
 Ndef(\dannySimple1, {
@@ -396,7 +435,7 @@ Ndef(\gcdGene).play(2);
 
 Ndef(\gcdGene).release(8);
 
-Ndef(\gcdGene).fadeTime(9);
+Ndef(\gcdGene).fadeTime_(19);
 
 (
 ~gcdDmGenePreset = (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, sig1Frq: 3000, sig2Frq: 2995, mod1: 100, mod2: 100, dev: 25)
@@ -414,7 +453,6 @@ Ndef(\gcdGene).fadeTime(9);
   'rls': 0.2389476776123, 'amp': 0.1, 'atk': 0.076756017446518, 'pan': 0, 'sig1Frq': 3225,
   'sustain': 1 )
 )
-
 
 (
 ~gcdDmGenePreset = (amp: 0.1, pan: 0, atk: rrand(0.001, 0.1), rls: rrand(0.2, 0.5), sustain: 1, sig1Frq: rrand(500, 3000), sig2Frq: rrand(300, 2995), mod1: rrand(30, 100), mod2: rrand(100, 140), dev: rrand(10, 25))
@@ -444,7 +482,7 @@ Ndef(\gcdDmGene).play(2);
 
 Ndef(\gcdDmGene).release(9);
 
-Ndef(\gcdDmGene).fadeTime_(9);
+Ndef(\gcdDmGene).fadeTime_(29);
 
 
 (
@@ -469,7 +507,6 @@ Ndef(\gcdDmGene).fadeTime_(9);
 ~gcdDm2GenePreset = (amp: 0.1, atk: rrand(0.001, 0.1), rls: rrand(0.2, 0.5), sustain: 1, sig1Frq: rrand(3000, 8000), sig2Frq: rrand(1500, 8995), mod1: rrand(20, 60), mod2: rrand(15, 60), dev1: rrand(0.5, 3), dev2: rrand(5.5, 9));
 )
 
-
 (
 Ndef(\gcdDm2Gene, {
 	/*amp = 0.1, atk = 0.001, rls = 0.2, sustain = 1, sig1Frq = 3000, sig2Frq = 2995, mod1 = 20, mod2 = 20, dev1 = 3, dev2 = 7;*/
@@ -493,7 +530,7 @@ Ndef(\gcdDm2Gene, {
 
 Ndef(\gcdDm2Gene).play(2);
 
-Ndef(\gcdDm2Gene).fadeTime_(12);
+Ndef(\gcdDm2Gene).fadeTime_(22);
 
 Ndef(\gcdDm2Gene).release(10);
 
@@ -610,7 +647,7 @@ Ndef(\gcdLcmDmGene).play(2);
 
 Ndef(\gcdLcmDmGene).fadeTime_(18);
 
-Ndef(\gcdLcmDmGenePreset).release(10);
+Ndef(\gcdLcmDmGene).release(10);
 
 
 (
@@ -699,17 +736,11 @@ Ndef(\gcdDm4Gene).release(10);
 )
 
 (
-~gcdDm5GenePreset = ( 'atk': 0.094500693678856, 'mul1': 51, 'dev1': 1, 'mod2': 349,
-  'add1': 24, 'amp': 0.1, 'mod3': 61, 'end': 0.01, 'rate1': 0.73858630657196,
-  'serSize': 35, 'dev2': 2.4337140083313, 'add': 247, 'start': 7, 'rls': 0.43925658464432,
-  'sustain': 1 );
+~gcdDm5GenePreset = ( 'atk': 0.094500693678856, 'mul1': 51, 'dev1': 1, 'mod2': 349, 'add1': 24, 'amp': 0.1, 'mod3': 61, 'end': 0.01, 'rate1': 0.73858630657196, 'serSize': 35, 'dev2': 2.4337140083313, 'add': 247, 'start': 7, 'rls': 0.43925658464432, 'sustain': 1 );
 )
 
 (
-~gcdDm5GenePreset = ('atk': 0.07861684179306, 'mul1': 49, 'dev1': 1, 'mod2': 162,
-  'add1': 25, 'amp': 0.1, 'mod3': 487, 'end': 0.01, 'rate1': 0.70557272434235,
-  'serSize': 72, 'dev2': 2.4129635810852, 'add': 346, 'start': 5, 'rls': 0.35922583341599,
-	'sustain': 1);
+~gcdDm5GenePreset = ('atk': 0.07861684179306, 'mul1': 49, 'dev1': 1, 'mod2': 162, 'add1': 25, 'amp': 0.1, 'mod3': 487, 'end': 0.01, 'rate1': 0.70557272434235, 'serSize': 72, 'dev2': 2.4129635810852, 'add': 346, 'start': 5, 'rls': 0.35922583341599, 'sustain': 1);
 )
 
 (
@@ -762,9 +793,7 @@ Ndef(\gcdDm5Gene).release(12);
 )
 
 (
-~gcdDmFbGenePreset = ( 'add1': 57, 'sustain': 1, 'fbSel': 0, 'rls': 0.2647763133049,
-  'atk': 0.095083946466446, 'amp': 0.1, 'ser2Size': 3.5095220208168, 'sigSel': 0, 'ser1Size': 2.8815880775452,
-  'mod': 58, 'sinFmin': 107, 'add2': 114.15673396587, 'div': 11 );
+~gcdDmFbGenePreset = ( 'add1': 57, 'sustain': 1, 'fbSel': 0, 'rls': 0.2647763133049, 'atk': 0.095083946466446, 'amp': 0.1, 'ser2Size': 3.5095220208168, 'sigSel': 0, 'ser1Size': 2.8815880775452, 'mod': 58, 'sinFmin': 107, 'add2': 114.15673396587, 'div': 11 );
 )
 
 (
@@ -845,7 +874,7 @@ Ndef(\gcdDmFbGene).release(20);
 )
 
 (
-~factorFunPreset = ( 'amp': 0.1, 'atk': 0.043364680290222, 'mod': 0.46812121868134, 'rls': 0.32145382165909,
+~factorFunPreset = ( 'amp': 0.1, 'atk': 0.043364680290222, 'mod': 0.96812121868134, 'rls': 0.32145382165909,
   'sustain': 1 )
 )
 
@@ -897,23 +926,19 @@ Ndef(\factorFun).release(12);
 )
 
 (
-~factorFun1Preset = ( 'sigSel': 1, 'atk': 0.096793208837509, 'pmIdx': 0.4054794549942, 'amp': 0.1,
-  'sustain': 1, 'rls': 0.31651903390884, 'hiRange': 0.35225427150726 );
+~factorFun1Preset = ( 'sigSel': 1, 'atk': 0.096793208837509, 'pmIdx': 0.4054794549942, 'amp': 0.1, 'sustain': 1, 'rls': 0.31651903390884, 'hiRange': 0.35225427150726 );
 )
 
 (
-~factorFun1Preset = ( 'sigSel': 0, 'atk': 0.096793208837509, 'pmIdx': 0.1054794549942, 'amp': 0.1,
-  'sustain': 1, 'rls': 0.41651903390884, 'hiRange': 0.65225427150726 )
+~factorFun1Preset = ( 'sigSel': 0, 'atk': 0.096793208837509, 'pmIdx': 0.1054794549942, 'amp': 0.1, 'sustain': 1, 'rls': 0.41651903390884, 'hiRange': 0.65225427150726 )
 )
 
 (
-~factorFun1Preset = ( 'sigSel': 0, 'atk': 0.18950800025463, 'pmIdx': 0.44989132881165, 'amp': 0.1,
-  'sustain': 1, 'rls': 0.2683856010437, 'hiRange': 0.70070533752441 );
+~factorFun1Preset = ( 'sigSel': 0, 'atk': 0.18950800025463, 'pmIdx': 0.44989132881165, 'amp': 0.1, 'sustain': 1, 'rls': 0.2683856010437, 'hiRange': 0.70070533752441 );
 )
 
 (
-~factorFun1Preset = ( 'sigSel': 0, 'atk': 0.091273785948753, 'pmIdx': 0.20537732839584, 'amp': 0.1,
-  'sustain': 1, 'rls': 0.68173505067825, 'hiRange': 0.31282923221588 );
+~factorFun1Preset = ( 'sigSel': 0, 'atk': 0.091273785948753, 'pmIdx': 0.20537732839584, 'amp': 0.1, 'sustain': 1, 'rls': 0.68173505067825, 'hiRange': 0.31282923221588 );
 )
 
 (
@@ -977,13 +1002,11 @@ Ndef(\factorFun1).release(12);
 )
 
 (
-~lcm1Preset = ( 'rate1': 1820, 'loRange2': 10, 'atk': 0.0075817074775696, 'amp': 0.1,
-  'sustain': 1, 'rls': 0.52527899742126, 'loRange1': 1, 'rate2': 5 )
+~lcm1Preset = ( 'rate1': 1820, 'loRange2': 10, 'atk': 0.0075817074775696, 'amp': 0.1, 'sustain': 1, 'rls': 0.52527899742126, 'loRange1': 1, 'rate2': 5 )
 )
 
 (
-~lcm1Preset = ( 'rate1': 588, 'loRange2': 10, 'atk': 0.011537132620811, 'amp': 0.1,
-  'sustain': 1, 'rls': 0.34017815589905, 'loRange1': 1, 'rate2': 5 )
+~lcm1Preset = ( 'rate1': 588, 'loRange2': 10, 'atk': 0.011537132620811, 'amp': 0.1, 'sustain': 1, 'rls': 0.34017815589905, 'loRange1': 1, 'rate2': 5 )
 )
 
 (
@@ -1002,8 +1025,8 @@ Ndef(\lcm1, {
 	sig2 = SinOsc.ar(LFNoise1.kr(~lcm1Preset[\rate2], 500, 501)).range(~lcm1Preset[\loRange2],
 		100).round(1);
 	sig = tanh(lcm(sig1, sig2)*0.1);
-	sig = sig * env;
-	sig = (sig * ~lcm1Preset[\amp]);
+	// sig = sig * env;
+	sig = (sig * env * ~lcm1Preset[\amp]);
 	// OffsetOut.ar(out, sig);
 });
 )
@@ -1092,7 +1115,7 @@ Ndef(\lcm2Gene).release(14);
 )
 
 (
-~lcm2Preset = (amp: 0.1, atk: rrand(0.001, 0.1), rls: rrand(0.2, 0.6), sustain: 1, mod1: rrand(1.4, 3.09431), mod2: rrand(20, 54.0487));
+~lcm2Preset = (amp: 0.1, atk: rrand(0.001, 0.1), rls: rrand(0.2, 0.6), sustain: 1, mod1: rrand(1.4, 4.09431), mod2: rrand(20, 54.0487));
 // rrand
 )
 
@@ -1134,15 +1157,15 @@ Ndef(\lcm2).release(10);
 )
 
 (
-~modelBitsPreset = ( 'rls': 0.43033952713013, 'mod2': 0.97577879428864, 'atk': 0.072004798531532, 'mod1': 0.61842906475067, 'amp': 0.1, 'sustain': 1 )
+~modelBitsPreset = ( 'rls': 0.43033952713013, 'mod2': 0.87577879428864, 'atk': 0.072004798531532, 'mod1': 0.81842906475067, 'amp': 0.1, 'sustain': 1 )
 )
 
 (
-~modelBitsPreset = ( 'rls': 0.25742192268372, 'mod2': 0.93238798379898, 'atk': 0.031174141168594, 'mod1': 0.60378706455231, 'amp': 0.1, 'sustain': 1 )
+~modelBitsPreset = ( 'rls': 0.25742192268372, 'mod2': 0.83238798379898, 'atk': 0.031174141168594, 'mod1': 0.90378706455231, 'amp': 0.1, 'sustain': 1 )
 )
 
 (
-~modelBitsPreset = ( 'rls': 0.50352067947388, 'mod2': 0.97035672664642, 'atk': 0.030132615804672, 'mod1': 0.52691388130188, 'amp': 0.1, 'sustain': 1 )
+~modelBitsPreset = ( 'rls': 0.950352067947388, 'mod2': 0.7035672664642, 'atk': 0.00130132615804672, 'mod1': 0.52691388130188, 'amp': 0.1, 'sustain': 1 )
 )
 
 (
@@ -1393,6 +1416,7 @@ Ndef(\mcld).release(10);
 
 (
 ~padovanPreset = ( 'roomSize': 3.6036995053291, 'freq': 245.55842895508, 'tridDur': 0.65141571164131, 'amp': 0.21 );
+)
 
 (
 ~padovanPreset = ( 'roomSize': 8.4315677285194, 'freq': 224.36461868286, 'tridDur': 0.86605371832848, 'amp': 0.21 );
@@ -1624,10 +1648,10 @@ Ndef(\lmcd).release(12);
 ~duryGenePreset = (amp: 0.1, atk: rrand(0.0005, 0.001), rls: rrand(0.15, 0.25), sustain: 1, impFreq1: rrand(0.02, 0.1), impFreq2: rrand(0.04, 0.15), smooth1: rrand(0.5, 4), smooth2: rrand(0.7, 2), smooth3: rrand(0.65, 0.8)) // rrand
 )
 
-// probleme de parentheses / crochets
+// ERROR: Message '*' not understood.
+
 (
 Ndef(\duryGene, {
-	// arg out = 0, amp = 0.1, atk = 0.001, rls = 0.2, sustain = 1, impFreq1 = 0.02, impFreq2 = 0.04, smooth1 = 4, smooth2 = 1.7, smooth3 = 0.9, gate = 1, doneAction = 2;
     var snd, rep, repCh, randNum, fac, fac1, fac2, fac3;
 
     rep = [4, 8, 16, 24, 32];
@@ -1668,7 +1692,7 @@ Ndef(\duryGene, {
         sig = Limiter.ar(sig * 1/(i + 0.1));
     );
 
-		snd = snd * ~duryGenePreset[\amp];
+		snd = (snd * ~duryGenePreset[\amp]);
 });
 })
 )
@@ -1692,7 +1716,6 @@ Ndef(\duryGene).fadeTime_(8);
 
 (
 Ndef(\gcdFunc, {
-	// arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls = 0.2, sustain = 1, thr = 0.1, gate = 1, doneAction = 2;
     var sig, src, gcdFunc, env;
 
 	env = EnvGen.kr(Env.asr(~gcdFuncPreset[\atk], 1, ~gcdFuncPreset[\rls]), gate: 1, timeScale: ~gcdFuncPreset[\sustain]);
@@ -1717,7 +1740,7 @@ Ndef(\gcdFunc).fadeTime_(6);
 (
 ~westPreset = (fadeIn: 0.01, fadeOut: 0.01, freq: 220, pitchBendRatio: 1, glide: 0, fm1Ratio: 0.66, fm2Ratio: 3.3, fm1Amount: 0.0, fm2Amount: 0.0, vel: 0.7, pressure: 0, timbre: 0, waveShape: 0, waveFolds: 0, envType: 0, attack: 0.04, peak: 10000, decay: 1, amp: 1, lfoShape: 0, lfoFreq: 0.5, lfoToFreqAmount: 0, lfoToWaveShapeAmount: 0, lfoToWaveFoldsAmount: 0, lfoToFm1Amount: 0, lfoToFm2Amount: 0, lfoToAttackAmount: 0, lfoToPeakAmount: 0, lfoToDecayAmount: 0, lfoToReverbMixAmount: 0, drift: 0, dur: 10, t_gate: 1, /*gate=1, */ killGate: 1 );
 // default
-) ;
+)
 
 (
 ~westPreset = (fadeIn: rrand(0.005, 0.01), fadeOut: rrand(0.005, 0.01), freq: rrand(60,420), pitchBendRatio: rrand(0.3,1), glide: rrand(0.0,1), fm1Ratio: rrand(0.1, 0.66), fm2Ratio: rrand(1, 3.3), fm1Amount: 0.0, fm2Amount: 0.0, vel: 0.7, pressure: 0, timbre: 0, waveShape: 0, waveFolds: 0, envType: 0, attack: 0.04, peak: 10000, decay: 1, amp: 1, lfoShape: 0, lfoFreq: 0.5, lfoToFreqAmount: 0, lfoToWaveShapeAmount: 0, lfoToWaveFoldsAmount: 0, lfoToFm1Amount: 0, lfoToFm2Amount: 0, lfoToAttackAmount: 0, lfoToPeakAmount: 0, lfoToDecayAmount: 0, lfoToReverbMixAmount: 0, drift: 0, dur: 10, t_gate: 1, /*gate=1, */ killGate: 1 );
@@ -1725,16 +1748,13 @@ Ndef(\gcdFunc).fadeTime_(6);
 ) ;
 
 
-// fonctionne pas
+// Ne fonctionne pas
 // ERROR: Primitive '_ClipFloat' failed.
+// Wrong type.
+// RECEIVER: 220.0
 
 (
 Ndef(\west, {
-	// arg out = 0, pan=0, fadeIn=0.01, fadeOut=0.01, freq = 220, pitchBendRatio = 1, glide = 0, fm1Ratio = 0.66, fm2Ratio = 3.3, fm1Amount = 0.0, fm2Amount = 0.0,
-	// vel = 0.7, pressure = 0, timbre = 0, waveShape = 0, waveFolds = 0, envType = 0, attack = 0.04, peak = 10000, decay = 1, amp = 1, lfoShape = 0, lfoFreq = 0.5,
-	// lfoToFreqAmount = 0, lfoToWaveShapeAmount = 0, lfoToWaveFoldsAmount = 0, lfoToFm1Amount = 0, lfoToFm2Amount = 0,
-	// lfoToAttackAmount = 0, lfoToPeakAmount = 0, lfoToDecayAmount = 0, lfoToReverbMixAmount = 0, drift = 0, dur=10, t_gate=1, gate=1, killGate=1, doneAction = 2;
-
 	var i_nyquist = SampleRate.ir * 0.5, signal, controlLag = 0.005, i_numHarmonics = 44,
 	modFreq, mod1, mod2, mod1Index, mod2Index, mod1Freq, mod2Freq, sinOsc, triOsc, additiveOsc, additivePhase,
 	filterEnvVel, filterEnvLow, lpgEnvelope, lpgSignal, asrEnvelope, asrFilterFreq, asrSignal, killEnvelope, i_driftRate = 0.15, maxDecay=8;
@@ -1870,13 +1890,3 @@ Ndef(\west).play(2);
 Ndef(\west).release(9);
 
 Ndef(\west).fadeTime_(8);
-
-// dejafait mais à corriger
-SynthDef(\raisonne,{ arg out = 0, amp = 1, pan = 0, atk = 0, dcy = 8, stn = 1, rls = 4, frq = 40, bwr = 0.001, gate = 1, doneAction = 2;
-	var sig, n, env;
-    env = EnvGen.kr(Env.adsr(atk, dcy, stn, rls), gate, doneAction: doneAction);
-	n = 50;
-	sig = Mix.fill(n, {|i| Resonz.ar(Dust2.ar(5), frq * (i + 1), bwr, 300)}) * n.reciprocal; // scale to ensure no clipping
-	sig = Pan2.ar(sig, pan, amp) * env;
-    OffsetOut.ar(out, sig);
-}).add;
