@@ -1,3 +1,6 @@
+
+
+
 (
 ~lcmnoisePreset =  (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, spread: 1, GHsize: 1.6); // default
 )
@@ -103,6 +106,7 @@ Ndef(\ulysse42, {
 );
 
 
+
 Ndef.ar(\mod2) *
 
 Ndef(\ulysse42).play(2);
@@ -121,19 +125,44 @@ Ndef(\ulysse42).fadeTime_(28);
 
 Ndef(\mod1, { LFNoise1.ar(~mod1Preset[\freq], ~mod1Preset[\mul], ~mod1Preset[\add]) });
 
-Ndef(\mod1).fadeTime = 8;
+Ndef(\mod1).fadeTime_(8);
 
 (
-~mod2Preset = (freq: 440, width: 0.5, mul: 1, add: 0); // default
+~mod2Preset = (freq: 40, width: 0.5, mul: 1, add: 0); // default
 )
 
 (
 ~mod2Preset = (freq: rrand(5,210), width: rrand(0.01, 0.5), mul: rrand(0.4,0.6), add: 0); // rrand
 )
 
-Ndef(\mod2, {Pulse.ar(~mod2Preset[\freq], ~mod2Preset[\width], ~mod2Preset[\mul], ~mod2Preset[\add]) * Ndef.ar(\mod1)});
+Ndef(\mod2, {Pulse.ar(~mod2Preset[\freq], ~mod2Preset[\width], ~mod2Preset[\mul], ~mod2Preset[\add])});
 
 Ndef(\mod2).fadeTime_(4);
+// SinOscFB
+// freq
+// The base frequency of the sine oscillator in Hertz.
+//
+// feedback
+// The second argument is the amplitude of phase feedback in radians.
+//
+// mul
+// Output will be multiplied by this value.
+//
+// add
+// This value will be added to the output after any multiplication.
+(
+~sinOscFbModPreset = (freq: 440.0, feedback: 0.0, mul: 1.0, add: 0.0);
+)
+
+(
+~sinOscFbModPreset = (freq: rrand(40.0, 400), feedback: rrand(0.0, 0.7), mul: rrand(0.65, 1.0), add: rrand(0.0, 0.7));
+)
+
+(
+Ndef(\sinOscFbMod, {SinOscFB.ar(~sinOscFbModPreset[\freq], ~sinOscFbModPreset[\feedback], ~sinOscFbModPreset[\mul], ~sinOscFbModPreset[\add]) * Ndef.kr(\mod1)});
+)
+
+Ndef(\sinOscFbMod).fadeTime_(10);
 
 // ajout 0804
 
@@ -157,21 +186,38 @@ Ndef(\mod2).fadeTime_(4);
 )
 
 
-// pourquoi ne sort que sur la gauche? mystère à résoudre
+// ok 1504
 (
-Ndef(\raisonne,{
+Ndef(\raisonne, {
 	// arg out = 0, amp = 1, pan = 0, atk = 0, dcy = 8, stn = 1, rls = 4, frq = 40, bwr = 0.001, gate = 1, doneAction = 2;
 	var sig, n, env;
-	env = EnvGen.kr(Env.adsr(~raisonnePreset[\atk], ~raisonnePreset[\dcy], ~raisonnePreset[\stn], ~raisonnePreset[\rls]));
+	env = EnvGen.kr(
+		Env.adsr(
+			~raisonnePreset[\atk],
+			~raisonnePreset[\dcy],
+			~raisonnePreset[\stn],
+			~raisonnePreset[\rls]
+		)
+	);
 	n = 50;
-	sig = Mix.fill(n, {|i| Resonz.ar(Dust2.ar(5), ~raisonnePreset[\frq] * (i + 1), ~raisonnePreset[\bwr], 300)}) * n.reciprocal; // scale to ensure no clipping
+	sig = Mix.fill(n, {|i|
+		Resonz.ar(
+			Dust2.ar(5),
+			~raisonnePreset[\frq] * (i + 1),
+			~raisonnePreset[\bwr],
+			[300, 302]
+		)
+	}) * n.reciprocal; // scale to ensure no clipping
 	sig = (sig * ~raisonnePreset[\amp] * env);
+	sig
 	// sig * ~raisonnePreset[\amp] * env;
 	// OffsetOut.ar(out, sig);
 })
 )
 
 Ndef(\raisonne).play(2);
+
+Ndef(\raisonne).clear;
 
 Ndef(\raisonne).release(6);
 
@@ -205,19 +251,21 @@ Ndef(\raisonne).fadeTime_(8);
 Ndef(\bigraph, {
 	// arg out = 0, amp = 0.2, pan = 0, atk = 0.0001, dcy = 0.1, stn = 1, rls = 2, crv = (-12), envPow = 1, trig1Freq = 0, trig2Freq = 0, modulo1 = 128, modulo2Freq = 3, modulo2Mul = 9, modulo2Offset = 99, noteOffset = 33, srcFreq = 9, modPhaseMul = 3.1415926535898, gate = 1, doneAction = 2;
     var sig, modPhase, env, trig1, trig2;
-	env = EnvGen.kr(Env.adsr(~bigraphPreset[\atk], ~bigraphPreset[\dcy], ~bigraphPreset[\stn], ~bigraphPreset[\rls], curve: ~bigraphPreset[\crv])).pow(~bigraphPreset[\envPow]);
+	env = EnvGen.kr(Env.adsr(~bigraphPreset[\atk], ~bigraphPreset[\dcy], ~bigraphPreset[\stn], ~bigraphPreset[\rls], curve: ~bigraphPreset[\crv])).pow(~bigraphPreset[\envPow] * Ndef.ar(\mod1));
 		trig1 = Impulse.kr(~bigraphPreset[\trig1Freq]);
 		trig2 = Impulse.kr(~bigraphPreset[\trig2Freq]);
     modPhase = SinOsc.ar(
         midicps(
             (
-					Sweep.ar(trig1, (33..3)) % ~bigraphPreset[\modulo1] & (Sweep.ar(trig2, (3..9)) % (LFSaw.ar(~bigraphPreset[\modulo2Freq]) * ~bigraphPreset[\modulo2Mul] + ~bigraphPreset[\modulo2Offset]))
-				) + ~bigraphPreset[\noteOffset]
+				// Sweep.ar(trig1, (33..3)) % ~bigraphPreset[\modulo1] & (Sweep.ar(trig2, (3..9)) % (LFSaw.ar(~bigraphPreset[\modulo2Freq]) * ~bigraphPreset[\modulo2Mul] + (~bigraphPreset[\modulo2Offset] + Ndef.kr(\sinOscFbMod))))
+				Sweep.ar(trig1, (33..3)) % ~bigraphPreset[\modulo1] & (Sweep.ar(trig2, (3..9)) % (LFSaw.ar(~bigraphPreset[\modulo2Freq] * Ndef.kr(\mod1)) * ~bigraphPreset[\modulo2Mul] * (~bigraphPreset[\modulo2Offset] + Ndef.kr(\sinOscFbMod))))
+			) + (~bigraphPreset[\noteOffset] + Ndef.kr(\mod2))
         ),
         0,
 			~bigraphPreset[\modPhaseMul]
     );
-		sig = (SinOsc.ar(~bigraphPreset[\srcFreq], modPhase) / 3) * env;
+	sig = (SinOsc.ar(~bigraphPreset[\srcFreq], modPhase) / 3) * env;
+	// sig = (SinOsc.ar(~bigraphPreset[\srcFreq], modPhase) / 3) * (Ndef.ar(\sinOscFbMod) + Ndef.ar(\mod2)) * ((Ndef.kr(\mod1) * env) + Ndef.kr(\mod2)) ;
 	sig = (Splay.ar(sig) * ~bigraphPreset[\amp]);
 		// OffsetOut.ar(out, sig);
 });
@@ -883,7 +931,7 @@ Ndef(\gcdDmFbGene).release(20);
 )
 
 
-// ne joue que sur la gauche !!
+// ok
 (
 Ndef(\factorFun, {
 	// arg amp = 0.1, atk = 0.001, rls = 0.2, sustain = 1, mod = 0.5;
@@ -907,12 +955,14 @@ Ndef(\factorFun, {
 	gcdoutput =
 	gcd(factorfunc.(\f1.kr).product,factorfunc.(\f2.kr).product) / scaling;
 
-	sig = SinOsc.ar(~factorFunPreset[\mod].linlin(0, 1, 20, 2000) * gcdoutput) * 0.3;
+	sig = SinOsc.ar(~factorFunPreset[\mod].linlin(0, 1, 20, 2000) * gcdoutput, [0, 0.02]) * 0.3;
 
 	sig = (sig * env * ~factorFunPreset[\amp]);
 	// OffsetOut.ar(out, sig);
 });
 )
+
+Ndef(\factorFun).clear;
 
 Ndef(\factorFun).fadeTime_(17);
 
@@ -994,7 +1044,7 @@ Ndef(\factorFun1).fadeTime_(17);
 
 Ndef(\factorFun1).play(2);
 
-Ndef(\factorFun1).release(12);
+Ndef(\factorFun1).release(32);
 
 (
 ~lcm1Preset = (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, rate1: 200, loRange1: 1, rate2: 6, loRange2: 10);
@@ -1014,7 +1064,7 @@ Ndef(\factorFun1).release(12);
 // rrand
 )
 
-// ne sort qu'à gauche?
+// ok
 (
 Ndef(\lcm1, {
 	// arg out = 0, amp = 0.1, pan = 0, atk = 0.001, rls = 0.2, sustain = 1, rate1 = 200, loRange1 = 1, rate2 = 6, loRange2 = 10;
@@ -1022,7 +1072,7 @@ Ndef(\lcm1, {
 	env = EnvGen.kr(Env.asr(~lcm1Preset[\atk], 1, ~lcm1Preset[\rls]), timeScale: ~lcm1Preset[\sustain]);
 	sig1 = SinOsc.ar(LFNoise2.ar(~lcm1Preset[\rate1], 500, 501)).range(~lcm1Preset[\loRange1],
 		100).round(1);
-	sig2 = SinOsc.ar(LFNoise1.kr(~lcm1Preset[\rate2], 500, 501)).range(~lcm1Preset[\loRange2],
+	sig2 = SinOsc.ar(LFNoise1.kr(~lcm1Preset[\rate2], 500, 501), [0, pi]).range(~lcm1Preset[\loRange2],
 		100).round(1);
 	sig = tanh(lcm(sig1, sig2)*0.1);
 	// sig = sig * env;
@@ -1033,10 +1083,13 @@ Ndef(\lcm1, {
 
 Ndef(\lcm1).fadeTime_(9);
 
+Ndef(\lcm1).clear;
+
 Ndef(\lcm1).play(2);
 
-Ndef(\lcm1).release(9);
+Ndef(\lcm1).release(29);
 
+// attention aux amp
 
 (
 ~lcm2GenePreset = (amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, rate1: 28, rate2: 26, smooth1: 0.4, smooth2: 0.2);
@@ -1044,7 +1097,7 @@ Ndef(\lcm1).release(9);
 )
 
 (
-~lcm2GenePreset = ( 'rate1': 18.416101551056, 'smooth1': 0.26401857733727, 'atk': 0.0062176464796066, 'amp': 0.1,
+~lcm2GenePreset = ( 'rate1': 18.416101551056, 'smooth1': 0.26401857733727, 'atk': 0.0062176464796066, 'amp': 0.01,
   'sustain': 1, 'rls': 0.54321409463882, 'smooth2': 0.29533241391182, 'rate2': 29 );
 )
 
@@ -1068,6 +1121,8 @@ Ndef(\lcm1).release(9);
 // rrand
 )
 
+
+// ok
 (
 Ndef(\lcm2Gene, {
 	// arg amp = 0.1, atk = 0.001, rls = 0.2, sustain = 1, rate1 = 28, rate2 = 26, smooth1 = 0.4, smooth2 = 0.2;
@@ -1082,7 +1137,7 @@ Ndef(\lcm2Gene, {
 	mod2 = Lag2.kr(mod2, ~lcm2GenePreset[\smooth2]);
 
 	sig1 = Saw.ar(mod1).range(-100,100).round(1);
-	sig2 = LFCub.ar(mod2).range(-100,100).round(1);
+	sig2 = LFCub.ar(mod2, [0, pi/2]).range(-100,100).round(1);
 
 	sig = tanh(lcm(sig1, sig2) * 0.001);
 
@@ -1092,6 +1147,8 @@ Ndef(\lcm2Gene, {
 )
 
 Ndef(\lcm2Gene).fadeTime_(6);
+
+Ndef(\lcm2Gene).clear;
 
 Ndef(\lcm2Gene).play(2);
 
@@ -1216,8 +1273,10 @@ Ndef(\modelBits).release(10);
  // fin gene_afinir
 // generative_sd_2mo
 
+
+// valeurs amp
 (
-~nVirgoPreset = (amp: 1, att: 0.01, rel: 20, feedBack: 7.5, sawFreq1: 32, sawFreq2: 33, sawAmp: 0.2, bpff: 2, bpffModSpeed: 1.33, bpffModAmt: 4, delayTime: 2, decayTime: 40);
+~nVirgoPreset = (amp: 0.1, att: 0.01, rel: 20, feedBack: 7.5, sawFreq1: 32, sawFreq2: 33, sawAmp: 0.2, bpff: 2, bpffModSpeed: 1.33, bpffModAmt: 4, delayTime: 2, decayTime: 40);
 // default
 )
 
@@ -1242,6 +1301,8 @@ Ndef(\modelBits).release(10);
 (
 ~nVirgoPreset = ( 'att': 0.18990749120712, 'sawAmp': 0.2, 'bpffModAmt': 2.2081257104874, 'rel': 13, 'sawFreq2': 694, 'bpff': 2, 'delayTime': 0.87268024682999, 'feedBack': 2.393406867981, 'bpffModSpeed': 2.7786209928989, 'decayTime': 40, 'amp': 0.2, 'sawFreq1': 105 )
 )
+
+~nVirgoPreset[\sawFreq2] = 34;
 
 (
 ~nVirgoPreset = (amp: 0.2, att: rrand(0.01, 0.2), rel: rrand(1,20), feedBack: rrand(4, 7.5), sawFreq1: rrand(32, 230), sawFreq2: rrand(33, 820), sawAmp: 0.2, bpff: 2, bpffModSpeed: rrand(1.33, 3), bpffModAmt: rrand(0.5, 4), delayTime: rrand(0.5, 2), decayTime: 40);
@@ -1272,7 +1333,7 @@ Ndef(\nVirgo, {
 });
 )
 
-Ndef(\nVirgo).fadeTime_(19);
+Ndef(\nVirgo).fadeTime_(10);
 
 Ndef(\nVirgo).play(2);
 
@@ -1281,7 +1342,7 @@ Ndef(\nVirgo).release(10);
 // edit 08 03 22 : remplace Env.linen par Env.asr() ok
 // rajouter des gate = 1 comme dans batuhan
 (
-~taltersPreset = (amp: 0.1);
+~taltersPreset = (amp: 0.061);
 )
 
 (
@@ -1362,25 +1423,25 @@ Ndef(\bozkurt).play(2);
 Ndef(\bozkurt).release(10);
 
 (
-~mcldPreset = (amp: 0.21, att: 0.01, rel: 10, impFreq: 10, hpfFreq: 440);
+~mcldPreset = (amp: 0.021, att: 0.01, rel: 10, impFreq: 10, hpfFreq: 440);
 // default
 )
 
 (
-~mcldPreset = ( 'amp': 0.21, 'att': 0.18903653979301, 'rel': 15, 'impFreq': 7.5887405872345, 'hpfFreq': 276.54161472321 )
+~mcldPreset = ( 'amp': 0.021, 'att': 0.18903653979301, 'rel': 15, 'impFreq': 7.5887405872345, 'hpfFreq': 276.54161472321 )
 )
 
 (
-~mcldPreset = ( 'amp': 0.21, 'att': 0.1143148291111, 'rel': 15, 'impFreq': 17.715059459209,
+~mcldPreset = ( 'amp': 0.021, 'att': 0.1143148291111, 'rel': 15, 'impFreq': 17.715059459209,
   'hpfFreq': 370.55721702576 )
 )
 
 (
-~mcldPreset = ( 'amp': 0.21, 'att': 0.17803493738174, 'rel': 7.5, 'impFreq': 12.890402913094, 'hpfFreq': 391.78939743042 )
+~mcldPreset = ( 'amp': 0.021, 'att': 0.17803493738174, 'rel': 7.5, 'impFreq': 12.890402913094, 'hpfFreq': 391.78939743042 )
 )
 
 (
-~mcldPreset = (amp: 0.21, att: rrand(0.01, 0.2), rel: rrand(5, 15), impFreq: rrand(4.5, 20), hpfFreq: rrand(230.4, 440));
+~mcldPreset = (amp: 0.021, att: rrand(0.01, 0.2), rel: rrand(5, 15), impFreq: rrand(4.5, 20), hpfFreq: rrand(230.4, 440));
 // rrand
 )
 
@@ -1410,28 +1471,28 @@ Ndef(\mcld).play(2);
 Ndef(\mcld).release(10);
 
 (
-~padovanPreset = (amp: 0.21, tridDur: 1, freq: 165, roomSize: 9)
+~padovanPreset = (amp: 0.021, tridDur: 1, freq: 165, roomSize: 9)
 // default
 )
 
 (
-~padovanPreset = ( 'roomSize': 3.6036995053291, 'freq': 245.55842895508, 'tridDur': 0.65141571164131, 'amp': 0.21 );
+~padovanPreset = ( 'roomSize': 3.6036995053291, 'freq': 245.55842895508, 'tridDur': 0.65141571164131, 'amp': 0.021 );
 )
 
 (
-~padovanPreset = ( 'roomSize': 8.4315677285194, 'freq': 224.36461868286, 'tridDur': 0.86605371832848, 'amp': 0.21 );
+~padovanPreset = ( 'roomSize': 8.4315677285194, 'freq': 224.36461868286, 'tridDur': 0.86605371832848, 'amp': 0.021 );
 )
 
 (
-~padovanPreset = ( 'roomSize': 5.2112172245979, 'freq': 299.78749885559, 'tridDur': 0.8859096467495, 'amp': 0.21) ;
+~padovanPreset = ( 'roomSize': 5.2112172245979, 'freq': 299.78749885559, 'tridDur': 0.8859096467495, 'amp': 0.021) ;
 )
 
 (
-~padovanPreset = (amp: 0.21, tridDur: rrand(0.65, 1), freq: rrand(165, 320.2), roomSize: rrand(0.5, 9))
+~padovanPreset = (amp: 0.021, tridDur: rrand(0.65, 1), freq: rrand(165, 320.2), roomSize: rrand(0.5, 9))
 // rrand
 )
 
-
+// module GVerb !
 (
 Ndef(\padovan, {
 	// amp = 0.21, tridDur = 1, freq = 165, roomSize = 9;
@@ -1446,8 +1507,9 @@ Ndef(\padovan, {
 	);
 	grainTr = sig.ar(mod * ~padovanPreset[\freq]);
 	sinMod = sig.ar(mod);
-	sig = GrainIn.ar(2, grainTr, grainTr / 2, sinMod, mod * sinMod, -1, mul: env);
+	sig = GrainIn.ar(1, grainTr, grainTr / 2, sinMod, mod * sinMod, -1, mul: env);
 	sig = GVerb.ar(sig, ~padovanPreset[\roomSize], mul: ~padovanPreset[\amp]);
+	// GVerb.ar(in, roomsize: 10, revtime: 3, damping: 0.5, inputbw: 0.5, spread: 15, drylevel: 1, earlyreflevel: 0.7, taillevel: 0.5, maxroomsize: 300, mul: 1, add: 0)
 	// OffsetOut.ar(out, sig);
 	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan));
 });
@@ -1455,16 +1517,18 @@ Ndef(\padovan, {
 
 Ndef(\padovan).fadeTime_(12);
 
+Ndef(\padovan).clear;
+
 Ndef(\padovan).play(2);
 
 Ndef(\padovan).release(12);
 
 (
-~batuhanPreset = ( 'rel': 4.7409770965576, 'att': 0.086210913658142, 'brfFreq2': 43, 'tridDur': 0.070336336493492, 'amp': 0.1, 'brfFreq1': 23.311715126038, 'sawFreq': 8.8473773002625, 'decayTime': 0.28642593860626 )
+~batuhanPreset = ( 'rel': 4.7409770965576, 'att': 0.086210913658142, 'brfFreq2': 43, 'tridDur': 0.070336336493492, 'amp': 0.01, 'brfFreq1': 23.311715126038, 'sawFreq': 8.8473773002625, 'decayTime': 0.28642593860626 )
 )
 
 (
-~batuhanPreset = (amp: 0.1, att: 0.01, rel: 5, tridDur: 0.125, decayTime: 0.3, sawFreq: 8, brfFreq1: 45.1, brfFreq2: 45)
+~batuhanPreset = (amp: 0.01, att: 0.01, rel: 5, tridDur: 0.125, decayTime: 0.3, sawFreq: 8, brfFreq1: 45.1, brfFreq2: 45)
 // default
 )
 
@@ -1473,7 +1537,7 @@ Ndef(\padovan).release(12);
 )
 
 (
-~batuhanPreset = (amp: 0.1, att: rrand(0.01, 0.1), rel: rrand(3.4, 5), tridDur: rrand(0.0625, 0.12), decayTime: rrand(0.23, 0.4), sawFreq: rrand(6.0, 18), brfFreq1: rrand(20, 45.1), brfFreq2: rrand(30, 45))
+~batuhanPreset = (amp: 0.01, att: rrand(0.01, 0.1), rel: rrand(3.4, 5), tridDur: rrand(0.0625, 0.12), decayTime: rrand(0.23, 0.4), sawFreq: rrand(6.0, 18), brfFreq1: rrand(20, 45.1), brfFreq2: rrand(30, 45))
 // rrand
 )
 
@@ -1497,28 +1561,27 @@ Ndef(\batuhan, {
 });
 )
 
-Ndef(\batuhan).fadeTime_(19);
+Ndef(\batuhan).fadeTime_(9);
 
 Ndef(\batuhan).play(2);
 
 Ndef(\batuhan).release(10);
 
 (
-~nozkurtPreset = (amp: 0.21, att: 0.01, rel: 5, sinFreq: 55, impMin: 0.0002, impMax: 0.7, impFreq: 8);
+~nozkurtPreset = (amp: 0.021, att: 0.01, rel: 5, sinFreq: 55, impMin: 0.0002, impMax: 0.7, impFreq: 8);
 // default
 )
 
 (
-~nozkurtPreset = ( 'impMin': 0.0003625140786171, 'att': 0.043915095329285, 'rel': 5, 'impFreq': 13, 'impMax': 0.64299078464508, 'amp': 0.21, 'sinFreq': 56 )
--> Ndef('nozkurt')
+~nozkurtPreset = ( 'impMin': 0.0003625140786171, 'att': 0.043915095329285, 'rel': 5, 'impFreq': 13, 'impMax': 0.64299078464508, 'amp': 0.0121, 'sinFreq': 56 )
 )
 
 (
-~nozkurtPreset = ( 'impMin': 0.00020394860506058, 'att': 0.012375417947769, 'rel': 5, 'impFreq': 14, 'impMax': 0.31409510111809, 'amp': 0.21, 'sinFreq': 55 )
+~nozkurtPreset = ( 'impMin': 0.00020394860506058, 'att': 0.012375417947769, 'rel': 5, 'impFreq': 14, 'impMax': 0.31409510111809, 'amp': 0.0121, 'sinFreq': 55 )
 )
 
 (
-~nozkurtPreset = (amp: 0.21, att: rrand(0.01, 0.1), rel: 5, sinFreq: rrand(55, 90), impMin: rrand(0.0002, 0.0005), impMax: rrand(0.254, 0.7), impFreq: rrand(8, 18));
+~nozkurtPreset = (amp: 0.0121, att: rrand(0.01, 0.1), rel: 5, sinFreq: rrand(55, 90), impMin: rrand(0.0002, 0.0005), impMax: rrand(0.254, 0.7), impFreq: rrand(8, 18));
 // rrand
 )
 
@@ -1544,7 +1607,7 @@ Ndef(\nozkurt).play(2);
 Ndef(\nozkurt).release(10);
 
 (
-~tirgoPreset = (amp: 0.21, att: 0.01, rel: 5, blipFreqMod: 2, blipHarmo: 400, brfFreq: 150, brfRq: 2);
+~tirgoPreset = (amp: 0.021, att: 0.01, rel: 5, blipFreqMod: 2, blipHarmo: 400, brfFreq: 150, brfRq: 2);
 // default
 )
 
@@ -1591,7 +1654,7 @@ Ndef(\tirgo).fadeTime_(9);
 
 Ndef(\tirgo).play(2);
 
-Ndef(\tirgo).release(12);
+Ndef(\tirgo).release(22);
 
 
 (
@@ -1638,18 +1701,112 @@ Ndef(\lmcd).play(2);
 
 Ndef(\lmcd).release(12);
 
+// en cours
+
+(
+~gcdFuncPreset = (amp: 0.3, atk: 0.001, rls: 0.2, sustain: 1, rangeMin: -4, rangeMax: 4, lfnoiseFrq: 0.05, sinFreq1: 40, sinFreq2: 51, thr: 0.1);
+) // default
+
+/*-> ( 'thr': 0.1, 'rls': 0.16701568365097, 'lfnoiseFrq': 0.030073268413544, 'amp': 0.2,
+  'rangeMin': -3.5307409763336, 'atk': 0.087270452737808, 'rangeMax': 3.533385515213, 'sinFreq1': 41.54029750824, 'sinFreq2': 46,
+  'sustain': 1 )
+-> Ndef('gcdFunc')
+-> ( 'thr': 0.1, 'rls': 0.23682500123978, 'lfnoiseFrq': 0.046441291570663, 'amp': 0.4,
+  'rangeMin': -3.4342725276947, 'atk': 0.048349809288979, 'rangeMax': 2.1768064498901, 'sinFreq1': 41.494833230972, 'sinFreq2': 50,
+  'sustain': 1 )
+-> Ndef('gcdFunc')
+-> ( 'thr': 0.1, 'rls': 0.20895653963089, 'lfnoiseFrq': 0.046102857589722, 'amp': 0.4,
+  'rangeMin': -3.0484981536865, 'atk': 0.0017865492105484, 'rangeMax': 3.0407857894897, 'sinFreq1': 41.538219690323, 'sinFreq2': 48,
+  'sustain': 1 )
+-> Ndef('gcdFunc')
+-> ( 'thr': 0.1, 'rls': 0.24536623954773, 'lfnoiseFrq': 0.010917848348618, 'amp': 0.4,
+  'rangeMin': -3.1687965393066, 'atk': 0.075388186335564, 'rangeMax': 3.8799567222595, 'sinFreq1': 41.885971784592, 'sinFreq2': 39.571486234665,
+  'sustain': 1 )
+-> Ndef('gcdFunc')
+-> ( 'thr': 0.1, 'rls': 0.20814274549484, 'lfnoiseFrq': 0.0079268503189087, 'amp': 0.6,
+  'rangeMin': -3.8776683807373, 'atk': 0.059961733698845, 'rangeMax': 3.9194240570068, 'sinFreq1': 41.876791000366, 'sinFreq2': 48.468021631241,
+  'sustain': 1 )
+-> ( 'thr': 0.1, 'rls': 0.21766636371613, 'lfnoiseFrq': 0.060042854547501, 'amp': 0.4,
+  'rangeMin': -2.8789699077606, 'atk': 0.019805497407913, 'rangeMax': 2.7477648258209, 'sinFreq1': 41.241734027863, 'sinFreq2': 50.828649759293,
+  'sustain': 1 )
+-> ( 'thr': 0.1, 'rls': 0.21292085647583, 'lfnoiseFrq': 0.008737074136734, 'amp': 0.3,
+  'rangeMin': -3.9149284362793, 'atk': 0.046715153098106, 'rangeMax': 3.6294183731079, 'sinFreq1': 40.291042089462, 'sinFreq2': 50.74248957634,
+  'sustain': 1 )
+-> Ndef('gcdFunc')
+-> Ndef('gcdFunc')
+-> ( 'thr': 0.1, 'rls': 0.24264342784882, 'lfnoiseFrq': 0.046670769453049, 'amp': 0.3,
+  'rangeMin': -3.5471441745758, 'atk': 0.013947855472565, 'rangeMax': 2.6348037719727, 'sinFreq1': 41.239462137222, 'sinFreq2': 45.175164222717,
+  'sustain': 1 )
+-> Ndef('gcdFunc')
+-> ( 'thr': 0.1, 'rls': 0.16341036558151, 'lfnoiseFrq': 0.0067513728141785, 'amp': 0.3,
+  'rangeMin': -3.6178085803986, 'atk': 0.072459931850433, 'rangeMax': 3.5397453308105, 'sinFreq1': 40.471687555313, 'sinFreq2': 41.438703536987,
+  'sustain': 1 )
+-> ( 'thr': 0.1, 'rls': 0.24654587507248, 'lfnoiseFrq': 0.064562600851059, 'amp': 0.3,
+  'rangeMin': -7.6653075218201, 'atk': 0.030313016891479, 'rangeMax': 13.049292087555, 'sinFreq1': 41.809176445007, 'sinFreq2': 50.897471427917,
+  'sustain': 1 )*/
+
+(
+~gcdFuncPreset = (amp: 0.3, atk: rrand(0.001, 0.1), rls: rrand(0.15,0.25), sustain: 1, rangeMin: rrand(-14.0, -2), rangeMax: rrand(2.0, 14), lfnoiseFrq: rrand(0, 0.07), sinFreq1: rrand(40.0, 42), sinFreq2: rrand(38.0, 52), thr: 0.1);
+// rrand
+)
+
+(
+Ndef(\modul, {
+	var phaseMod = Line.kr(1, rrand(1.5, 2.5), 0.5);
+	var freq = Demand.kr(Impulse.kr(0.1), 0, Dseq([0.06, 3, 0.4, 52, 10, 0.02], inf));
+	var sig = SinOsc.kr(
+		[cos(freq), freq],
+		[cos(phaseMod), pi * phaseMod],
+		SinOsc.kr(0.1, pi, 1, 0)
+	);
+	tanh(sig);
+});
+)
+
+Ndef(\modul).release(9);
+
+Ndef(\modul).fadeTime = 12;
+
+(
+Ndef(\gcdFunc, {
+    var sig, src, gcdFunc, env;
+
+	env = EnvGen.kr(Env.asr(~gcdFuncPreset[\atk], 1, ~gcdFuncPreset[\rls]), gate: 1, timeScale: ~gcdFuncPreset[\sustain]);
+
+    gcdFunc = { |a| (a.size > 2).if { gcd(a[0], gcdFunc.(a.drop(1))) } { gcd(a[0], a[1]) } };
+
+	src = {
+		SinOsc.ar(
+			[~gcdFuncPreset[\sinFreq1], ~gcdFuncPreset[\sinFreq2]],
+			LFDNoise3.ar(~gcdFuncPreset[\lfnoiseFrq]).range(0, 2pi * Ndef.kr(\modul))
+		).range(~gcdFuncPreset[\rangeMin], ~gcdFuncPreset[\rangeMax])
+	} ! 4;
+    sig = gcdFunc.(src);
+	sig = Limiter.ar(LPF.ar(LeakDC.ar(Splay.ar(sig)), 12000), ~gcdFuncPreset[\thr]).clip2(~gcdFuncPreset[\thr]);
+	sig = (sig * env * ~gcdFuncPreset[\amp]);
+	// OffsetOut.ar(out, sig);
+});
+)
+
+Ndef(\gcdFunc).play(2);
+
+Ndef(\gcdFunc).release(6);
+
+Ndef(\gcdFunc).fadeTime_(18);
+
+
 // pb syntaxe ?
 
 (
-~duryGenePreset = (out: 2, amp: 0.1, atk: 0.001, rls: 0.2, sustain: 1, impFreq1: 0.02, impFreq2: 0.04, smooth1: 4, smooth2: 1.7, smooth3: 0.9)
+~duryGenePreset = (amp: 0.02, impFreq1: 0.02, impFreq2: 0.04, smooth1: 4, smooth2: 1.7, smooth3: 0.9)
 ) // default
 
 (
-~duryGenePreset = (amp: 0.1, atk: rrand(0.0005, 0.001), rls: rrand(0.15, 0.25), sustain: 1, impFreq1: rrand(0.02, 0.1), impFreq2: rrand(0.04, 0.15), smooth1: rrand(0.5, 4), smooth2: rrand(0.7, 2), smooth3: rrand(0.65, 0.8)) // rrand
+~duryGenePreset = (amp: 0.01, impFreq1: rrand(0.02, 0.1), impFreq2: rrand(0.04, 0.15), smooth1: rrand(0.5, 4), smooth2: rrand(0.7, 2), smooth3: rrand(0.65, 0.8)) // rrand
 )
 
 // ERROR: Message '*' not understood.
-
+// réglé 1504 !!
 (
 Ndef(\duryGene, {
     var snd, rep, repCh, randNum, fac, fac1, fac2, fac3;
@@ -1686,16 +1843,17 @@ Ndef(\duryGene, {
             saw.fold2( SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac3).range(0.1, 1) ),
             saw.wrap2( SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac3).range(0.1, 1) ),
             saw *  SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / 2),
-            ( saw *  SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac3).range(1, 20) ).tanh / 2
+			( saw *  SinOsc.ar(TChoose.kr(Impulse.kr(0), randNum) / fac3, [0, 3/pi]).range(1, 20) ).tanh / 2
         ]);
-        sig = (tri + saw) * EnvGen.kr(Env.asr(rrand(4,20), 1, 1/repCh);
+        sig = (tri + saw) * EnvGen.kr(Env.asr(rrand(4,20), 1, 1/repCh));
         sig = Limiter.ar(sig * 1/(i + 0.1));
-    );
+    });
 
-		snd = (snd * ~duryGenePreset[\amp]);
+	snd * ~duryGenePreset[\amp]
 });
-})
 )
+
+Ndef(\duryGene).clear;
 
 Ndef(\duryGene).play(2);
 
@@ -1703,114 +1861,115 @@ Ndef(\duryGene).release(8);
 
 Ndef(\duryGene).fadeTime_(8);
 
-// en cours
-
-(
-~gcdFuncPreset = (out: 0, amp: 0.2, pan: 0, atk: 0.001, rls: 0.2, sustain: 1, thr: 0.1);
-) // default
-
-(
-~gcdFuncPreset = (out: 0, amp: 0.3, pan: 0, atk: rrand(0.001, 0.1), rls: rrand(0.15,0.25), sustain: 1, thr: 0.1);
-) // rrand
-
-
-(
-Ndef(\gcdFunc, {
-    var sig, src, gcdFunc, env;
-
-	env = EnvGen.kr(Env.asr(~gcdFuncPreset[\atk], 1, ~gcdFuncPreset[\rls]), gate: 1, timeScale: ~gcdFuncPreset[\sustain]);
-
-    gcdFunc = { |a| (a.size > 2).if { gcd(a[0], gcdFunc.(a.drop(1))) } { gcd(a[0], a[1]) } };
-
-    src = { SinOsc.ar([40, 51], LFDNoise3.ar(0.05).range(0, 2pi)).range(-4, 4) } ! 4;
-    sig = gcdFunc.(src);
-	sig = Limiter.ar(LPF.ar(LeakDC.ar(Splay.ar(sig)), 10000), ~gcdFuncPreset[\thr]).clip2(~gcdFuncPreset[\thr]);
-	sig = (sig * env * ~gcdFuncPreset[\amp]);
-	// OffsetOut.ar(out, sig);
-});
-)
-
-Ndef(\gcdFunc).play(2);
-
-Ndef(\gcdFunc).release(6);
-
-Ndef(\gcdFunc).fadeTime_(6);
-
 
 (
 ~westPreset = (fadeIn: 0.01, fadeOut: 0.01, freq: 220, pitchBendRatio: 1, glide: 0, fm1Ratio: 0.66, fm2Ratio: 3.3, fm1Amount: 0.0, fm2Amount: 0.0, vel: 0.7, pressure: 0, timbre: 0, waveShape: 0, waveFolds: 0, envType: 0, attack: 0.04, peak: 10000, decay: 1, amp: 1, lfoShape: 0, lfoFreq: 0.5, lfoToFreqAmount: 0, lfoToWaveShapeAmount: 0, lfoToWaveFoldsAmount: 0, lfoToFm1Amount: 0, lfoToFm2Amount: 0, lfoToAttackAmount: 0, lfoToPeakAmount: 0, lfoToDecayAmount: 0, lfoToReverbMixAmount: 0, drift: 0, dur: 10, t_gate: 1, /*gate=1, */ killGate: 1 );
 // default
 )
+(
+~westPreset = ( 'fadeIn': 0.009472633600235, 'lfoToWaveFoldsAmount': 0.067932558059692, 'attack': 0.04, 'pressure': 0.048356151580811,
+  'drift': 0.1580126285553, 'fadeOut': 0.0072627478837967, 'envType': 1, 'lfoToFreqAmount': 0.091015434265137, 'lfoShape': 3,
+  'fm2Ratio': 2.2107476234436, 'fm1Amount': 0.40482223033905, 'fm2Amount': 0.20059487819672, 'waveFolds': 0.090831995010376, 'lfoToDecayAmount': 0,
+  'dur': 10, 'decay': 1, 'amp': 0.021, 'lfoToAttackAmount': 0, 'lfoToReverbMixAmount': 0.22150498628616,
+  'timbre': 0.2828013241291, 'lfoFreq': 0.10812397003174, 'lfoToWaveShapeAmount': 0.46422415971756, 'glide': 0.074775338172913, 'vel': 0.7,
+  'waveShape': 0.25347763895988, 'lfoToFm1Amount': 0.13178379535675, 'lfoToFm2Amount': 0.19375326633453, 'fm1Ratio': 0.12595733642578, 'peak': 10000,
+  'lfoToPeakAmount': 0, 'freq': 68, 'pitchBendRatio': 0.7518587231636 );
+)
 
 (
-~westPreset = (fadeIn: rrand(0.005, 0.01), fadeOut: rrand(0.005, 0.01), freq: rrand(60,420), pitchBendRatio: rrand(0.3,1), glide: rrand(0.0,1), fm1Ratio: rrand(0.1, 0.66), fm2Ratio: rrand(1, 3.3), fm1Amount: 0.0, fm2Amount: 0.0, vel: 0.7, pressure: 0, timbre: 0, waveShape: 0, waveFolds: 0, envType: 0, attack: 0.04, peak: 10000, decay: 1, amp: 1, lfoShape: 0, lfoFreq: 0.5, lfoToFreqAmount: 0, lfoToWaveShapeAmount: 0, lfoToWaveFoldsAmount: 0, lfoToFm1Amount: 0, lfoToFm2Amount: 0, lfoToAttackAmount: 0, lfoToPeakAmount: 0, lfoToDecayAmount: 0, lfoToReverbMixAmount: 0, drift: 0, dur: 10, t_gate: 1, /*gate=1, */ killGate: 1 );
+~westPreset = ( 'fadeIn': 0.0080050730705261, 'lfoToWaveFoldsAmount': 0.062978947162628, 'attack': 0.04, 'pressure': 0.22383259534836,
+  'drift': 0.15631544589996, 'fadeOut': 0.0068280524015427, 'envType': 0, 'lfoToFreqAmount': 0.039518845081329, 'lfoShape': 0,
+  'fm2Ratio': 3.1436656236649, 'fm1Amount': 0.12888491153717, 'fm2Amount': 0.15307071805, 'waveFolds': 0.018590241670609, 'lfoToDecayAmount': 0,
+  'dur': 10, 'decay': 1, 'amp': 0.061, 'lfoToAttackAmount': 0, 'lfoToReverbMixAmount': 0.11391842365265,
+  'timbre': 0.14032501578331, 'lfoFreq': 0.0511597971916199, 'lfoToWaveShapeAmount': 0.30468195676804, 'glide': 0.1400955915451, 'vel': 0.7,
+  'waveShape': 0.12596333026886, 'lfoToFm1Amount': 0.13840772509575, 'lfoToFm2Amount': 0.036532044410706, 'fm1Ratio': 0.32282425880432, 'peak': 10000,
+  'lfoToPeakAmount': 0, 'freq': 210, 'pitchBendRatio': 0.78707506656647 );
+)
+
+(
+Post << ~westPreset = (amp: 0.021, fadeIn: rrand(0.005, 0.01), fadeOut: rrand(0.005, 0.01), freq: rrand(60,420), pitchBendRatio: rrand(0.3,1), glide: rrand(0.0,1), fm1Ratio: rrand(0.1, 0.66), fm2Ratio: rrand(1, 3.3), fm1Amount: rrand(0.0, 0.5), fm2Amount: rrand(0.0, 0.35), vel: 0.7, pressure: rrand(0, 0.3), timbre: rrand(0, 0.35), waveShape: rrand(0, 0.35), waveFolds: rrand(0, 0.25), envType: rrand(0, 1), attack: 0.04, peak: 10000, decay: 1, lfoShape: rrand(0, 3), lfoFreq: rrand(0.1, 0.5), lfoToFreqAmount: rrand(0, 0.14), lfoToWaveShapeAmount: rrand(0, 0.5), lfoToWaveFoldsAmount: rrand(0, 0.1), lfoToFm1Amount: rrand(0, 0.15), lfoToFm2Amount: rrand(0, 0.3), lfoToAttackAmount: 0, lfoToPeakAmount: 0, lfoToDecayAmount: 0, lfoToReverbMixAmount: rrand(0, 0.25), drift: rrand(0, 0.2), dur: 10);
 // rrand
 ) ;
 
+(
+~westPreset = ( 'fadeIn': 0.0093503767251968, 'lfoToWaveFoldsAmount': 0.049498617649078, 'attack': 0.04, 'pressure': 0.18272227048874,  'drift': 0.10011909008026, 'fadeOut': 0.0088478624820709, 'envType': 0, 'lfoToFreqAmount': 0.12006192684174, 'lfoShape': 3,   'fm2Ratio': 2.0281603813171, 'fm1Amount': 0.18409752845764, 'fm2Amount': 0.21566777825356, 'waveFolds': 0.22270148992538, 'lfoToDecayAmount': 0,   'dur': 10, 'decay': 1, 'amp': 0.061, 'lfoToAttackAmount': 0, 'lfoToReverbMixAmount': 0.20571199059486,   'timbre': 0.27708098292351, 'lfoFreq': 0.23736214637756, 'lfoToWaveShapeAmount': 0.29811197519302, 'glide': 0.10442280769348, 'vel': 0.7,   'waveShape': 0.30640349984169, 'lfoToFm1Amount': 0.092695695161819, 'lfoToFm2Amount': 0.24404439926147, 'fm1Ratio': 0.38128667831421, 'peak': 10000,   'lfoToPeakAmount': 0, 'freq': 243, 'pitchBendRatio': 0.94898122549057 );
+)
 
-// Ne fonctionne pas
-// ERROR: Primitive '_ClipFloat' failed.
-// Wrong type.
-// RECEIVER: 220.0
+(
+Post << ~westPreset = (fadeIn: 0.01, fadeOut: 0.01, freq: 220, pitchBendRatio: 1, glide: 0, fm1Ratio: 0.66, fm2Ratio: 3.3, fm1Amount: 0.0, fm2Amount: 0.0, vel: 0.7, pressure: 0, timbre: 0, waveShape: 0, waveFolds: 0, envType: 0, attack: 0.04, peak: 10000, decay: 1, amp: 0.031, lfoShape: 0, lfoFreq: 0.5, lfoToFreqAmount: 0, lfoToWaveShapeAmount: 0, lfoToWaveFoldsAmount: 0, lfoToFm1Amount: 0, lfoToFm2Amount: 0, lfoToAttackAmount: 0, lfoToPeakAmount: 0, lfoToDecayAmount: 0, lfoToReverbMixAmount: 0, drift: 0, dur: 10);
+// default
+)
+
+(
+~westPreset = ( 'fadeIn': 0.009314392209053, 'lfoToWaveFoldsAmount': 0.0054842948913574, 'attack': 0.04, 'pressure': 0.23147302865982,
+  'drift': 0.11903855800629, 'fadeOut': 0.0091292178630829, 'envType': 1, 'lfoToFreqAmount': 0.016076285839081, 'lfoShape': 2,
+  'fm2Ratio': 2.8589839339256, 'fm1Amount': 0.35786592960358, 'fm2Amount': 0.3085353910923, 'waveFolds': 0.20430070161819, 'lfoToDecayAmount': 0,
+  'dur': 10, 'decay': 1, 'amp': 0.021, 'lfoToAttackAmount': 0, 'lfoToReverbMixAmount': 0.085539937019348,
+  'timbre': 0.045879137516022, 'lfoFreq': 0.24191155433655, 'lfoToWaveShapeAmount': 0.4341955780983, 'glide': 0.45726263523102, 'vel': 0.7,
+  'waveShape': 0.18246900439262, 'lfoToFm1Amount': 0.076183837652206, 'lfoToFm2Amount': 0.00084843635559082, 'fm1Ratio': 0.39958936691284, 'peak': 10000,
+  'lfoToPeakAmount': 0, 'freq': 259, 'pitchBendRatio': 0.98423570394516);
+)
+
 
 (
 Ndef(\west, {
 	var i_nyquist = SampleRate.ir * 0.5, signal, controlLag = 0.005, i_numHarmonics = 44,
 	modFreq, mod1, mod2, mod1Index, mod2Index, mod1Freq, mod2Freq, sinOsc, triOsc, additiveOsc, additivePhase,
-	filterEnvVel, filterEnvLow, lpgEnvelope, lpgSignal, asrEnvelope, asrFilterFreq, asrSignal, killEnvelope, i_driftRate = 0.15, maxDecay=8;
+	filterEnvVel, filterEnvLow, lpgEnvelope, lpgSignal, asrEnvelope, asrFilterFreq, asrSignal, killEnvelope, i_driftRate = 0.15, maxDecay=8, freq, fm1Ratio, fm2Ratio, fm1Amount, fm2Amount, vel, waveShape, waveFolds, decay, attack, peak;
 
 	// Make lfos
 	var lfo = Select.kr(~westPreset[\lfoShape], [
 		LFTri.kr(~westPreset[\lfoFreq]),
 		LFSaw.kr(~westPreset[\lfoFreq]),
 		LFPulse.kr(~westPreset[\lfoFreq]),
-		LFDNoise0.kr(~westPreset[\lfoFreq]* 2)
+		LFDNoise0.kr(~westPreset[\lfoFreq] * 2)
 	]);
 
 	var lfoArray = Array.fill(9, 0);
-	lfoArray[0] = (lfo * ~westPreset[\lfoToFreqAmount] * 18).midiratio; // Freq ratio
-	lfoArray[1] = (lfo * ~westPreset[\lfoToWaveShapeAmount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift]); // Wave Shape
-	lfoArray[2] = ((lfo * ~westPreset[\lfoToWaveFoldsAmount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift])) * 2; // Wave Folds
-	lfoArray[3] = ((lfo * ~westPreset[\lfoToFm1Amount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift])) * 0.5; // FM1 Amount
-	lfoArray[4] = ((lfo * ~westPreset[\lfoToFm2Amount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift])) * 0.5; // FM2 Amount
-	lfoArray[5] = ((lfo * ~westPreset[\lfoToAttackAmount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift])) * 2.2; // Attack
-	lfoArray[6] = (((lfo * ~westPreset[\lfoToPeakAmount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift])) * 24).midiratio; // Peak multiplier
-	lfoArray[7] = ((lfo * ~westPreset[\lfoToDecayAmount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift])) * 2.2; // Decay
-	lfoArray[8] = (lfo * ~westPreset[\lfoToReverbMixAmount]) + LFNoise1.kr(freq: i_driftRate, mul: ~westPreset[\drift]); // Reverb Mix
+	var drift = ~westPreset[\drift];
+	lfoArray[0] = (lfo * max(0.01, ~westPreset[\lfoToFreqAmount]) * 18).midiratio; // Freq ratio
+	lfoArray[1] = (lfo * ~westPreset[\lfoToWaveShapeAmount]) + LFNoise1.kr(freq: i_driftRate, mul: drift); // Wave Shape
+	lfoArray[2] = ((lfo * ~westPreset[\lfoToWaveFoldsAmount]) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 2; // Wave Folds
+	lfoArray[3] = ((lfo * ~westPreset[\lfoToFm1Amount]) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 0.5; // FM1 Amount
+	lfoArray[4] = ((lfo * ~westPreset[\lfoToFm2Amount]) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 0.5; // FM2 Amount
+	lfoArray[5] = ((lfo * ~westPreset[\lfoToAttackAmount]) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 2.2; // Attack
+	lfoArray[6] = (((lfo * ~westPreset[\lfoToPeakAmount]) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 24).midiratio; // Peak multiplier
+	lfoArray[7] = ((lfo * ~westPreset[\lfoToDecayAmount]) + LFNoise1.kr(freq: i_driftRate, mul: drift)) * 2.2; // Decay
+	lfoArray[8] = (lfo * ~westPreset[\lfoToReverbMixAmount]) + LFNoise1.kr(freq: i_driftRate, mul: drift); // Reverb Mix
 
 
 	// LFO ins
-	~westPreset[\freq] = (~westPreset[\freq] * lfoArray[0]).clip(0, i_nyquist);
-	~westPreset[\waveShape] = (~westPreset[\waveShape] + lfoArray[1]).clip(0, 1);
-	~westPreset[\waveFolds] = (~westPreset[\waveFolds] + lfoArray[2]).clip(0, 3);
-	~westPreset[\fm1Amount] = (~westPreset[\fm1Amount] + lfoArray[3]).clip(0, 1);
-	~westPreset[\fm2Amount] = (~westPreset[\fm2Amount] + lfoArray[4]).clip(0, 1);
-	~westPreset[\attack] = (~westPreset[\attack] + lfoArray[5]).clip(0.003, 8);
-	~westPreset[\peak] = (~westPreset[\peak] * lfoArray[6]).clip(100, 10000);
-	~westPreset[\decay] = (~westPreset[\decay] + lfoArray[7]).clip(0.01, maxDecay);
+	freq = (~westPreset[\freq] * lfoArray[0]).clip(0, i_nyquist);
+	waveShape = (~westPreset[\waveShape] + lfoArray[1]).clip(0, 1);
+	waveFolds = (~westPreset[\waveFolds] + lfoArray[2]).clip(0, 3);
+	fm1Amount = (~westPreset[\fm1Amount] + lfoArray[3]).clip(0, 1);
+	fm2Amount = (~westPreset[\fm2Amount] + lfoArray[4]).clip(0, 1);
+	attack = (~westPreset[\attack] + lfoArray[5]).clip(0.003, 8);
+	peak = (~westPreset[\peak] * lfoArray[6]).clip(100, 10000);
+	decay = (~westPreset[\decay] + lfoArray[7]).clip(0.01, maxDecay);
 
 	// Lag inputs
-	~westPreset[\freq] = Lag.kr(~westPreset[\freq] * ~westPreset[\pitchBendRatio], 0.007 + ~westPreset[\glide]);
-	~westPreset[\fm1Ratio] = Lag.kr(~westPreset[\fm1Ratio], controlLag);
-	~westPreset[\fm2Ratio] = Lag.kr(~westPreset[\fm2Ratio], controlLag);
-	~westPreset[\fm1Amount] = Lag.kr(~westPreset[\fm1Amount].squared, controlLag);
-	~westPreset[\fm2Amount] = Lag.kr(~westPreset[\fm2Amount].squared, controlLag);
+	freq = Lag.kr(freq * ~westPreset[\pitchBendRatio], 0.007 + ~westPreset[\glide]);
+	fm1Ratio = Lag.kr(~westPreset[\fm1Ratio], controlLag);
+	fm2Ratio = Lag.kr(~westPreset[\fm2Ratio], controlLag);
+	fm1Amount = Lag.kr(fm1Amount.squared, controlLag);
+	fm2Amount = Lag.kr(fm2Amount.squared, controlLag);
 
-	~westPreset[\vel] = Lag.kr(~westPreset[\vel], controlLag);
-	~westPreset[\waveShape] = Lag.kr(~westPreset[\waveShape], controlLag);
-	~westPreset[\waveFolds] = Lag.kr(~westPreset[\waveFolds], controlLag);
-	~westPreset[\attack] = Lag.kr(~westPreset[\attack], controlLag);
-	~westPreset[\peak] = Lag.kr(~westPreset[\peak], controlLag);
-	~westPreset[\decay] = Lag.kr(~westPreset[\decay], controlLag);
+	vel = Lag.kr(~westPreset[\vel], controlLag);
+	waveShape = Lag.kr(waveShape, controlLag);
+	waveFolds = Lag.kr(waveFolds, controlLag);
+	attack = Lag.kr(attack, controlLag);
+	peak = Lag.kr(peak, controlLag);
+	decay = Lag.kr(decay, controlLag);
 
 	// Modulators
-	~westPreset[\mod1Index] = ~westPreset[\fm1Amount] * 22;
-	~westPreset[\mod1Freq] = ~westPreset[\freq] * ~westPreset[\fm1Ratio] * LFNoise2.kr(freq: 0.1, mul: 0.001, add: 1);
-	~westPreset[\mod1] = SinOsc.ar(freq: ~westPreset[\mod1Freq], phase: 0, mul: ~westPreset[\mod1Index] * ~westPreset[\mod1Freq], add: 0);
-	~westPreset[\mod2Index] = ~westPreset[\fm2Amount] * 12;
-	~westPreset[\mod2Freq] = ~westPreset[\freq] * ~westPreset[\fm2Ratio] * LFNoise2.kr(freq: 0.1, mul: 0.005, add: 1);
-	~westPreset[\mod2] = SinOsc.ar(freq: ~westPreset[\mod2Freq], phase: 0, mul: ~westPreset[\mod2Index] * ~westPreset[\mod2Freq], add: 0);
-	~westPreset[\modFreq] = ~westPreset[\freq] + ~westPreset[\mod1] + ~westPreset[\mod2];
+	mod1Index = fm1Amount * 22;
+	mod1Freq = freq * fm1Ratio * LFNoise2.kr(freq: 0.1, mul: 0.001, add: 1);
+	mod1 = SinOsc.ar(freq: mod1Freq, phase: 0, mul: mod1Index * mod1Freq, add: 0);
+	mod2Index = fm2Amount * 12;
+	mod2Freq = freq * fm2Ratio * LFNoise2.kr(freq: 0.1, mul: 0.005, add: 1);
+	mod2 = SinOsc.ar(freq: mod2Freq, phase: 0, mul: mod2Index * mod2Freq, add: 0);
+	modFreq = freq + mod1 + mod2;
 
 	// Sine and triangle
 	sinOsc = SinOsc.ar(freq: modFreq, phase: 0, mul: 0.5);
@@ -1823,22 +1982,22 @@ Ndef(\west, {
 		var harmonic, harmonicFreq, harmonicCutoff, attenuation;
 
 		harmonic = index + 1;
-		harmonicFreq = ~westPreset[\freq] * harmonic;
+		harmonicFreq = freq * harmonic;
 		harmonicCutoff = i_nyquist - harmonicFreq;
 
 		// Attenuate harmonics that will go over nyquist once FM is applied
 		attenuation = Select.kr(index, [1, // Save the fundamental
 			(harmonicCutoff - (harmonicFreq * 0.25) - harmonicFreq).expexp(0.000001, harmonicFreq * 0.5, 0.000001, 1)]);
 
-		(sin(additivePhase * harmonic % 2pi) / harmonic) * attenuation * (harmonic % 2 + ~westPreset[\waveShape].linlin(0.666666, 1, 0, 1)).min(1);
+		(sin(additivePhase * harmonic % 2pi) / harmonic) * attenuation * (harmonic % 2 + waveShape.linlin(0.666666, 1, 0, 1)).min(1);
 	}
 	);
 
 	// Mix carriers
-	signal = LinSelectX.ar(~westPreset[\waveShape] * 3, [sinOsc, triOsc, additiveOsc]);
+	signal = LinSelectX.ar(waveShape * 3, [sinOsc, triOsc, additiveOsc]);
 
 	// Fold
-	signal = Fold.ar(in: signal * (1 + (~westPreset[\timbre] * 0.5) + (~westPreset[\waveFolds] * 2)), lo: -0.5, hi: 0.5);
+	signal = Fold.ar(in: signal * (1 + (~westPreset[\timbre] * 0.5) + (waveFolds * 2)), lo: -0.5, hi: 0.5);
 
 	// Hack away some aliasing
 	signal = LPF.ar(in: signal, freq: 12000);
@@ -1847,23 +2006,23 @@ Ndef(\west, {
 	signal = signal + PinkNoise.ar(mul: 0.003);
 
 	// LPG
-	filterEnvVel = ~westPreset[\vel].linlin(0, 1, 0.5, 1);
-	filterEnvLow = (~westPreset[\peak] * filterEnvVel).min(300);
+	filterEnvVel = vel.linlin(0, 1, 0.5, 1);
+	filterEnvLow = (peak * filterEnvVel).min(300);
 
-	lpgEnvelope = EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [0.003, ~westPreset[\decay]], curve: [4, -20]), gate: ~westPreset[\t_gate], timeScale: ~westPreset[\dur]);
-	lpgSignal = RLPF.ar(in: signal, freq: lpgEnvelope.linlin(0, 1, filterEnvLow, ~westPreset[\peak] * filterEnvVel), rq: 0.9);
-	lpgSignal = lpgSignal * EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [0.002, ~westPreset[\decay]], curve: [4, -10]), gate: ~westPreset[\t_gate], timeScale: ~westPreset[\dur]);
+	lpgEnvelope = EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [0.003, decay], curve: [4, -20]), timeScale: ~westPreset[\dur]);
+	lpgSignal = RLPF.ar(in: signal, freq: lpgEnvelope.linlin(0, 1, filterEnvLow, peak * filterEnvVel), rq: 0.9);
+	// lpgSignal = lpgSignal * EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [0.002, decay], curve: [4, -10]), timeScale: ~westPreset[\dur]);
 
 	// ASR with 4-pole filter
-	asrEnvelope = EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [~westPreset[\attack], ~westPreset[\decay]], curve: -4, releaseNode: 1), gate: ~westPreset[\gate]);
-	asrFilterFreq = asrEnvelope.linlin(0, 1, filterEnvLow, ~westPreset[\peak ]* filterEnvVel);
+	asrEnvelope = EnvGen.ar(envelope: Env.new(levels: [0, 1, 0], times: [attack, decay], curve: -4, releaseNode: 1));
+	asrFilterFreq = asrEnvelope.linlin(0, 1, filterEnvLow, peak * filterEnvVel);
 	asrSignal = RLPF.ar(in: signal, freq: asrFilterFreq, rq: 0.95);
 	asrSignal = RLPF.ar(in: asrSignal, freq: asrFilterFreq, rq: 0.95);
-	asrSignal = asrSignal * EnvGen.ar(envelope: Env.asr(attackTime: ~westPreset[\attack], sustainLevel: 1, releaseTime: ~westPreset[\decay], curve: -4)/*, gate: gate*/);
+	asrSignal = asrSignal * EnvGen.ar(envelope: Env.asr(attackTime: attack, sustainLevel: 1, releaseTime: decay, curve: -4));
 
 	signal = Select.ar(~westPreset[\envType], [lpgSignal, asrSignal]);
 
-	signal = signal * ~westPreset[\vel].linlin(0, 1, 0.2, 1) ;
+	signal = signal * vel.linlin(0, 1, [0.18, 0.2], 1) ;
 
 	// Saturation amp
 	signal = tanh(signal * ~westPreset[\pressure].linlin(0, 1, 1.5, 3) * ~westPreset[\amp]).softclip;
@@ -1871,22 +2030,349 @@ Ndef(\west, {
 	// main Envelope
 	signal = signal * EnvGen.kr(
 		Env([0.0,1.0,1.0,0], [~westPreset[\fadeIn], ~westPreset[\fadeOut]], releaseNode: 2)
-		/*,
-		gate: ~westPreset[\killGate]
-		doneAction: doneAction*/
 	);
 
-	// Pan
-	// signal = Pan2.ar(signal, pan);
-
-	// OffsetOut.ar(out, signal);
+	signal;
 
 });
 )
+
+Ndef(\west).clear;
 
 
 Ndef(\west).play(2);
 
 Ndef(\west).release(9);
 
-Ndef(\west).fadeTime_(8);
+Ndef(\west).fadeTime_(48);
+
+
+(
+~additiveSinPreset = (amp: 0.1, attack: 0.001, release: 12, sustain: 1, curve: (-4), envPow: 1, sampleRate: 44100);
+// default
+)
+
+// se débarrasser de l'enveloppe
+
+(
+Ndef(\additiveSin, {
+	// arg out = 0, amp = 0.9, pan = 0, attack = 0.001, release = 1.2, sustain = 1, curve = (-4), envPow = 1, sampleRate = 44100, doneAction = 2;
+	var sig, globalEnv, buffAmp, numPartials = 50;
+
+	globalEnv = EnvGen.kr(Env.perc(~additiveSinPreset[\attack], ~additiveSinPreset[\release], 1, ~additiveSinPreset[\curve]), timeScale: ~additiveSinPreset[\sustain]).pow(~additiveSinPreset[\envPow]);
+
+	buffAmp = LocalBuf(numPartials);
+
+	BufWr.ar(
+		LFGauss.ar(
+			duration: ~additiveSinPreset[\sampleRate].reciprocal * numPartials / \factor.kr(1, 0.5),
+			width: \width.kr(0.2, 0.5),
+			iphase: \phase.kr(0, 0.5).mod(4)
+		),
+		bufnum: buffAmp,
+		phase: Phasor.ar(
+			end: numPartials
+		)
+	);
+
+	sig = Mix.fill(numPartials, {
+		arg i;
+		SinOsc.ar(
+			//Odd harmonics
+			freq: ((i * 2) + 1) * \fund.kr(120, 0.5),
+			//The i-th value of ~buffer_amplitudes is read with an Index Ugen
+			mul: Index.ar(buffAmp, i)
+		) / numPartials
+	});
+
+	/*sig = Pan2.ar(sig * globalEnv, pan, amp);
+
+	OffsetOut.ar(out, sig);*/
+	// OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+	sig = (sig * globalEnv * ~additiveSinPreset[\amp ]);
+});
+)
+
+Ndef(\additiveSin).clear;
+
+Ndef(\additiveSin).play(2);
+
+Ndef(\additiveSin).fadeTime_(10);
+
+Ndef(\additiveSin).release(9);
+
+Ndef(\additiveSin).stop;
+
+(
+~fbDelNetPreset = (amp: 0.2, attack: 0.001, release: 12, sustain: 10, curve: (-4), envPow: 1);
+// default
+)
+
+(
+~fbDelNetPreset = (amp: 0.2, attack: rrand(0.001, 0.1), release: 1, sustain: 2, curve: rrand(-4, 2), envPow: 1);
+// rrand
+)
+
+// se débarrasser de l'enveloppe
+(
+Ndef(\fbDelNet, {
+	// arg out = 0, pan = 0, amp = 0.2, attack = 0.001, release = 1.2, sustain = 1, curve = (-4), envPow = 1, doneAction = 2;
+    var trig = \trig.tr(1);
+    var size, delTimes, delTimesSec, order;
+    var sig, inSig, modEnv, gainEnv, delMod;
+    var rotate, angle, matrix, householder4x4, givens2x2, kronecker, s, c;
+
+    rotate = SinOsc.ar(\rotateFreq.kr(0.1)).linlin(-1, 1, 0, \rotateAmount.kr(55));
+    angle = Phasor.ar(trig, rotate * SampleDur.ir, 0, 1) * 2pi;
+
+    s = angle.sin;
+    c = angle.cos;
+
+    givens2x2 = [
+        [ c, s.neg ],
+        [ s,  c ]
+    ];
+
+    householder4x4 = [
+        [ -0.5,  0.5,  0.5,  0.5 ],
+        [  0.5, -0.5,  0.5,  0.5 ],
+        [  0.5,  0.5, -0.5,  0.5 ],
+        [  0.5,  0.5,  0.5, -0.5 ],
+    ];
+
+    matrix = givens2x2.collect { |x|
+        x.collect { |y| householder4x4 * y }.reduce('+++')
+    }.reduce('++');
+
+    delMod = SinOsc.ar(2).linlin(-1, 1, 1, 4);
+
+	gainEnv = EnvGen.ar(Env.perc(~fbDelNetPreset[\attack], ~fbDelNetPreset[\release], 1, ~fbDelNetPreset[\curve]), timeScale: ~fbDelNetPreset[\sustain], doneAction: 2).pow(~fbDelNetPreset[\envPow]);
+    modEnv = EnvGen.ar(Env([0,1,0], [0.125, 0.5], [-8.0, -4.0]), trig);
+
+	inSig = Saw.ar(XLine.kr(\startFreq.kr(100), \endFreq.kr(1000), \durFreq.kr(0.1))) * gainEnv;
+    sig = Mix(inSig);
+
+    order = 8;
+    size = \size.kr(0.15) + modEnv.linlin(0, 1, 0, \sizeEnvAmount.kr(0.65));
+
+	delTimes = order.collect({|i| ((i + 1) * 511).max(1000).nextPrime });
+    delTimesSec = (delTimes * delMod) / 44100;
+
+    sig = sig + LocalIn.ar(order);
+    sig = DelayC.ar(sig, 0.5, delTimesSec * size - ControlDur.ir);
+    sig = sig * \feedback.kr(0.9);
+    sig = OnePole.ar(sig, \coef.kr(0.3));
+
+    sig = sig * matrix.flop;
+    sig = sig.sum;
+    LocalOut.ar(sig);
+    // OffsetOut.ar(out, Pan2.ar((inSig + Splay.ar(sig)), pan, amp) * 0.5);
+	// OffsetOut.ar(out, DirtPan.ar((inSig + Splay.ar(sig)), ~dirt.numChannels, pan, amp));
+	sig = (inSig + Splay.ar(sig) * ~fbDelNetPreset[\amp] );
+});
+)
+
+Ndef(\fbDelNet).play(2);
+
+Ndef(\fbDelNet).fadeTime_(0);
+
+Ndef(\fbDelNet).release(9);
+
+// ne fonctionne pas
+
+(
+~liljedMystPreset = (amp: 0.6, attack: 0.01, release: 4, sustain: 1, curve: (-4), envPow: 1, pNoiseFreq: 0.5, hpfFreq: 10, modDur: 9, lfnFreq: 0.05, ringFreq: 55, ringDec: 1.2, revTime: 99);
+)
+
+(
+Ndef(\LiljedMyst, {
+	// arg out = 0, amp = 0.6, pan = 0, attack = 0.01, release = 4, sustain = 1, curve = (-4), envPow = 1, pNoiseFreq = 0.5, hpfFreq = 10, modDur = 9, lfnFreq = 0.05, ringFreq = 55, ringDec = 0.2, revTime = 99, gate = 1, doneAction = 2;
+	var sig, globalEnv;
+	globalEnv = EnvGen.kr(Env.perc(~liljedMystPreset[\attack], ~liljedMystPreset[\release], curve: ~liljedMystPreset[\curve]), timeScale: ~liljedMystPreset[\sustain], doneAction: 2).pow(~liljedMystPreset[\envPow]);
+	sig = HPF.ar(PinkNoise.ar(~liljedMystPreset[\pNoiseFreq]), ~liljedMystPreset[\hpfFreq]) * Line.kr(0, 1, ~liljedMystPreset[\modDur]);
+	sig = GVerb.ar(
+		({ |i|
+			Ringz.ar(
+				sig * LFNoise1.kr(~liljedMystPreset[\lfnFreq] + 0.1.rand),
+				~liljedMystPreset[\ringFreq] * i + 60,
+				~liljedMystPreset[\ringDec]
+			)
+		}!24).sum,
+		2,
+		~liljedMystPreset[\revTime]
+	).tanh;
+	sig = sig * globalEnv * ~liljedMystPreset[\amp];
+	// OffsetOut.ar(out, sig);
+	// OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, amp));
+});
+)
+
+Ndef(\liljedMyst).play(2);
+
+
+(
+~runglerPreset = (amp: 0.2, spread: 0.3, attack: 0.001, release: 1.4, sustain: 1, curve: (-4), envPow: 1, lfoTrigRate: 0.4, tu: 24, ffreq: 24, gate: 1, doneAction: 2);
+// default
+)
+
+(
+~runglerPreset = ( 'sustain': 1, 'spread': 0.024839186668396, 'release': 1.9842470645905, 'lfoTrigRate': 0.25718367099762,
+  'envPow': 1.0567637443542, 'amp': 0.2, 'ffreq': 334.63054275513, 'curve': -2, 'tu': 7.5839493274689,
+  'attack': 0.050888548016548 );
+)
+
+(
+~runglerPreset = ( 'sustain': 1, 'spread': 0.28134504079819, 'release': 9.4825898170471, 'lfoTrigRate': 0.50979968309402,
+  'envPow': 0.98303428888321, 'amp': 0.2, 'ffreq': 24.855098724365, 'curve': -4, 'tu': 15.518655776978,
+  'attack': 0.01711200273037 );
+)
+
+(
+~runglerPreset = ( 'sustain': 1, 'spread': 0.19752838850021, 'release': 1.5388622999191, 'lfoTrigRate': 0.72720127105713,
+  'envPow': 0.84595999717712, 'amp': 0.2, 'ffreq': 210.51501846313, 'curve': -4, 'tu': 13.242499351501,
+  'attack': 0.083144748568535 );
+)
+
+(
+~runglerPreset = (amp: 0.2, spread: rrand(0.01, 0.5), attack: rrand(0.001, 0.1), release: rrand(1.4, 10), sustain: 1, curve: rrand(-4, 2), envPow: rrand(0.6, 1.1), lfoTrigRate: rrand(0.1, 0.8), tu: rrand(4.0, 42), ffreq: rrand(24.0, 440));
+// rrand
+)
+
+
+(
+Ndef(\rungler, {
+	// arg amp = 0.2, spread = 0.3, attack = 0.001, release = 1.4, sustain = 1, curve = (-4), envPow = 1, lfoTrigRate = 0.4, tu = 24, ffreq = 24, gate = 1, doneAction = 2;
+    var rungler, lfo, snd, runglerOut, globalEnv;
+
+	// globalEnv = EnvGen.ar(Env.asr(~runglerPreset[\attack], ~runglerPreset[\sustain], ~runglerPreset[\release], ~runglerPreset[\curve]), gate, doneAction: doneAction).pow(envPow);
+
+	globalEnv = EnvGen.ar(Env.asr(~runglerPreset[\attack], ~runglerPreset[\sustain], ~runglerPreset[\release], ~runglerPreset[\curve])).pow(~runglerPreset[\envPow]);
+
+    lfo = {
+        var trigger;
+		trigger = Dust.ar(~runglerPreset[\lfoTrigRate]);
+        Select.ar(ToggleFF.ar(trigger), [
+            LFNoise2.ar(TExpRand.ar(0.5, 10, trigger)),
+            TRand.ar(-1, 1, trigger),
+        ]);
+    };
+
+    rungler = { |dataSignal, clockSignal|
+        var numBits, bits, bit, out, doDAC;
+        doDAC = { |bits|
+            var result;
+            result = bits[0] + (bits[1] * 2) + (bits[2] * 4);
+            result = result / 7;
+            result = (result * 2) - 1;
+            result;
+        };
+        bit = dataSignal > 0;
+        numBits = 8;
+        bits = [];
+        numBits.do {
+            bit = Latch.ar(bit, clockSignal);
+            bits = bits.add(bit);
+            bit = Delay1.ar(bit);
+        };
+        (
+            out: doDAC.(bits[numBits - 3..numBits - 1]),
+            outReverse: doDAC.(bits[numBits - 2..numBits - 4]),
+        );
+    };
+    snd = LocalIn.ar(2);
+    runglerOut = rungler.(snd[0], snd[1]);
+    snd = [runglerOut[\out], runglerOut[\outReverse]];
+	snd = LFTri.ar(({ lfo.() } ! 2).linexp(-1, 1, [10, 1], 8000) * (snd * ~runglerPreset[\tu]).midiratio);
+    LocalOut.ar(LeakDC.ar(Sanitize.ar(snd)));
+    snd = (snd[0] > snd[1]) - 0.5;
+	snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linexp(-1, 1, 100, 8000) * (runglerOut[\out] * ~runglerPreset[\ffreq]).midiratio, 3);
+	snd = Splay.ar(snd, ~runglerPreset[\spread]);
+    snd = snd * globalEnv * -10.dbamp;
+	// OffsetOut.ar(out, snd * amp);
+	snd = snd * ~runglerPreset[\amp];
+});
+)
+
+Ndef(\rungler).fadeTime_(16);
+
+Ndef(\rungler).play(2);
+
+Ndef(\rungler).release(12);
+
+(
+~easelPreset = (amp: 0.0612, attack: 0.0001, release: 1.2, sustain: 1, curve: 0, envPow: 1, selFilt: 3);
+// default
+)
+
+(
+~easelPreset = ( 'envPow': 1, 'release': 2.4481200218201, 'curve': 1.3878145217896, 'selFilt': 7, 'amp': 0.0612, 'sustain': 1, 'attack': 0.058201573085785 );
+// harsh noise
+)
+
+(
+~easelPreset = ( 'envPow': 1, 'release': 3.1073297023773, 'curve': 3.808445930481, 'selFilt': 6,  'amp': 0.0612, 'sustain': 1, 'attack': 0.014150855028629 )
+// shitnoise
+)
+
+(
+~easelPreset = ( 'envPow': 1, 'release': 3.6880983352661, 'curve': -0.77374982833862, 'selFilt': 2, 'amp': 0.0612, 'sustain': 1, 'attack': 0.031918237555027 );
+// gros gate
+)
+
+(
+~easelPreset = (amp: 0.0612, attack: rrand(0.0001, 0.1), release: rrand(1.2, 4), sustain: 1, curve: rrand(-2.0, 4), envPow: 1, selFilt: rrand(3, 7));
+// rrand
+)
+
+(
+Ndef(\easel, {
+	// arg out = 0, amp = 0.2, pan = 0, attack = 0.0001, release = 1.2, sustain = 1, curve = 0, envPow = 1, selFilt = 3, gate = 1, doneAction = 2;
+    var snd, numInputs, numOutputs, globalEnv;
+    numInputs = 12;
+    numOutputs = 6;
+    snd = LocalIn.ar(numOutputs);
+
+	globalEnv = EnvGen.ar(Env.asr(~easelPreset[\attack], ~easelPreset[\sustain], ~easelPreset[\release], ~easelPreset[\curve])).pow(~easelPreset[\envPow]);
+    // Matrix-vector multiplication using multichannel expansion.
+    snd = snd * ({ { LFNoise2.kr(0.5)/*.round*/ } ! numInputs } ! numOutputs);
+    snd = snd.sum;
+    // If additional modules are added, remember to update numInputs and numOutputs.
+    // numInputs should equal the maximum i in snd[i], plus one.
+    // numOutputs should equal the number of entries in the snd array.
+    snd = [
+        // Oscillator that reaches LFO range
+        SinOsc.ar(snd[0].linexp(-1, 1, 0.1, 8000)),
+        // Oscillator in audio range only
+        SinOsc.ar(snd[1].linexp(-1, 1, 100, 8000)),
+        // Wavefolder with controllable gain
+		(snd[2] * snd[3].linexp(-1, 1, [1, 1], 10)).fold2,
+        // Two filters with controllable cutoff and resonance
+        MoogFF.ar(snd[4], snd[5].linexp(-1, 1, 10, 8000), snd[6].linlin(-1, 1, 0, 4)) * 3.dbamp,
+        MoogFF.ar(snd[7], snd[8].linexp(-1, 1, 10, 8000), snd[9].linlin(-1, 1, 0, 4)) * 3.dbamp,
+        // Metallic reverb (spring reverb in the Easel)
+        FreeVerb.ar(snd[10], mix: 1)
+        // Five-step sequencer
+        // Demand.ar(Impulse.ar(snd[11].linexp(-1, 1, 0.1, 1000)), 0, Dseq([0.1, 0.5, 0.9, 0.3, 0.4]))
+    ];
+
+    if(snd.size != numOutputs) {
+        Error("Please ensure numOutputs matches number of modules").throw;
+    };
+    snd = Sanitize.ar(snd);
+    LocalOut.ar(snd);
+
+	snd = Select.ar(~easelPreset[\selFilt].mod(7), snd ++ snd.sum);
+
+    snd = Limiter.ar(LeakDC.ar(snd * globalEnv));
+	// snd = Pan2.ar(snd, pan, amp);
+	// OffsetOut.ar(out, snd);
+	snd = snd * ~easelPreset[\amp];
+});
+)
+
+Ndef(\easel).fadeTime_(16);
+
+Ndef(\easel).play(2);
+
+Ndef(\easel).release(32);
+
