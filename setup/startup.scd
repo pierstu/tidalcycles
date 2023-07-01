@@ -55,19 +55,29 @@ cc = MIDIFunc.cc({ |val, num, chan, src|
 
 MIDIClient.init;
 MIDIClient.sources;
+
+// ancien midi in
 // 2.wait;
 // contrôleur omnitronic fad9 :
 	// MIDIClient.sources; // list avalaible midi sources
-MIDIClient.sources.do({ arg source, i;
-	// source.device.debug("device: ");
-	// source.name.debug("name: ");
+/*MIDIClient.sources.do({ arg source, i;
+	/*source.device.debug("device ");
+	source.name.debug("name ");*/
 	if ((source.device == "FAD.9" and: source.name == "FAD.9 MIDI 1"), {
 		MIDIIn.connect(0, MIDIClient.sources[i]);
 	});
-});
-// MIDIIn.connect(0,MIDIClient.sources[4]); // connecter à l'entrée MIDI 0, la 4e valeur du tableau retourné par MIDIClient.sources; soit MIDIEndPoint("FAD.9", "FAD.9 MIDI 1") ou MIDIEndPoint("UC-33 USB MIDI Controller", "UC-33 USB MIDI Controller MIDI ")
-// MIDIIn.findPort("FAD.9", "FAD.9 MIDI 1");
-// MIDIFunc.trace(false);
+});*/
+
+block { arg break;
+    MIDIClient.sources.do({ arg source, i;
+		if ((source.device == "FAD.9" and: source.name == "FAD.9 MIDI 1"), {
+			MIDIIn.connect(0, MIDIClient.sources[i]);
+			break.value;
+		});
+    });
+};
+
+// MIDIFunc.trace(true);
 // midi output for Carla or whatever you'll seq software / plugins with, here it will be named carla //
 // ~midiOut = MIDIOut.newByName("Midi Through", "Midi Through Port-0").latency_(s.latency);
 
