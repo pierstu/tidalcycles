@@ -73,25 +73,6 @@ SynthDef(\tides, {|out=0,freq=440,sustain=1,pan=0,begin=0,end=1,speed=1,accelera
 	OffsetOut.ar(out, DirtPan.ar(sig * volume, ~dirt.numChannels, pan));
 }).add;
 
-SynthDef(\Sd_hoover, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, envfL1 = (-5), envfL2 = 6, envfL3 = 0, envfT1 = 0.1, envfT2 = 1.7, crvf1 = 0, crvf2 = (-4), bw = 1.035, doneAction = 2;
-    var snd;
-	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
-
-	freq = max(0, freq * speed * (1 + (accelerate * line)));
-    freq = freq * Env([envfL1, envfL2, envfL3], [envfT1, envfT2], [crvf1, crvf2]).kr.midiratio;
-    snd = { DelayN.ar(Saw.ar(freq * ExpRand(bw, 1 / bw)) + Saw.ar(freq * 0.5 * ExpRand(bw, 1 / bw)), 0.01, Rand(0, 0.01)) }.dup(20);
-    snd = (Splay.ar(snd) * 3).atan;
-    snd = snd * Env.asr(0.01, 1.0, 1.0).kr(0);
-    snd = FreeVerb2.ar(snd[0], snd[1], 0.3, 0.9);
-    snd = snd * globalEnv;
-    /*snd = Balance2.ar(snd[0], snd[1], pan, amp);
-    OffsetOut.ar(out, snd);*/
-	OffsetOut.ar(out, DirtPan.ar(snd, ~dirt.numChannels, pan, amp));
-}).add;
-
 SynthDef(\Sd_stochadiet1, {|out = 0, amp = 1, pan = 0, begin = 0, end = 1, speed = 1, sustain = 1, sdm = 1, modSin = 0.4, from = 9, dest = 12, minSeq = 0.1, maxSeq = 0.3, doneAction = 2|
     var sig, sd, hpf=40, mf=1.0;
 	var envLength = sustain * (end - begin) / speed;
@@ -235,8 +216,10 @@ SynthDef(\Sd_kickBoomy, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, s
     var env = Env.asr;
     var globalEnv = IEnvGen.ar(env, line);
 
-	// freq = max(0, freq * speed * (1 + (accelerate * line)));
-	sig = (SinOsc.ar(frq1/4) + SinOsc.ar(frq2/4) + LFTri.ar(frq3/4) + LFTri.ar(frq4/4) + BrownNoise.ar(0.1));
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = freq.max(0.01).min(2);
+
+	sig = (SinOsc.ar(frq1/4 * freq) + SinOsc.ar(frq2/4 * freq) + LFTri.ar(frq3/4 * freq) + LFTri.ar(frq4/4 * freq) + BrownNoise.ar(0.1));
 	sig = LPF.ar(sig, 500);
 	sig = sig + HPF.ar(EnvGen.ar(Env.pairs([[envT1, envL1], [envT2, envL2], [envT3, envL3]], envCrv), levelScale: lvlScale), hpfFreq);
 	sig = sig * softGain;
