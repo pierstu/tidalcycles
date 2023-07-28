@@ -1580,6 +1580,9 @@ let p = streamReplace tidal
     lfSrc2Sel = pF "lfSrc2Sel"
     lfSrc2Rate = pF "lfSrc2Rate"
     switchSrcRate = pF "switchSrcRate"
+    --
+    vow = pF "vow"
+    softGain = pF "softGain"
 :}
 
 :{
