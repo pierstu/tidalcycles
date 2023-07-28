@@ -1,0 +1,292 @@
+resetCycles
+
+d1 $
+  every 8 (spreadf [slow 2, listen 0]) $
+  stack [
+    -- listen 0 $
+    every "7 5" (listen "[1 0] 1 [1 0] 1") $
+    every 3 ((2/5) <~) $
+    every 2 (ghost' 0.4) $
+    -- (<| frq3 "<90 90(<1 2>,4,<0 1>)> <~ 152> [~ 70] 130 [~ 20]") $
+    (<| frq3 "[90 <~ 152> [~ 70] 130 [~ 20]] [[~ 70] 130 90 <~ 152> [~ 20]]") $
+    s "Sd_kickBoomy"
+      -- # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      # speed 3.6
+      # attack 0.00001
+      # sustain 1.1 -- 1.4
+      # release  1
+      # accelerate 3
+      # freq 1.8
+      # frq1 128.0
+      # frq2 "230 ! 303" -- 10.0
+      -- # frq3 152
+      # frq4 123
+      # envT1 0.002 -- 0.012000000104308
+      # envL1 23.10
+      # envT2 0 -- 0.0012000000569969
+      # envL2 1.39
+      # envT3 0.003 -- 0.11999999731779
+      # envL3 0.10000000149012
+      # envCrv "8" -- "-4.0"
+      # lvlScale 12.50
+      # hpfFreq 2680 -- 500.0
+      # softGain 0.23
+      # gain 1.4
+      # orbit 0
+      # hpf 80
+    ,
+    -- listen 0 $
+    whenmod 8 "7 6" (listen "1 [0 1] <[1 [1 0]] 0>") $
+    whenmod 6 "4 3" (slow "<[1 2] 1 [2 1]>") $
+    every 2 ("<0.2 0.4 0.1>" <~) $
+    (<| speed "[0.5 [~ 2]] [1.5 [~ 2]] 1 [[~ 1.9] 0.8] [[~ 2.1] 2]") $
+    s "Sd_kickBlocks"
+      -- # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      -- # speed 1.0
+      # accelerate 1 -- 0.0
+      # sustain 1.0
+      # freq "2.7 <1 <0.5 2>> 2.7" -- 1.0
+      # t1freq 400.0
+      # t1harmonic 2.0
+      # t1glide 0.0099999997764826
+      # t1att 0.00050000002374873
+      # t1rel 0.0099999997764826
+      # t1curve "-4.0"
+      # t1del 0.0
+      # t1amp 1.0
+      # t2freq 50.0
+      # t2harmonic 3.4400000572205
+      # t2glide 0.0099999997764826
+      # t2att 9.9999997473788e-05
+      # t2rel 0.30000001192093
+      # t2curve "-4.0"
+      # t2del 0.0049999998882413
+      # t2amp 1.0
+      # h1freq 100.0
+      # h1harmonic 8.0
+      # h1glide 0.0099999997764826
+      # h1rq 0.60000002384186
+      # h1att 0.0010000000474975
+      # h1rel 0.019999999552965
+      # h1curve "-4.0"
+      # h1del 0.0010000000474975
+      # h1amp 1.0
+      # h2freq 1320.0
+      # h2harmonic 1.0
+      # h2glide 0.0
+      # h2att 0.003000000026077
+      # h2rel 0.029999999329448
+      # h2curve "-4.0"
+      # h2del 0.0
+      # h2amp 0.5
+      # cfreq 6100.0
+      # crq 1.0
+      # camp 1.4099999666214
+      # cdur 0.0010000000474975
+      # gain 0.9
+    ,
+    listen 0 $
+    s "Sd_rim1"
+      # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      # speed 1.0
+      # accelerate 0.0
+      # sustain 1.0
+      # freq 440.0
+      # envfL1 1600.0
+      # envfL2 5600.0
+      # envfL3 800.0
+      # envfL4 250.0
+      # envfT1 0.0010000000474975
+      # envfT2 0.0010000000474975
+      # envfT3 0.0010000000474975
+      # envf2L1 1000.0
+      # envf2L2 1600.0
+      # envf2L3 700.0
+      # envf2L4 200.0
+      # envf2T1 0.0010000000474975
+      # envf2T2 0.0010000000474975
+      # envf2T3 0.059999998658895
+      # sinFreq 400.0
+      # rhpfFreq 100.0
+      # rhpfRq 1.0
+      # bpfFreq1 327.0
+      # bpfFreq2 430.0
+      # bpfRq1 0.5
+      # bpfRq2 0.5
+      # rlpfFreq 11100.0
+      # rlpfRq 0.5
+      # orbit 1
+    ,
+    listen 0 $
+    s "Sd_cymnew"
+      # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      # speed 1.0
+      # accelerate 0.0
+      # sustain 1.0
+      # freq 6.0
+      # orbit 2
+    ,
+    listen 0 $
+    s "Sd_main"
+      # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      # speed 1.0
+      # accelerate 0.0
+      # sustain 1.0
+      # lev 10.0
+      # freq 50.0
+      # wnoiseAmp 1.0
+      # sinAmp 1.0
+      # sin1Freq 30.0
+      # envL1 0.0
+      # envL2 1.0
+      # envL3 0.0099999997764826
+      # envL4 1.2999999523163
+      # envL5 0.0
+      # envT1 0.0099999997764826
+      # envT2 0.0
+      # envT3 0.20000000298023
+      # envT4 0.0099999997764826
+      # clickCurve "-4.0"
+      # clickInScale 1.0
+      # clickEnvPow 1.0
+      # clickHpf 80.0
+      # clickHpRq 1.0
+      # clickLpf 13000.0
+      # clickLpRq 1.0
+      # clickAmp 1.0
+      # sel 0.0
+      # sin2Freq 40.0
+      # sin2Amp 0.30000001192093
+      # noiseAmp 1.0
+      # hpffreq 8000.0
+      # revtime 3.0
+      # distAmt 2.0
+      # distMix 0.0
+      # orbit 1
+    ,
+    listen 0 $
+    s "Sd_fabHi1Sus"
+      # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      # speed 1.0
+      # accelerate 0.0
+      # sustain 1.0
+      # freq 1.0
+      # wamp 0.5
+      # envNatt 0.0010000000474975
+      # envNrel 0.20000000298023
+      # wbpfFreq 2800.0
+      # wbpfRq 1.0
+      # sinFrq1 2120.0
+      # sinFrq2 12423.0
+      # sinPh1 0.0
+      # sinPh2 0.019999999552965
+      # sinLev1 1.0
+      # sinLev2 1.0
+      # envSatt 0.0010000000474975
+      # envSrel 0.20000000298023
+      # mix 0.5
+      # ffreq 6000.0
+      # orbit 2
+    ,
+    -- listen 0 $
+    every 5 (ghost' 0.3) $
+    every 2 ("<1/5 3/5 0.1 0.3>" ~>) $
+    -- (<| speed "~ 1 0.2 [1 2] <2 0.2>") $
+    -- (<| speed "~ <1 [~@2 1]> 0.2 [1 2] <2 [~ 0.2]>") $
+    (<| speed "[~ <1 [~@2 1]> 0.2 [1 2] <2 [~ 0.2]>] / 2 ") $
+    s "Sd_clapthan"
+      # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      -- # speed "<1 0.2 <1 2>>"
+      # accelerate 0
+      # attack "<0 0.1 0.16 0 0.12>"
+      # release ("<0.6 0.3 0.7>" * "0.125 0.0125")
+      # sustain 1.0
+      # freq "20.20 30"
+      # envL1 0.0
+      # envL2 3.4
+      # envL3 0.5
+      # envL4 1.0
+      # envT1 0.1
+      # envT2 0
+      # envT3 0.00001
+      # crv "-2.6"
+      # hpfRq 1
+      # hpf 1400
+      # gain 0.89
+      # orbit 2
+    ,
+    listen 0 $
+    -- slow 2 $
+    -- (<| begin "<~ 0.3> [0.16 0.5] ~ [~ 0.81] <0.15 ~>") $
+    (<| syncRatio "{[12 21] ~ 12@2 1}%2.5") $
+    s "Sd_windowsync"
+      # amp 0.4
+      # begin 0
+      # end 1 -- "1.0 0.86"
+      -- # loop "<2 12 24>"
+      # speed (sine * 0.28 + 0.19)
+      # accelerate 4
+      # attack 0
+      # release  0.6 -- 2
+      # sustain 0.76
+      # freq 39.4 -- "<1245? 65.4> 120"
+      # syncEgTop "8.0 10"
+      -- # syncRatio "<12 21>"
+      # syncDcy 0.6
+      # pan (range 0.2 0.8 $ slow 2 $ square)
+      # gain 0.92
+      # orbit 2
+    ,
+    listen 1 $
+    s ""
+  ]
+
+
+d1 $ s "Sd_kickBoomy"
+
+d1 $
+  stack [
+    listen 1 $
+    s ""
+    ,
+    listen 1 $
+    s ""
+    ,
+    listen 1 $
+    s ""
+    ,
+    listen 1 $
+    s ""
+    ,
+  ]
+
+
+d1 $
+stack [
+  listen 1 $
+  s ""
+  ,
+  listen 1 $
+  s ""
+  ,
+  listen 1 $
+  s ""
+  ,
+  listen 1 $
+  s ""
+  ,
+]
