@@ -235,7 +235,9 @@ SynthDef(\Sd_batuhan, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
     var env = Env.asr;
     var globalEnv = IEnvGen.ar(env, line);
 
-	// freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = freq.max(0.01).min(2);
+
 	trig = Impulse.kr(0);
 	envSaw = Decay2.kr(
 		trig,
@@ -243,7 +245,7 @@ SynthDef(\Sd_batuhan, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 		eSawDec
 	);
 	envSin = EnvGen.kr(Env.new([eSinL1, eSinL2, eSinL3, eSinL4], [eSinT1, eSinT2, eSinT3], [eSinC1, eSinC2, eSinC3]), trig);
-	sig = ((Saw.ar(sawFreq, envSaw) ** 1.5) * sawMix) + (SinOsc.ar(sinFreq, 0, envSin) * (1 - sawMix));
+	sig = ((Saw.ar(sawFreq * freq, envSaw) ** 1.5) * sawMix) + (SinOsc.ar(sinFreq * freq, 0, envSin) * (1 - sawMix));
 	sig = (sig * (1 - bpfMix)) + (BPF.ar(sig, bpfFreq, bpfRq.max(0.01)) * bpfMix);
 	sig = BRF.ar(sig, trig * 20 + [brfFreq1, brfFreq2], brfRq.max(0.01));
 	sig = Splay.ar(sig, levelComp: false);
@@ -294,6 +296,30 @@ SynthDef(\Sd_rim1, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed 
 	sig = sig + Mix.ar(BPF.ar(sig, [\bpfFreq1.kr(327), \bpfFreq2.kr(430)], [\bpfRq1.kr(0.5), \bpfRq2.kr(0.5)]) * 0.8) + WhiteNoise.ar(globalEnv) + BrownNoise.ar(globalEnv / 8);
 	sig = RLPF.ar(sig, \rlpfFreq.kr(11100), \rlpfRq.kr(0.5)) + sig;
 	sig = (Ringz.ar(WhiteNoise.ar, Mix.ar([envf2, envf * 0.9, envf2 * 0.8]), 1, globalEnv) + RLPF.ar(BrownNoise.ar(globalEnv), envf * 4, 1, 1) + sig);
+	sig = CompanderD.ar(sig * 4, 0.8, 0.3, 0.5, 0.001, 0.2, globalEnv);
+
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+SynthDef(\Sd_rim2, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, doneAction = 2;
+    var sig;
+	var envLength = sustain * (end - begin) / speed;
+    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+    var env = Env.asr;
+    var globalEnv = IEnvGen.ar(env, line);
+
+	var envf = EnvGen.ar(Env([\envfL1.kr(1600), \envfL2.kr(5600), \envfL3.kr(800), \envfL4.kr(250)],[\envfT1.kr(0.001), \envfT2.kr(0.001), \envfT3.kr(0.001)].normalizeSum * sustain, -4));
+	var envf2 = EnvGen.ar(Env([\envf2L1.kr(1000), \envf2L2.kr(1600), \envf2L3.kr(700), \envf2L4.kr(200)],[\envf2T1.kr(0.001), \envf2T2.kr(0.001), \envf2T3.kr(0.06)].normalizeSum * sustain, -4));
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = freq.max(0.01).min(2);
+
+	sig = SinOsc.ar(freq) * globalEnv;
+	sig = WhiteNoise.ar(globalEnv) + sig;
+	sig = RHPF.ar(sig, \rhpfFreq.kr(100), \rhpfRq.kr(1)) + sig;
+	sig = sig + Mix.ar(BPF.ar(sig, [\bpfFreq1.kr(327), \bpfFreq2.kr(430)], [\bpfRq1.kr(0.5), \bpfRq2.kr(0.5)]) * 0.8) + WhiteNoise.ar(globalEnv) + BrownNoise.ar(globalEnv / 8);
+	sig = RLPF.ar(sig, \rlpfFreq.kr(11100), \rlpfRq.kr(0.5)) + sig;
+	sig = (Ringz.ar(WhiteNoise.ar, Mix.ar([envf2, envf * 0.9, envf2 * 0.8] * freq), 1, globalEnv) + RLPF.ar(BrownNoise.ar(globalEnv), envf /** 4*/ * freq, 1, 1) + sig);
 	sig = CompanderD.ar(sig * 4, 0.8, 0.3, 0.5, 0.001, 0.2, globalEnv);
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
@@ -1025,6 +1051,46 @@ SynthDef(\Sd_vowelsynth, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
+SynthDef(\Sd_sinBass, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, hpf4 = 50, curve = (-4), envLevel1 = 0, envLevel2 = 40, envLevel3 = 32, envLevel4 = 50, envLevel5 = 0, envLevel6 = 60, envTime1 = 0.5, envTime2 = 0.3, envTime3 = 0.25, envTime4 = 1, envTime5 = 0.5, doneAction = 2;
+    var sig, freqEnv;
+	var envLength = sustain * (end - begin) / speed;
+    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+    var env = Env.asr;
+    var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = freq.max(0.01).min(2);
+
+	freqEnv = EnvGen.kr(Env([envLevel1, envLevel2, envLevel3, envLevel4, envLevel5, envLevel6], [envTime1, envTime2, envTime3, envTime4, envTime5], curve));
+	sig = SinOsc.ar(freqEnv * freq, mul: globalEnv);
+	//sig = HPF.ar(sig, 20);
+	sig = BHiPass4.ar(sig, hpf4, 1, globalEnv);
+
+	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, amp));
+}).add;
+
+SynthDef(\Sd_feedBackos, { arg out = 0, amp = 0.3, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, fbPow = 0.999, baseFreq = 0.01, freq = 1, lpfFreq = 4000, doneAction = 2;
+    var i, o;
+	var sig;
+	var envLength = sustain * (end - begin) / speed;
+    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+    var env = Env.asr;
+    var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = freq.max(0.01).min(2);
+
+    i = LocalIn.ar(2);
+    i = i + ((1 + i) ** fbPow);
+	o = DelayC.ar(i, 1, (SinOsc.ar(baseFreq / (1..8)).exprange * freq));
+    o = LeakDC.ar(o);
+    o = Splay.ar(o).tanh;
+    LocalOut.ar(o);
+    sig = LPF.ar(o, lpfFreq) * 1/5;
+    sig = Pan2.ar(sig, pan, amp * globalEnv);
+    OffsetOut.ar(out, sig);
+}).add;
+
 /*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
     var sig;
 	var envLength = sustain * (end - begin) / speed;
@@ -1033,6 +1099,7 @@ SynthDef(\Sd_vowelsynth, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
     var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
+// freq = freq.max(0.01).min(2);
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;*/
