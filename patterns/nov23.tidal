@@ -1,8 +1,11 @@
+resetCycles
+
 d1 $
   stack [
-  -- melodie
+    -- melodie
     listen (cF 1 "23") $
     degOffsetBy (1/7) (cF 0 "33") $
+    every "<7 8>" (listen 0) $
     someCyclesBy 0.34
     (every 4 (listen "<[0 1] 1> <0 [1 0]>")) $
     every 3
@@ -33,7 +36,7 @@ d1 $
       # gain 0.99
     ,
     listen (cF 1 "24") $
-    degOffsetBy (1/4) (cF 0 "34") $
+    degOffsetBy (4/15) (cF 0 "34") $
     randcat [
       -- clic
       -- listen 0 $
@@ -76,7 +79,7 @@ d1 $
     ,
     -- kick + snare
     listen (cF 1 "25") $
-    degOffsetBy (3/8) (cF 0 "35") $
+    degOffsetBy (3/10) (cF 0 "35") $
     someCyclesBy 0.6
     ((# fbPow 0.999) . (# pan (segment 5 $ range 0 1 sine))) $
     sometimesBy 0.36
@@ -97,37 +100,40 @@ d1 $
       # lpfFreq 12000
       # hpf 110.5
       # orbit 1
-      # gain 1.14
+      # gain 1.20
     ,
     -- perc metalliques
     listen (cF 1 "26") $
-    degOffsetBy (1/7) (cF 0 "36") $
+    degOffsetBy (3/7) (cF 0 "36") $
     every 5 (listen 0) $
+    whenmod 8 "4 6" (ghost' 0.2) $
     ((2/10) ~>) $
     fast "2 4" $
     s "~ <Sd_rim2 [~ Sd_rim2]>"
       # amp 0.3
-      # begin 0.0
-      # end 0.1
-      # speed "[1.183 | 2.0 | 0.3]!5"
-      # accelerate 0.0
-      # sustain 0.4
-      # freq 2
-      # envfL1 40.0
-      # envfL2 20.0
-      # envfL3 30.0
-      # envfL4 50.0
-      # envfT1 0.01
-      # envfT2 0.01
-      # envfT3 0.0001
-      # envf2L1 240.0
-      # envf2L2 160
-      # envf2L3 60
-      # envf2L4 20
-      # envf2T1 0.0010000000474975
-      # envf2T2 0.1
-      # envf2T3 0.059999998658895
-      # rhpfFreq 2300.0
+      # attack "0 0.00124 <0.01 0>"
+      # rel 1.2
+      # begin 0.025
+      # end 0.0641
+      # speed 0.78 -- "[1.183 | 2.0 | 0.3]!5"
+      # accelerate 0.4 -- 0.0
+      # sustain 0.3 -- 0.14 -- 0.4
+      # freq 0.8 -- "0.5 2"
+      # envfL1 159 -- 40.0
+      # envfL2 620.0
+      # envfL3 48 -- 30.0
+      # envfL4 2.5 -- 50.0
+      # envfT1 0.098
+      # envfT2 0.1
+      # envfT3 0.01 -- 0.0001
+      # envf2L1 240
+      # envf2L2 20
+      # envf2L3 16
+      # envf2L4 200
+      # envf2T1 0.1
+      # envf2T2 0.0001
+      # envf2T3 0.8
+      # rhpfFreq 200.0
       # rhpfRq 0.0012
       # bpfFreq1 3.270
       # bpfFreq2 4300.0
@@ -140,7 +146,7 @@ d1 $
       # gain 0.54
     ,
     listen (cF 1 "27") $
-    degOffsetBy (1/7) (cF 0 "37") $
+    degOffsetBy (2/7) (cF 0 "37") $
     randcat [
       -- fabien 0811
       fix (|* gain 0.9) (dest 4) $
@@ -172,7 +178,7 @@ d1 $
       # end 0.18 -- 1.0
       # speed "[0.2 | 0.18 | 0.22]!5"
       # accelerate "-0.33"
-      # attack 0.21
+      # attack 0.5 -- 0.21
       # sustain 0.85 -- 1.0
       # release 0.83
       # freq 250 -- 440.0
@@ -180,33 +186,39 @@ d1 $
       # bend (segment 7 $ fast 3.2 $ sometimesBy 0.75 ("0 0.2 0 0.3" <~) $ range 0.3 6 saw)
       # vow (rangex 0.13 4 $ slow 2 sine)
       # orbit 2
+      # pan (range 0 1 tri)
       # gain 1.2
     ]
     ,
     -- vrai kick
     listen (cF 1 "28") $
     degOffsetBy (1/7) (cF 0 "38") $
-    every "<2? 3>"
-    ("0 0 0.2 3/5 0 " <~) $
-    slowCat [
-      (<| sus "0.2 [0.3 0.4] 0.2 <~ [~ 0.2]> [~ 0.4]") $
-      s "Sd_kick3new"
-      ,
-      every 2
-      ("0 <0.125 0.2>!2 0!2" ~>) $
-      (<| sus "0.2(<5 4>,5)") $
-      s "Sd_kick3new"
-    ]
-      # amp 0.45
-      # begin 0.10
-      # end 0.23 -- 1.0
+      -- every "<5 4 5>" (listen 0) $
+      -- every 3
+      -- ("0 <0.1 0.2>!2 0!2" ~>) $
+      wrandcat [
+        (every 4 ("0.6 0" ~>) $
+        (<| amp "[<0.1@0.5 ~@0.5?> <0.2 [~ 0.2]> <[0.1 0.2] [[~ 0.1] 0.2]>]*2")$
+        s "Sd_kick3new", 2)
+        ,
+        (every 3 ("0.6 0" ~>) $
+        (<| amp ("{0.2 ~ [0.15 | 0.1 | 0.2] [0.15 | 0.1 | 0.2] [~ 0.02]}%<5 10>")) $
+        s "Sd_kick3new", 7)
+        ,
+        ((<| amp ("{[0.2 ~ [0.15 0.1 0.2]] [[0.15 0.1 0.2] ~ 0.2]}%1.25")) $
+        s "Sd_kick3new", 1)
+      ]
+      # begin 0.010
+      # end 0.15 --0.23 -- 1.0
       # speed 0.32 -- 1.0
       # accelerate 0.3
-      # rel "[0.13 | 0.19]!10"
+      # dec 0.1
+      # sus 0.94
+      # rel "[0.23 | 0.139]!10"
       # freq 344
       # tu 0.8
       # orbit 0
-      # gain 0.99
+      # gain 1.4 -- 0.99
     ,
     listen (cF 1 "29") $
     degOffsetBy (1/5) (cF 0 "39") $
