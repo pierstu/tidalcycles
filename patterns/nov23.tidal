@@ -80,36 +80,43 @@ d1 $
     -- kick + snare
     listen (cF 1 "25") $
     degOffsetBy (3/10) (cF 0 "35") $
+    fix (|* sustain 0.18) (fbPow 0.999 # amp 0.325) $
     someCyclesBy 0.6
-    ((# fbPow 0.999) . (# pan (segment 5 $ range 0 1 sine))) $
+    ((# fbPow 0.999)  . (# pan (segment 5 $ range 0 1 sine))) $
     sometimesBy 0.36
-    ((# baseFreq (12000 * (rangex 0.13 1.1 $ slow 4 sine))) . (|* amp 0.5) . (# pan (segment 5 $ fast 2 (range 0 1 sine)))) $
+    ((# baseFreq (12000 * (rangex 0.13 1.1 $ slow 4 sine))) . (# amp 0.325) . (# pan (segment 5 $ fast 2 (range 0 1 sine)))) $
     someCyclesBy (1/6)
     (*| speed 0.3) $
-    fast "2 [1 2]" $
-    (<| accelerate "<[0.93 ~ [0.93 ~@2] ~@0.5] [0.93 ~@0.5 0.93]>") $
+    -- every 4 (slow 2) $
+    every 3 ("0 0.4@4" <~) $
+    degradeBy "0 0.31 0 0.21" $
+    -- (<| accelerate "{[0.93 ~@0.5 <0.91 ~>] [~@0.5 <0.91 ~> <0.93 0.2>]}%2.5") $
+    (<| accelerate "<2 0.93>(<11 13 9>,20,<0 2 1>)") $
+    -- (<| accelerate "0.2 0.93 2@0.5") $
     s "Sd_feedBackos"
       # amp 0.65
       # begin 0.0
       # end 1.0
       # speed "1"
-      # sustain 0.6
+      # legato 1.2
+      -- # rel 0.1
+      # sustain "<0.14 0.6> <0.16 0.13> 0.15"
       # fbPow 0.00001
       # baseFreq "0.1 0.08"
       # freq 0.013
       # lpfFreq 12000
       # hpf 110.5
       # orbit 1
-      # gain 1.20
+      # gain 1.14
     ,
-    -- perc metalliques
+    -- charley
     listen (cF 1 "26") $
     degOffsetBy (3/7) (cF 0 "36") $
     every 5 (listen 0) $
     whenmod 8 "4 6" (ghost' 0.2) $
     ((2/10) ~>) $
     fast "2 4" $
-    s "~ <Sd_rim2 [~ Sd_rim2]>"
+    s "~@3 <Sd_rim2 [~ Sd_rim2]>@2"
       # amp 0.3
       # attack "0 0.00124 <0.01 0>"
       # rel 1.2
@@ -193,21 +200,8 @@ d1 $
     -- vrai kick
     listen (cF 1 "28") $
     degOffsetBy (1/7) (cF 0 "38") $
-      -- every "<5 4 5>" (listen 0) $
-      -- every 3
-      -- ("0 <0.1 0.2>!2 0!2" ~>) $
-      wrandcat [
-        (every 4 ("0.6 0" ~>) $
-        (<| amp "[<0.1@0.5 ~@0.5?> <0.2 [~ 0.2]> <[0.1 0.2] [[~ 0.1] 0.2]>]*2")$
-        s "Sd_kick3new", 2)
-        ,
-        (every 3 ("0.6 0" ~>) $
-        (<| amp ("{0.2 ~ [0.15 | 0.1 | 0.2] [0.15 | 0.1 | 0.2] [~ 0.02]}%<5 10>")) $
-        s "Sd_kick3new", 7)
-        ,
-        ((<| amp ("{[0.2 ~ [0.15 0.1 0.2]] [[0.15 0.1 0.2] ~ 0.2]}%1.25")) $
-        s "Sd_kick3new", 1)
-      ]
+    (<| amp ("{<[~ 0.18] 0.18> <[~ 0.15 0.2?] [[<~ ~@1.5> 0.2] ~@2.5 0.18]>}%5")) $
+      s "Sd_kick3new"
       # begin 0.010
       # end 0.15 --0.23 -- 1.0
       # speed 0.32 -- 1.0
@@ -218,20 +212,7 @@ d1 $
       # freq 344
       # tu 0.8
       # orbit 0
-      # gain 1.4 -- 0.99
-    ,
-    listen (cF 1 "29") $
-    degOffsetBy (1/5) (cF 0 "39") $
-    s ""
-    ,
-    listen (cF 1 "30") $
-    degOffsetBy (1/7) (cF 0 "40") $
-    s ""
-      # gain 0.99
-    ,
-    listen (cF 1 "31") $
-    degOffsetBy (1/7) (cF 0 "41") $
-    s ""
-      # gain 0.99
+      # gain 1.5
   ]
   # cps 0.56
+  -- |* gain 1.08
