@@ -1,0 +1,217 @@
+resetCycles
+
+d1 $
+  stack [
+    -- melodie
+    listen (cF 1 "23") $
+    degOffsetBy (1/7) (cF 0 "33") $
+    every "<7 8>" (listen 0) $
+    someCyclesBy 0.34
+    (every 4 (listen "<[0 1] 1> <0 [1 0]>")) $
+    every 3
+    (|* freq (rangex 0.4 2 (cosine))) $
+    (<| amp "{[0.2 ~ [0.05 0.1 0.2]] [[0.05 0.1 0.2] ~ 0.2]}%2.5") $
+    s "Sd_kickBoomy"
+      -- # amp 0.2
+      # begin 0.0
+      # end 0.7 -- 1.0
+      # speed 1.0
+      # accelerate 0.0
+      # sustain 0.7 -- 1.0
+      # freq 0.975
+      # frq1 1090 -- 180.0
+      # frq2 340 -- 330.0
+      # frq3 275 -- 175.0
+      # frq4 1070 -- 224.0
+      # envT1 0.012000000104308
+      # envL1 0.21 -- 0.0
+      # envT2 0.2 -- 0.0012000000569969
+      # envL2 1.0
+      # envT3 0.11999999731779
+      # envL3 0.6 -- 0.10000000149012
+      # envCrv "8" -- "-4.0"
+      # lvlScale 100 -- 1.0
+      # hpfFreq 2800 -- 500.0
+      # softGain 1.1000000238419
+      # gain 0.99
+    ,
+    listen (cF 1 "24") $
+    degOffsetBy (4/15) (cF 0 "34") $
+    randcat [
+      -- clic
+      -- listen 0 $
+      (<| envT2 "<0.06 [~ 0.1]> <0.3 [0.01 0.03]> ~  [~ 0.1]  <~ [~ 0.01]>") $
+      s "Sd_metro"
+        # amp 0.20000000298023
+        # begin 0.0
+        # end 1.0
+        # speed 0.5 -- 1.0
+        # accelerate 0.0 -- 0.0
+        # sustain 0.3 -- 1.0
+        # freq 12 -- 440.0
+        # envL1 0.0
+        # envL2 1.0
+        # envL3 0.30000001192093
+        # envL4 0.0
+        # envT1 0.001 -- 0.019999999552965
+        -- # envT2 0.06 -- 0.11999999731779
+        # envT3 0.21 -- 0.0099999997764826
+        # envT4 0.31 -- 0.0
+        # envDivDur 1.0
+        # theta 0.5
+        # rho 0.80000001192093
+        # filterfreq 2000.0
+        # rq 1.0
+        # pan (segment 5 $ fast 4.8 $ range 0 1 tri)
+        # orbit 2
+        # gain  0.99
+      ,
+    -- noise
+    someCyclesBy 0.34 (("0 0 0.2 0.2 0" <~) . (fast "<1 [0.5 2]>!<2 1> [1 2]!2")) $
+    s "supernoise"
+      # sustain 0.31
+      # freq 160.0
+      # accelerate 0.3
+      # pitch1 3.0
+      # voice 0.80
+      # gain 0.5
+    ]
+    ,
+    -- kick rapide
+    listen (cF 1 "25") $
+    degOffsetBy (3/10) (cF 0 "35") $
+    fix (# hpf 180) (fbPow 0.999 # baseFreq 0.1) $
+    fix (|* sustain 0.18) (fbPow 0.999 # amp 0.325) $
+    someCyclesBy 0.6
+    ((# fbPow 0.999)  . (# pan (segment 5 $ range 0 1 sine))) $
+    sometimesBy 0.36
+    ((# baseFreq (12000 * (rangex 0.13 1.1 $ slow 4 sine))) . (# amp 0.325) . (# pan (segment 5 $ fast 2 (range 0 1 sine)))) $
+    someCyclesBy (1/6)
+    (*| speed 0.3) $
+    -- every 4 (slow 2) $
+    every 3 ("0 0.4@4" <~) $
+    degradeBy "0 0.31 0 0.21" $
+    (<| accelerate "<2 0.93>(<11 13 9>,20,<0 2 1>)") $
+    s "Sd_feedBackos"
+      # amp 0.65
+      # begin 0.0
+      # end 1.0
+      # speed "1"
+      # legato 1.2
+      -- # rel 0.1
+      # sustain "<0.14 0.6> <0.16 0.13> 0.15"
+      # fbPow 0.00001
+      # baseFreq "0.1 0.08"
+      # freq 0.013
+      # lpfFreq 12000
+      # hpf 120
+      # orbit 1
+      # gain 1.14
+    ,
+    -- charley
+    listen (cF 1 "26") $
+    degOffsetBy (1/5) (cF 0 "36") $
+    every 5 (listen 0) $
+    whenmod 8 "4 6" (ghost' 0.2) $
+    ((2/10) ~>) $
+    fast "2 4" $
+    s "~@3 <Sd_rim2 [~ Sd_rim2]>@2"
+      # amp 0.3
+      # attack "0 0.00124 <0.01 0>"
+      # rel 1.2
+      # begin 0.025
+      # end 0.0641
+      # speed 0.78 -- "[1.183 | 2.0 | 0.3]!5"
+      # accelerate 0.4 -- 0.0
+      # sustain 0.3 -- 0.14 -- 0.4
+      # freq 0.8 -- "0.5 2"
+      # envfL1 159 -- 40.0
+      # envfL2 620.0
+      # envfL3 48 -- 30.0
+      # envfL4 2.5 -- 50.0
+      # envfT1 0.098
+      # envfT2 0.1
+      # envfT3 0.01 -- 0.0001
+      # envf2L1 240
+      # envf2L2 20
+      # envf2L3 16
+      # envf2L4 200
+      # envf2T1 0.1
+      # envf2T2 0.0001
+      # envf2T3 0.8
+      # rhpfFreq 200.0
+      # rhpfRq 0.0012
+      # bpfFreq1 3.270
+      # bpfFreq2 4300.0
+      # bpfRq1 0.5
+      # bpfRq2 0.005
+      # rlpfFreq 10100.0
+      # rlpfRq 0.035
+      # pan (segment 35 $ fast 15 $ range 0 1 tri)
+      # orbit 2
+      # gain 0.54
+    ,
+    listen (cF 1 "27") $
+    degOffsetBy (2/7) (cF 0 "37") $
+    randcat [
+      -- fabien 0811
+      fix (|* gain 0.9) (dest 4) $
+      fix (|* gain 0.85) (repeats 4200) $
+      (<| amp "1(<3 4>, 5, <2 1>)") $
+      s "Sd_stochadiet4"
+         # attack 0.1
+         # release 0.6
+         # begin 0
+         # end (1 * (range 0.04 1 $ slow 2 cosine))
+         # speed 1
+         # sustain 1
+         # sdm 0.013 -- 0.713
+         # from 5
+         # dest "14 4 14"
+         # repeats "<<4 42> <42 4 4200>>"
+         # sinMod 3.4 -- "60 180"
+         # pan (range 0.2 0.8 $ segment 64 $ slow "2 4" (cosine * ((choose  [0.125, 6.25e-2] ~>) sine)))
+         # gain 0.66
+       ,
+      -- vocal
+      sometimesBy 0.26
+      (listen 0) $
+      someCyclesBy 0.17 (0.5 ~>) $
+      sometimesBy 0.43 (# accelerate 2) $
+        s "Sd_vowelsynth"
+      # amp 0.26
+      # begin 0.0
+      # end 0.18 -- 1.0
+      # speed "[0.2 | 0.18 | 0.22]!5"
+      # accelerate "-0.33"
+      # attack 0.5 -- 0.21
+      # sustain 0.85 -- 1.0
+      # release 0.83
+      # freq 250 -- 440.0
+      # vel 1.9 -- 1.0
+      # bend (segment 7 $ fast 3.2 $ sometimesBy 0.75 ("0 0.2 0 0.3" <~) $ range 0.3 6 saw)
+      # vow (rangex 0.13 4 $ slow 2 sine)
+      # orbit 2
+      # pan (range 0 1 tri)
+      # gain 1.2
+    ]
+    ,
+    -- vrai kick
+    listen (cF 1 "28") $
+    degOffsetBy (1/7) (cF 0 "38") $
+    (<| amp ("{<[~ 0.18] 0.18> <[~ 0.15 0.2?] [[<~ ~@1.5> 0.2] ~@2.5 0.18]>}%5")) $
+      s "Sd_kick3new"
+      # begin 0.010
+      # end 0.15 --0.23 -- 1.0
+      # speed 0.32 -- 1.0
+      # accelerate 0.3
+      # dec 0.1
+      # sus 0.94
+      # rel "[0.23 | 0.139]!10"
+      # freq 344
+      # tu 0.8
+      # orbit 0
+      # gain 1.5
+  ]
+  # cps 0.56
+  |* gain 1.05
