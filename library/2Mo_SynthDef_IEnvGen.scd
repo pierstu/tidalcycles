@@ -74,131 +74,131 @@ SynthDef(\tides, {|out=0,freq=440,sustain=1,pan=0,begin=0,end=1,speed=1,accelera
 }).add;
 
 SynthDef(\Sd_stochadiet1, {|out = 0, amp = 1, pan = 0, begin = 0, end = 1, speed = 1, sustain = 1, sdm = 1, modSin = 0.4, from = 9, dest = 12, minSeq = 0.1, maxSeq = 0.3, doneAction = 2|
-    var sig, sd, hpf=40, mf=1.0;
+	var sig, sd, hpf=40, mf=1.0;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	sdm = sdm.max(0.1);
 	sd = SampleDur.ir * sdm;
 
-    sig = HPF.ar(
-        DemandEnvGen.ar(
-            Dseq([minSeq, minSeq.neg, [maxSeq.neg, maxSeq]], inf),
-            sd * Dseq([Lag.kr(from), Lag.kr(dest), Dbrown(from, dest, dest, from.neg, from)], inf)
-        ).fold2(SinOsc.ar(modSin)) * mf,
-        hpf
-    );
-    sig = sig * globalEnv;
-    /*sig = Balance2.ar(sig[0], sig[1], pan, amp);
-    OffsetOut.ar(out, sig);*/
+	sig = HPF.ar(
+		DemandEnvGen.ar(
+			Dseq([minSeq, minSeq.neg, [maxSeq.neg, maxSeq]], inf),
+			sd * Dseq([Lag.kr(from), Lag.kr(dest), Dbrown(from, dest, dest, from.neg, from)], inf)
+		).fold2(SinOsc.ar(modSin)) * mf,
+		hpf
+	);
+	sig = sig * globalEnv;
+	/*sig = Balance2.ar(sig[0], sig[1], pan, amp);
+	OffsetOut.ar(out, sig);*/
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, amp));
 }).add;
 
 // corriger args to en dest
 
 SynthDef(\Sd_stochadiet2, {|out = 0, amp = 0.5, pan = 0, begin = 0, end = 1, speed = 1, sustain = 1, sdm = 1, repeats = 32, from = 8, dest = 30, doneAction = 2|
-    var sig, sd, mf=0.2;
-    var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var sig, sd, mf=0.2;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	sdm = sdm.max(0.1);
 	sd = SampleDur.ir * sdm;
 
 	repeats = repeats.max(1);
 
-    sig = DemandEnvGen.ar(
-        Dseq([
-            Dseq([0, 0.5], repeats),
-            Dseq([-0.2, 0.8], repeats / 2),
-            Dseq([-1.0, 1.0], Dwhite(repeats / 32, repeats)),
-            Dseq([-0.8, 0.1], repeats / 16)
-        ], inf),
-        Dseq([
-            Dwhite(from, dest, [repeats, repeats * 0.5]),
-            Dwhite(from / 1.5, dest / 1.5, [repeats, repeats * 2]),
-            Dbrown(from / 10, dest / 10, from / 20, [repeats, repeats * 0.25])
-        ], inf) * sd
-    ) * mf;
-    sig = sig * globalEnv;
-    /*sig = Balance2.ar(sig[0], sig[1], pan, amp);
-    OffsetOut.ar(out, sig);*/
+	sig = DemandEnvGen.ar(
+		Dseq([
+			Dseq([0, 0.5], repeats),
+			Dseq([-0.2, 0.8], repeats / 2),
+			Dseq([-1.0, 1.0], Dwhite(repeats / 32, repeats)),
+			Dseq([-0.8, 0.1], repeats / 16)
+		], inf),
+		Dseq([
+			Dwhite(from, dest, [repeats, repeats * 0.5]),
+			Dwhite(from / 1.5, dest / 1.5, [repeats, repeats * 2]),
+			Dbrown(from / 10, dest / 10, from / 20, [repeats, repeats * 0.25])
+		], inf) * sd
+	) * mf;
+	sig = sig * globalEnv;
+	/*sig = Balance2.ar(sig[0], sig[1], pan, amp);
+	OffsetOut.ar(out, sig);*/
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_stochadiet3, {|out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, sustain = 1, timeStep = 2, start = 1, from = 2, dest = 5, sdm = 0.2, minLev = 0.1, maxLev = 0.9, brownStep = 0.01, doneAction = 2|
-    var sig, iter = 2, sd, mf = 0.08;
-    var levels = ({ Dseries(rrand(minLev.neg, maxLev.neg), rrand(minLev, maxLev), from * rrand(from, dest)) } ! iter) ++
-    ({ Dbrown(rrand(minLev.neg, maxLev.neg), rrand(minLev, maxLev), brownStep, dest * 2) } ! iter);
-    var times = { Dseries(rrand(start, start * 2), rrand(timeStep, timeStep * 2), rrand(from * 5, dest * 4)) } ! (iter * 2);
-    var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var sig, iter = 2, sd, mf = 0.08;
+	var levels = ({ Dseries(rrand(minLev.neg, maxLev.neg), rrand(minLev, maxLev), from * rrand(from, dest)) } ! iter) ++
+	({ Dbrown(rrand(minLev.neg, maxLev.neg), rrand(minLev, maxLev), brownStep, dest * 2) } ! iter);
+	var times = { Dseries(rrand(start, start * 2), rrand(timeStep, timeStep * 2), rrand(from * 5, dest * 4)) } ! (iter * 2);
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	sdm = sdm.max(0.1);
 	sd = SampleDur.ir * [sdm, sdm * 1.1];
 
-    sig = DemandEnvGen.ar(
-        Dseq(levels, inf),
-        Dseq(times, inf) * sd
-    ) * mf;
-    sig = sig * globalEnv;
-    /*sig = Balance2.ar(sig[0], sig[1], pan, amp);
-    OffsetOut.ar(out, sig);*/
+	sig = DemandEnvGen.ar(
+		Dseq(levels, inf),
+		Dseq(times, inf) * sd
+	) * mf;
+	sig = sig * globalEnv;
+	/*sig = Balance2.ar(sig[0], sig[1], pan, amp);
+	OffsetOut.ar(out, sig);*/
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_stochadiet4, {|out = 0, amp = 1, pan = 0, begin = 0, end = 1, speed = 1, sustain = 1, sdm = 1, repeats = 4, from = 5, dest = 18, sinMod = 60, doneAction = 2|
-    var sig, length = 30, sd, mf = 0.3;
-    var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var sig, length = 30, sd, mf = 0.3;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	sdm = sdm.max(0.1);
 	sd = SampleDur.ir * sdm;
 
-    sig = DemandEnvGen.ar(
-        Dseq([Dseries(-1.0, [0.04, 0.09], 30)], inf),
-        Dseq([
-            Dwhite(from, dest, repeats),
-            Dwhite(from / 1.5, dest * 3, repeats)
-        ], inf) * sd
-    ).clip(SinOsc.ar(sinMod)) * mf;
-    sig = sig * globalEnv;
-    /*sig = Balance2.ar(sig[0], sig[1], pan, amp);
-    OffsetOut.ar(out, sig);*/
+	sig = DemandEnvGen.ar(
+		Dseq([Dseries(-1.0, [0.04, 0.09], 30)], inf),
+		Dseq([
+			Dwhite(from, dest, repeats),
+			Dwhite(from / 1.5, dest * 3, repeats)
+		], inf) * sd
+	).clip(SinOsc.ar(sinMod)) * mf;
+	sig = sig * globalEnv;
+	/*sig = Balance2.ar(sig[0], sig[1], pan, amp);
+	OffsetOut.ar(out, sig);*/
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_stochadiet5, {|out = 0, amp = 0.4, pan = 0, begin = 0, end = 1, speed = 1, sustain = 1, filtSpeed = 10, filtCenter = 200, sdm = 1, modFreq = 0.01, filtBw = 3, doneAction = 2|
-    var sig, sd, size = 3, a = 9, b = 5, min = 0.1, max = 0.3;
-    var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var sig, sd, size = 3, a = 9, b = 5, min = 0.1, max = 0.3;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	sdm = sdm.max(0.1);
 	sd = SampleDur.ir * sdm;
 
-    sig = DemandEnvGen.ar(
-        Dseq([min, min.neg, [max.neg, max]], inf),
-        Dwhite(sd * a, sd * b),
-    ).wrap2(SinOsc.ar([modFreq, modFreq * 1.1])) * 0.2;
-    sig = SoftClipAmp8.ar(sig, 10);
-    sig = HPF.ar(BBandStop.ar(sig, Lag.ar(LFNoise1.ar([filtSpeed, filtSpeed * 2] ).range(filtCenter * 0.2, filtCenter * 2), 0.05), filtBw));
-    sig = sig * globalEnv;
-    /*sig = Balance2.ar(sig[0], sig[1], pan, amp);
-    OffsetOut.ar(out, sig);*/
+	sig = DemandEnvGen.ar(
+		Dseq([min, min.neg, [max.neg, max]], inf),
+		Dwhite(sd * a, sd * b),
+	).wrap2(SinOsc.ar([modFreq, modFreq * 1.1])) * 0.2;
+	sig = SoftClipAmp8.ar(sig, 10);
+	sig = HPF.ar(BBandStop.ar(sig, Lag.ar(LFNoise1.ar([filtSpeed, filtSpeed * 2] ).range(filtCenter * 0.2, filtCenter * 2), 0.05), filtBw));
+	sig = sig * globalEnv;
+	/*sig = Balance2.ar(sig[0], sig[1], pan, amp);
+	OffsetOut.ar(out, sig);*/
 	OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, amp));
 }).add;
 
 
 SynthDef(\Sd_metro, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, envL1 = 0, envL2 = 1, envL3 = 0.3, envL4 = 0, envT1 = 0.02, envT2 = 0.12, envT3 = 0.01, envT4 = 0, envDivDur = 1, theta = 0.5, rho = 0.8, filterfreq = 1000, rq = 1.0, doneAction = 2;
-    var snd, envf, b1, b2;
+	var snd, envf, b1, b2;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	// freq = max(0, freq * speed * (1 + (accelerate * line)));
 	envf = EnvGen.ar(Env.step([envL1, envL2, envL3, envL4], [envT1, envT2, envT3, envT4]), timeScale: sustain / envDivDur);
@@ -210,11 +210,11 @@ SynthDef(\Sd_metro, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed
 }).add;
 
 SynthDef(\Sd_kickBoomy, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, frq1 = 180, frq2 = 330, frq3 = 175, frq4 = 224, envT1 = 0.012, envL1 = 0, envT2 = 0.0012, envL2 = 1, envT3 = 0.12, envL3 = 0.1, envCrv = (-4), lvlScale = 1, hpfFreq = 500, softGain=1.1, doneAction = 2;
-    var sig;
+	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
@@ -229,11 +229,11 @@ SynthDef(\Sd_kickBoomy, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, s
 }).add;
 
 SynthDef(\Sd_batuhan, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, eSawDec = 0.6, eSinL1 = 0, eSinL2 = 1, eSinL3 = 0, eSinL4 = 0.32, eSinT1 = 0.24, eSinT2 = 0.02, eSinT3 = 0.12, eSinC1 = (-4), eSinC2 = (-4), eSinC3 = (-4), sinFreq = 33, sawMix = 1, sawFreq = 8, bpfFreq = 162, bpfRq = 1, bpfMix = 0, brfFreq1 = 45.1, brfFreq2 = 45, brfRq = 1, doneAction = 2;
-    var sig, trig, envSaw, envSin;
+	var sig, trig, envSaw, envSin;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
@@ -256,11 +256,11 @@ SynthDef(\Sd_batuhan, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 }).add;
 
 SynthDef(\Sd_rim, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
-    var sig;
+	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	var envf = EnvGen.ar(Env([\envfL1.kr(1600), \envfL2.kr(5600), \envfL3.kr(800), \envfL4.kr(250)],[\envfT1.kr(0.001), \envfT2.kr(0.001), \envfT3.kr(0.001)].normalizeSum * sustain, -4));
 	var envf2 = EnvGen.ar(Env([\envf2L1.kr(1000), \envf2L2.kr(1600), \envf2L3.kr(700), \envf2L4.kr(200)],[\envf2T1.kr(0.001), \envf2T2.kr(0.001), \envf2T3.kr(0.06)].normalizeSum * sustain, -4));
@@ -279,11 +279,11 @@ SynthDef(\Sd_rim, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed =
 }).add;
 
 SynthDef(\Sd_rim1, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
-    var sig;
+	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	var envf = EnvGen.ar(Env([\envfL1.kr(1600), \envfL2.kr(5600), \envfL3.kr(800), \envfL4.kr(250)],[\envfT1.kr(0.001), \envfT2.kr(0.001), \envfT3.kr(0.001)].normalizeSum * sustain, -4));
 	var envf2 = EnvGen.ar(Env([\envf2L1.kr(1000), \envf2L2.kr(1600), \envf2L3.kr(700), \envf2L4.kr(200)],[\envf2T1.kr(0.001), \envf2T2.kr(0.001), \envf2T3.kr(0.06)].normalizeSum * sustain, -4));
@@ -302,11 +302,11 @@ SynthDef(\Sd_rim1, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed 
 }).add;
 
 SynthDef(\Sd_rim2, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, doneAction = 2;
-    var sig;
+	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	var envf = EnvGen.ar(Env([\envfL1.kr(1600), \envfL2.kr(5600), \envfL3.kr(800), \envfL4.kr(250)],[\envfT1.kr(0.001), \envfT2.kr(0.001), \envfT3.kr(0.001)].normalizeSum * sustain, -4));
 	var envf2 = EnvGen.ar(Env([\envf2L1.kr(1000), \envf2L2.kr(1600), \envf2L3.kr(700), \envf2L4.kr(200)],[\envf2T1.kr(0.001), \envf2T2.kr(0.001), \envf2T3.kr(0.06)].normalizeSum * sustain, -4));
@@ -326,11 +326,11 @@ SynthDef(\Sd_rim2, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed 
 }).add;
 
 SynthDef(\Sd_kick3new, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 60, tu = 1, doneAction = 2;
-    var sig;
+	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	sig = SinOsc.ar(freq*tu, 0);
@@ -355,17 +355,17 @@ SynthDef(\Sd_kickBlocks, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 	cfreq = 6100, crq = 1, camp = 1.41, cdur = 0.001,
 	doneAction = 2;
 
-    var sig, noise, tone1, tone2, hit1, hit2, click;
+	var sig, noise, tone1, tone2, hit1, hit2, click;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
 	noise = Hasher.ar(Sweep.ar); //deterministic white noise
 
-    tone1 = SinOsc.ar(
+	tone1 = SinOsc.ar(
 		freq: XLine.ar(start: t1freq * t1harmonic, end: t1freq, dur: t1glide) * freq,
 		mul: Env.perc(attackTime: t1att, releaseTime: t1rel, level: t1amp, curve: t1curve).delay(t1del).ar);
 
@@ -373,7 +373,7 @@ SynthDef(\Sd_kickBlocks, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 		freq: XLine.ar(start: t2freq * t2harmonic, end: t2freq, dur: t2glide) * freq,
 		mul: Env.perc(attackTime: t2att, releaseTime: t2rel, level: t2amp, curve: t2curve).delay(t2del).ar);
 
-    hit1 = BPF.ar(
+	hit1 = BPF.ar(
 		in: noise,
 		freq: XLine.ar(start: h1freq * h1harmonic, end: h1freq, dur: h1glide) * freq,
 		rq: h1rq,
@@ -396,11 +396,11 @@ SynthDef(\Sd_kickBlocks, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 }).add;
 
 SynthDef(\Sd_hat808, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, rls = 0.1, doneAction = 2;
-    var sig;
+	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	sig = Saw.ar((1..9)*1000.23/**env*/*freq);
@@ -414,11 +414,11 @@ SynthDef(\Sd_hat808, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spee
 }).add;
 
 SynthDef(\Sd_werkit, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, rq = 0.1, doneAction = 2;
-    var sig, filter;
+	var sig, filter;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	sig = WhiteNoise.ar;
@@ -429,11 +429,11 @@ SynthDef(\Sd_werkit, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spee
 }).add;
 
 SynthDef(\Sd_tubularBell, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, harmFreq = 1, harmAmp = 1, harmTime = 1, atk = 0.005, rls = 9, exciterRel = 0.05, doneAction = 2;
-    var sig, exenv, exciter;
+	var sig, exenv, exciter;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -459,11 +459,11 @@ SynthDef(\Sd_tubularBell, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1,
 }).add;
 
 SynthDef(\Sd_snapkick, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, bdFrqL1 = 261, bdFrqL2 = 120, bdFrqL3 = 51, bdFrqT1 = 0.035, bdFrqT2 = 0.08, bdFrqC = (-4), bdAmpAtt = 0.005, bdAmpSus = 0.1, bdAmpRel = 0.3, bdAmpLev = 1, bdAmpCurve = 1, popFrqSt = 750, popFrqEnd = 261, popFrqDur = 0.02, popAmpAtt = 0.001, popAmpSus = 0.02, popAmpRel = 0.001, popAmpLev = 0.15, clkAmpAtt = 0.001, clkAmpRel = 0.01, clkAmpLev = 0.15, clkAmpCurve = (-4), clkfFundFreq = 910, clkfFormFreq = 4760, clkfBwFreq = 2110, clkLpfFreq = 3140, doneAction = 2;
-    var sig, bodyFreq, bodyAmp, body, popFreq, popAmp, pop, clickAmp, click;
+	var sig, bodyFreq, bodyAmp, body, popFreq, popAmp, pop, clickAmp, click;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -486,11 +486,11 @@ SynthDef(\Sd_snapkick, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, sp
 }).add;
 
 SynthDef(\Sd_waveguideFlute, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, scl = 0.2, ipress = 0.9, ibreath = 0.09, ifeedbk1 = 0.4, ifeedbk2 = 0.4, dur = 1, doneAction = 2;
-    var signalOut;
+	var signalOut;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	var ifqc = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -537,11 +537,11 @@ SynthDef(\Sd_waveguideFlute, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end =
 }).add;
 
 SynthDef(\Sd_kick_oto309, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, env0L1 = 0.5, env0L2 = 1, env0L3 = 0.5, env0L4 = 0, env0T1 = 0.005, env0T2 = 0.06, env0T3 = 0.26, env0Crv1 = (-4), env0Crv2 = (-2), env0Crv3 = (-4), env1L1 = 110, env1L2 = 59, env1L3 = 29, env1T1 = 0.005, env1T2 = 0.29, env1Crv1 = (-4), env1Crv2 = (-5), doneAction = 2;
-    var son, env0, env1, env1m;
+	var son, env0, env1, env1m;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -561,11 +561,11 @@ SynthDef(\Sd_kick_oto309, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1,
 }).add;
 
 SynthDef(\Sd_cymnew, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 6, doneAction = 2;
-    var sig, freqs;
+	var sig, freqs;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -577,11 +577,11 @@ SynthDef(\Sd_cymnew, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spee
 }).add;
 
 SynthDef(\Sd_kickmed, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, level = 0.5, noise = 1, dc = 1, env0L1 = 1, env0L2 = 1, env0L3 = 1, env0L4 = 1, atkEnv0 = 0.01, decEnv0 = 0.2, relEnv0 = 0.26, fratio = 1.5, env1L1 = 120, env1L2 = 30, env1L3 = 30, env1T1 = 0.0001, env1T2 = 0.2, curve1 = (-4), curve2 = (-2), curve3 = (-4), phase = 0, oamp = 0.1, owhich2 = 0, ochoose = 0, doneAction = 2;
-    var son, env0, env1, env1m, son2, son3, son4;
+	var son, env0, env1, env1m, son2, son3, son4;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -605,11 +605,11 @@ SynthDef(\Sd_kickmed, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 }).add;
 
 SynthDef(\Sd_kickMist, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, noise = 1, env1L1 = 120, env1L2 = 43, env1L3 = 29, env1T1 = 0.03, env1T2 = 0.29, curve1_1 = (-4), curve1_2 = (-5), doneAction = 2;
-    var sig, env1m;
+	var sig, env1m;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
@@ -625,11 +625,11 @@ SynthDef(\Sd_kickMist, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, sp
 }).add;
 
 SynthDef(\Sd_main, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, lev = 10, freq = 50, wnoiseAmp = 1, sinAmp = 1, sin1Freq = 30, envL1 = 0, envL2 = 1, envL3 = 0.01, envL4 = 1.3, envL5 = 0, envT1 = 0.01, envT2 = 0, envT3 = 0.2, envT4 = 0.01, clickCurve = (-4), clickInScale = 1, clickEnvPow = 1, clickHpf = 80, clickHpRq = 1, clickLpf = 13000, clickLpRq = 1, clickAmp = 1, sel = 0, sin2Freq = 40, sin2Amp = 0.3, noiseAmp = 1, hpffreq = 8000, revtime = 3, room = 10, distAmt = 2, distMix = 0, doneAction = 2;
-    var sig, fmod;
+	var sig, fmod;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	var distSig, envClick, click;
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -665,11 +665,11 @@ SynthDef(\Sd_sosKick, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 	beaterFreq = 500, beaterHarmonic = 12, beaterSweep = 0.03, noiseMod = 500, beaterL1 = 0, beaterL2 = 1, beaterL3 = 2.4, beaterL4 = 0, beaterT1 = 0.01, beaterT2 = 0.3, beaterT3 = 0.08,
 	// click controls
 	clkffreq = 500, clkres = 0, doneAction = 2;
-    var sig;
+	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	var gate, subfreq, sub, drumEnv, drumContour, drum, beaterContour, beaterEnv, beater, snd, click, envClick;
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
@@ -715,48 +715,48 @@ SynthDef(\Sd_sosKick, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 }).add;
 
 SynthDef(\Sd_windowsync, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 65.40639132515, syncEgTop = 20, syncRatio = 2, syncDcy = 0.5, doneAction = 2;
-    var sig, fundamental, syncFreq, syncPhase;
+	var sig, fundamental, syncFreq, syncPhase;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	var syncEg = EnvGen.kr(Env([syncEgTop / syncRatio, 1], [syncDcy], \exp));
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
-    fundamental = LFTri.ar(freq);
-    syncFreq = freq * syncRatio * syncEg;
-    // note, Phasor here is behaving like the Sweep above (retrigger behavior)
-    // but Phasor loops around its range, eliminating the need for '% 1'
-    syncPhase = Phasor.ar(fundamental, syncFreq * SampleDur.ir, 0, 1, 0);
-    sig = SinOsc.ar(0, syncPhase * 2pi) * fundamental;
+	fundamental = LFTri.ar(freq);
+	syncFreq = freq * syncRatio * syncEg;
+	// note, Phasor here is behaving like the Sweep above (retrigger behavior)
+	// but Phasor loops around its range, eliminating the need for '% 1'
+	syncPhase = Phasor.ar(fundamental, syncFreq * SampleDur.ir, 0, 1, 0);
+	sig = SinOsc.ar(0, syncPhase * 2pi) * fundamental;
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_hoover, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, attack = 0.001, release = 0.5, curve = (-4), envPow = 1, envfL1 = (-5), envfL2 = 6, envfL3 = 0, envfT1 = 0.1, envfT2 = 1.7, crvf1 = 0, crvf2 = (-4), bw = 1.035, doneAction = 2;
-    var snd, frq;
+	var snd, frq;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	bw = bw.min(85);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	frq = freq * Env([envfL1.min(2.5), envfL2.min(2.5), envfL3.min(2.5)], [envfT1, envfT2], [crvf1, crvf2]).kr.midiratio;
-    snd = { DelayN.ar(Saw.ar(frq * ExpRand(bw, 1 / bw)) + Saw.ar(frq * 0.5 * ExpRand(bw, 1 / bw)), 0.01, Rand(0, 0.01)) }.dup(10);
-    snd = (Splay.ar(snd) * 3).atan;
-    snd = snd * Env.asr(0.01, 1.0, 1.0).kr(0);
-    snd = FreeVerb2.ar(snd[0], snd[1], 0.3, 0.9);
-    snd = snd * globalEnv;
+	snd = { DelayN.ar(Saw.ar(frq * ExpRand(bw, 1 / bw)) + Saw.ar(frq * 0.5 * ExpRand(bw, 1 / bw)), 0.01, Rand(0, 0.01)) }.dup(10);
+	snd = (Splay.ar(snd) * 3).atan;
+	snd = snd * Env.asr(0.01, 1.0, 1.0).kr(0);
+	snd = FreeVerb2.ar(snd[0], snd[1], 0.3, 0.9);
+	snd = snd * globalEnv;
 
 	OffsetOut.ar(out, DirtPan.ar(snd * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_kickRingz, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, attack = 0, release = 1.2, envPow = 1, clickCurve = (-4), clickInScale = 1, clickEnvPow = 1, clickHpf = 80, clickHpRq = 1, clickLpf = 13000, clickLpRq = 1, clickAmp = 1, envL1 = 0.1, envL2 = 1.2, envL3 = 3, envL4 = 2.1, envL5 = 0.1, envT1 = 0.1, envT2 = 0.2, envT3 = 0, envT4 = 0.1, curve = (-4), envpL1 = 0.1, envpL2 = 1.2, envpL3 = 3, envpL4 = 2.1, envpT1 = 0.1, envpT2 = 0, envpT3 = 1.2, curvep = (-4), dcy = 0.25, ffreq = 1000, doneAction = 2;
-    var snd, envClick, click, envp;
+	var snd, envClick, click, envp;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
@@ -784,66 +784,66 @@ SynthDef(\Sd_kickRingz, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, s
 }).add;
 
 SynthDef(\Sd_runglerDeter, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, attack = 0.001, release = 1.4, curve = (-4), envPow = 1, lfSrc1Sel = 0, lfSrc1Rate = 0.7, lfSrc2Sel = 1, lfSrc2Rate = 0.24, switchSrcRate = 0.4, ffreq = 24, doneAction = 2;
-    var snd, lfSource1, lfSource2, lfo, rungler, runglerOut, tu;
+	var snd, lfSource1, lfSource2, lfo, rungler, runglerOut, tu;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	tu = max(0, freq * speed * (1 + (accelerate * line)));
 
 	lfSource1 = Select.ar(lfSrc1Sel.round.mod(5), [BlitB3Tri.ar(lfSrc1Rate), DPW4Saw.ar(lfSrc1Rate), SinOsc.ar(lfSrc1Rate), LFCub.ar(lfSrc1Rate), LFGauss.ar(lfSrc1Rate)]);
 	lfSource2 = Select.ar(lfSrc2Sel.round.mod(5), [BlitB3Tri.ar(lfSrc2Rate), DPW4Saw.ar(lfSrc2Rate), SinOsc.ar(lfSrc2Rate), LFCub.ar(lfSrc2Rate), LFGauss.ar(lfSrc2Rate)]);
 
-    lfo = {
-        var trigger;
-        trigger = Impulse.ar(switchSrcRate);
-        Select.ar(ToggleFF.ar(trigger), [
-            lfSource1,
-            lfSource2
-        ]);
-    };
+	lfo = {
+		var trigger;
+		trigger = Impulse.ar(switchSrcRate);
+		Select.ar(ToggleFF.ar(trigger), [
+			lfSource1,
+			lfSource2
+		]);
+	};
 
-    rungler = { |dataSignal, clockSignal|
-        var numBits, bits, bit, out, doDAC;
-        doDAC = { |bits|
-            var result;
-            result = bits[0] + (bits[1] * 2) + (bits[2] * 4);
-            result = result / 7;
-            result = (result * 2) - 1;
-            result;
-        };
-        bit = dataSignal > 0;
-        numBits = 8;
-        bits = [];
-        numBits.do {
-            bit = Latch.ar(bit, clockSignal);
-            bits = bits.add(bit);
-            bit = Delay1.ar(bit);
-        };
-        (
-            out: doDAC.(bits[numBits - 3..numBits - 1]),
-            outReverse: doDAC.(bits[numBits - 2..numBits - 4]),
-        );
-    };
-    snd = LocalIn.ar(2);
-    runglerOut = rungler.(snd[0], snd[1]);
-    snd = [runglerOut[\out], runglerOut[\outReverse]];
-    snd = LFTri.ar(({ lfo.() } ! 2).linexp(-1, 1, [10, 1], 8000) * (snd * tu).midiratio);
-    LocalOut.ar(LeakDC.ar(Sanitize.ar(snd)));
-    snd = (snd[0] > snd[1]) - 0.5;
-    snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linexp(-1, 1, 100, 8000) * (runglerOut[\out] * ffreq).midiratio, 3);
-    snd = snd * globalEnv;
+	rungler = { |dataSignal, clockSignal|
+		var numBits, bits, bit, out, doDAC;
+		doDAC = { |bits|
+			var result;
+			result = bits[0] + (bits[1] * 2) + (bits[2] * 4);
+			result = result / 7;
+			result = (result * 2) - 1;
+			result;
+		};
+		bit = dataSignal > 0;
+		numBits = 8;
+		bits = [];
+		numBits.do {
+			bit = Latch.ar(bit, clockSignal);
+			bits = bits.add(bit);
+			bit = Delay1.ar(bit);
+		};
+		(
+			out: doDAC.(bits[numBits - 3..numBits - 1]),
+			outReverse: doDAC.(bits[numBits - 2..numBits - 4]),
+		);
+	};
+	snd = LocalIn.ar(2);
+	runglerOut = rungler.(snd[0], snd[1]);
+	snd = [runglerOut[\out], runglerOut[\outReverse]];
+	snd = LFTri.ar(({ lfo.() } ! 2).linexp(-1, 1, [10, 1], 8000) * (snd * tu).midiratio);
+	LocalOut.ar(LeakDC.ar(Sanitize.ar(snd)));
+	snd = (snd[0] > snd[1]) - 0.5;
+	snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linexp(-1, 1, 100, 8000) * (runglerOut[\out] * ffreq).midiratio, 3);
+	snd = snd * globalEnv;
 
 	OffsetOut.ar(out, DirtPan.ar(snd, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_fabHi1Sus, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, wamp = 0.5, envNatt = 0.001, envNrel = 0.2, wbpfFreq = 2800, wbpfRq = 1, sinFrq1 = 2120, sinFrq2 = 12423, sinPh1 = 0, sinPh2 = 0.02, sinLev1 = 1, sinLev2 = 1, envSatt = 0.001, envSrel = 0.2, mix = 0.5, ffreq = 6000, doneAction = 2;
-    var sig, noise, sin1, sin2, envNoise, envSin;
+	var sig, noise, sin1, sin2, envNoise, envSin;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
@@ -860,26 +860,26 @@ SynthDef(\Sd_fabHi1Sus, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, s
 }).add;
 
 SynthDef(\Sd_clapthan, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1024, envL1 = 0, envL2 = 1, envL3 = 0.5, envL4 = 1, envT1 = 0.001, envT2 = 0.01, envT3 = 0.001, crv = 0, hpfRq = 0.3, doneAction = 2;
-    var sig, inEnv;
+	var sig, inEnv;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	inEnv = EnvGen.ar(Env([envL1, envL2, envL3, envL4], [envT1, envT2, envT3], crv));
 	sig = RHPF.ar(Hasher.ar(Sweep.ar(trig: Impulse.ar(freq))), freq, hpfRq);
-    sig = sig * inEnv;
+	sig = sig * inEnv;
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_lcm2Sus, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 140, envNoiseFrq1 = 0.3, envNoiseFrq2 = 0.33, envNoiseVol = 0.3, envInv = 0, mod1 = 3.09431, mod2 = 54.0487, doneAction = 2;
-    var sig, sig1, sig2;
+	var sig, sig1, sig2;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
@@ -888,15 +888,15 @@ SynthDef(\Sd_lcm2Sus, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 
 	globalEnv = Select.kr(envInv, [globalEnv, globalEnv.neg]);
 
-    mod1 = mod1.min(1000).max(1);
-    mod2 = mod2.min(1000).max(1);
+	mod1 = mod1.min(1000).max(1);
+	mod2 = mod2.min(1000).max(1);
 
-    sig1 = Saw.ar(freq * mod1).range(-100,100).round(1);
-    sig2 = LFCub.ar(freq * mod2).range(-100,100).round(1);
+	sig1 = Saw.ar(freq * mod1).range(-100,100).round(1);
+	sig2 = LFCub.ar(freq * mod2).range(-100,100).round(1);
 
-    sig = tanh(lcm(sig1, sig2) * 0.001);
+	sig = tanh(lcm(sig1, sig2) * 0.001);
 
-    sig = sig * globalEnv;
+	sig = sig * globalEnv;
 
 	sig = LeakDC.ar(sig);
 
@@ -904,159 +904,159 @@ SynthDef(\Sd_lcm2Sus, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 }).add;
 
 SynthDef(\Sd_danScar, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, noiseFreq = 1, lpfFreq = 15000, doneAction = 2;
-    var sig, inSig, lfo;
+	var sig, inSig, lfo;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
 	inSig = SinOsc.ar(freq + [0, 0.1]);
-    lfo = LFDNoise1.kr(noiseFreq).linexp(-1, 1, 0.5, 1);
+	lfo = LFDNoise1.kr(noiseFreq).linexp(-1, 1, 0.5, 1);
 
-    sig = LPF.ar(
-        Fb1.ar(
-            { |in, out| in[0] - (out[1] % lfo) },
-            inSig, 2, blockSize: s.options.blockSize
-        ),
-        lpfFreq
-    ) /** amp*/;
+	sig = LPF.ar(
+		Fb1.ar(
+			{ |in, out| in[0] - (out[1] % lfo) },
+			inSig, 2, blockSize: s.options.blockSize
+		),
+		lpfFreq
+	) /** amp*/;
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_vowelsynth, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, vel = 1, bend = 0, vow = 0, doneAction = 2;
-    var sig, fq;
+	var sig, fq;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 	var a,b,c,d,e,
-    vib1,vib2,vib3,vib4,vib5,vib6,vib7,vib8,
-    gen1,gen2,gen3,gen4,gen5,gen6,gen7,gen8,ngen,
-    ah1,eh1,ih1,oh1,uh1,
-    ah2,eh2,ih2,oh2,uh2,
-    ah3,eh3,ih3,oh3,uh3,
-    ah4,eh4,ih4,oh4,uh4,
-    ah5,eh5,ih5,oh5,uh5,
-    ah6,eh6,ih6,oh6,uh6,
-    ah7,eh7,ih7,oh7,uh7,
-    ah8,eh8,ih8,oh8,uh8,
-    mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8,
-    pan1,pan2,pan3,pan4,pan5,pan6,pan7,pan8;
+	vib1,vib2,vib3,vib4,vib5,vib6,vib7,vib8,
+	gen1,gen2,gen3,gen4,gen5,gen6,gen7,gen8,ngen,
+	ah1,eh1,ih1,oh1,uh1,
+	ah2,eh2,ih2,oh2,uh2,
+	ah3,eh3,ih3,oh3,uh3,
+	ah4,eh4,ih4,oh4,uh4,
+	ah5,eh5,ih5,oh5,uh5,
+	ah6,eh6,ih6,oh6,uh6,
+	ah7,eh7,ih7,oh7,uh7,
+	ah8,eh8,ih8,oh8,uh8,
+	mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8,
+	pan1,pan2,pan3,pan4,pan5,pan6,pan7,pan8;
 
 	fq = max(0, freq * speed * (1 + (accelerate * line)));
 
-    vib1=SinOsc.ar(5,0,EnvGen.kr(Env([0,2],[0.2],4),1));
-    vib2=SinOsc.ar(5.2,0,EnvGen.kr(Env([0,1],[0.3],4),1));
-    vib3=SinOsc.ar(4.3,0,EnvGen.kr(Env([0,2],[0.4],4),1));
-    vib4=SinOsc.ar(5.4,0,EnvGen.kr(Env([0,1],[0.5],4),1));
-    vib5=SinOsc.ar(4.5,0,EnvGen.kr(Env([0,2],[0.6],4),1));
-    vib6=SinOsc.ar(5.25,0,EnvGen.kr(Env([0,1],[0.7],4),1));
-    vib7=SinOsc.ar(4.35,0,EnvGen.kr(Env([0,2],[0.8],4),1));
-    vib8=SinOsc.ar(5.45,0,EnvGen.kr(Env([0,1],[0.9],4),1));
+	vib1=SinOsc.ar(5,0,EnvGen.kr(Env([0,2],[0.2],4),1));
+	vib2=SinOsc.ar(5.2,0,EnvGen.kr(Env([0,1],[0.3],4),1));
+	vib3=SinOsc.ar(4.3,0,EnvGen.kr(Env([0,2],[0.4],4),1));
+	vib4=SinOsc.ar(5.4,0,EnvGen.kr(Env([0,1],[0.5],4),1));
+	vib5=SinOsc.ar(4.5,0,EnvGen.kr(Env([0,2],[0.6],4),1));
+	vib6=SinOsc.ar(5.25,0,EnvGen.kr(Env([0,1],[0.7],4),1));
+	vib7=SinOsc.ar(4.35,0,EnvGen.kr(Env([0,2],[0.8],4),1));
+	vib8=SinOsc.ar(5.45,0,EnvGen.kr(Env([0,1],[0.9],4),1));
 
-    mod1=SinOsc.ar(0.1,mul:1);
-    mod2=SinOsc.ar(-0.23,mul:1);
-    mod3=SinOsc.ar(0.34,mul:1);
-    mod4=SinOsc.ar(-0.44,mul:1);
-    mod5=SinOsc.ar(0.5,mul:1);
-    mod6=SinOsc.ar(-0.6,mul:1);
-    mod7=SinOsc.ar(0.73,mul:1);
-    mod8=SinOsc.ar(-0.81,mul:1);
+	mod1=SinOsc.ar(0.1,mul:1);
+	mod2=SinOsc.ar(-0.23,mul:1);
+	mod3=SinOsc.ar(0.34,mul:1);
+	mod4=SinOsc.ar(-0.44,mul:1);
+	mod5=SinOsc.ar(0.5,mul:1);
+	mod6=SinOsc.ar(-0.6,mul:1);
+	mod7=SinOsc.ar(0.73,mul:1);
+	mod8=SinOsc.ar(-0.81,mul:1);
 
-    gen1=LFPulse.ar(fq*bend.midiratio+mod1+vib1,0,0.4*mod8/8+0.2,0.15,0);
-    gen2=LFPulse.ar(fq*bend.midiratio+mod2+vib2,0,0.4*mod7/8+0.2,0.15,0);
-    gen3=LFPulse.ar(fq*bend.midiratio+mod3+vib3,0,0.4*mod6/8+0.2,0.15,0);
-    gen4=LFPulse.ar(fq*bend.midiratio+mod4+vib4,0,0.4*mod5/8+0.2,0.15,0);
-    gen5=LFPulse.ar(fq*bend.midiratio+mod5+vib5,0,0.4*mod4/8+0.2,0.15,0);
-    gen6=LFPulse.ar(fq*bend.midiratio+mod6+vib6,0,0.4*mod3/8+0.2,0.15,0);
-    gen7=LFPulse.ar(fq*bend.midiratio+mod7+vib7,0,0.4*mod2/8+0.2,0.15,0);
-    gen8=LFPulse.ar(fq*bend.midiratio+mod8+vib8,0,0.4*mod1/8+0.2,0.15,0);
-    ngen=Pulse.ar(220)*GrayNoise.ar(0.005);
+	gen1=LFPulse.ar(fq*bend.midiratio+mod1+vib1,0,0.4*mod8/8+0.2,0.15,0);
+	gen2=LFPulse.ar(fq*bend.midiratio+mod2+vib2,0,0.4*mod7/8+0.2,0.15,0);
+	gen3=LFPulse.ar(fq*bend.midiratio+mod3+vib3,0,0.4*mod6/8+0.2,0.15,0);
+	gen4=LFPulse.ar(fq*bend.midiratio+mod4+vib4,0,0.4*mod5/8+0.2,0.15,0);
+	gen5=LFPulse.ar(fq*bend.midiratio+mod5+vib5,0,0.4*mod4/8+0.2,0.15,0);
+	gen6=LFPulse.ar(fq*bend.midiratio+mod6+vib6,0,0.4*mod3/8+0.2,0.15,0);
+	gen7=LFPulse.ar(fq*bend.midiratio+mod7+vib7,0,0.4*mod2/8+0.2,0.15,0);
+	gen8=LFPulse.ar(fq*bend.midiratio+mod8+vib8,0,0.4*mod1/8+0.2,0.15,0);
+	ngen=Pulse.ar(220)*GrayNoise.ar(0.005);
 
-    //Female vowel charts.
+	//Female vowel charts.
 
-    ah1=BBandPass.ar(gen1, 751,0.075) + BBandPass.ar(gen1, 1460,0.075) + BBandPass.ar(gen1, 2841,0.075);
-    eh1=BBandPass.ar(gen1, 431,0.075) + BBandPass.ar(gen1, 2241,0.075) + BBandPass.ar(gen1, 2871,0.075);
-    ih1=BBandPass.ar(gen1, 329,0.075) + BBandPass.ar(gen1, 2316,0.075) + BBandPass.ar(gen1, 2796,0.075);
-    oh1=BBandPass.ar(gen1, 438,0.075) + BBandPass.ar(gen1, 953,0.075) + BBandPass.ar(gen1, 2835,0.075);
-    uh1=BBandPass.ar(gen1, 350,0.075) +BBandPass.ar(gen1, 1048,0.075) + BBandPass.ar(gen1, 2760,0.075);
+	ah1=BBandPass.ar(gen1, 751,0.075) + BBandPass.ar(gen1, 1460,0.075) + BBandPass.ar(gen1, 2841,0.075);
+	eh1=BBandPass.ar(gen1, 431,0.075) + BBandPass.ar(gen1, 2241,0.075) + BBandPass.ar(gen1, 2871,0.075);
+	ih1=BBandPass.ar(gen1, 329,0.075) + BBandPass.ar(gen1, 2316,0.075) + BBandPass.ar(gen1, 2796,0.075);
+	oh1=BBandPass.ar(gen1, 438,0.075) + BBandPass.ar(gen1, 953,0.075) + BBandPass.ar(gen1, 2835,0.075);
+	uh1=BBandPass.ar(gen1, 350,0.075) +BBandPass.ar(gen1, 1048,0.075) + BBandPass.ar(gen1, 2760,0.075);
 
-    ah2=BBandPass.ar(gen2, 751,0.075) + BBandPass.ar(gen2, 1460,0.075) + BBandPass.ar(gen2, 2841,0.075);
-    eh2=BBandPass.ar(gen2, 431,0.075) + BBandPass.ar(gen2, 2241,0.075) + BBandPass.ar(gen2, 2871,0.075);
-    ih2=BBandPass.ar(gen2, 329,0.075) + BBandPass.ar(gen2, 2316,0.075) + BBandPass.ar(gen2, 2796,0.075);
-    oh2=BBandPass.ar(gen2, 438,0.075) + BBandPass.ar(gen2, 953,0.075) + BBandPass.ar(gen2, 2835,0.075);
-    uh2=BBandPass.ar(gen2, 350,0.075) + BBandPass.ar(gen2, 1048,0.075) + BBandPass.ar(gen2, 2760,0.075);
+	ah2=BBandPass.ar(gen2, 751,0.075) + BBandPass.ar(gen2, 1460,0.075) + BBandPass.ar(gen2, 2841,0.075);
+	eh2=BBandPass.ar(gen2, 431,0.075) + BBandPass.ar(gen2, 2241,0.075) + BBandPass.ar(gen2, 2871,0.075);
+	ih2=BBandPass.ar(gen2, 329,0.075) + BBandPass.ar(gen2, 2316,0.075) + BBandPass.ar(gen2, 2796,0.075);
+	oh2=BBandPass.ar(gen2, 438,0.075) + BBandPass.ar(gen2, 953,0.075) + BBandPass.ar(gen2, 2835,0.075);
+	uh2=BBandPass.ar(gen2, 350,0.075) + BBandPass.ar(gen2, 1048,0.075) + BBandPass.ar(gen2, 2760,0.075);
 
-    ah3=BBandPass.ar(gen3, 751,0.075) + BBandPass.ar(gen3, 1460,0.075) + BBandPass.ar(gen3, 2841,0.075);
-    eh3=BBandPass.ar(gen3, 431,0.075) + BBandPass.ar(gen3, 2241,0.075) + BBandPass.ar(gen3, 2871,0.075);
-    ih3=BBandPass.ar(gen3, 329,0.075) + BBandPass.ar(gen3, 2316,0.075) + BBandPass.ar(gen3, 2796,0.075);
-    oh3=BBandPass.ar(gen3, 438,0.075) + BBandPass.ar(gen3, 953,0.075) + BBandPass.ar(gen3, 2835,0.075);
-    uh3=BBandPass.ar(gen3, 350,0.075) + BBandPass.ar(gen3, 1048,0.075) + BBandPass.ar(gen3, 2760,0.075);
+	ah3=BBandPass.ar(gen3, 751,0.075) + BBandPass.ar(gen3, 1460,0.075) + BBandPass.ar(gen3, 2841,0.075);
+	eh3=BBandPass.ar(gen3, 431,0.075) + BBandPass.ar(gen3, 2241,0.075) + BBandPass.ar(gen3, 2871,0.075);
+	ih3=BBandPass.ar(gen3, 329,0.075) + BBandPass.ar(gen3, 2316,0.075) + BBandPass.ar(gen3, 2796,0.075);
+	oh3=BBandPass.ar(gen3, 438,0.075) + BBandPass.ar(gen3, 953,0.075) + BBandPass.ar(gen3, 2835,0.075);
+	uh3=BBandPass.ar(gen3, 350,0.075) + BBandPass.ar(gen3, 1048,0.075) + BBandPass.ar(gen3, 2760,0.075);
 
-    ah4=BBandPass.ar(gen4, 751,0.075) + BBandPass.ar(gen4, 1460,0.075) + BBandPass.ar(gen4, 2841,0.075);
-    eh4=BBandPass.ar(gen4, 431,0.075) + BBandPass.ar(gen4, 2241,0.075) + BBandPass.ar(gen4, 2871,0.075);
-    ih4=BBandPass.ar(gen4, 329,0.075) + BBandPass.ar(gen4, 2316,0.075) + BBandPass.ar(gen4, 2796,0.075);
-    oh4=BBandPass.ar(gen4, 438,0.075) + BBandPass.ar(gen4, 953,0.075) + BBandPass.ar(gen4, 2835,0.075);
-    uh4=BBandPass.ar(gen4, 350,0.075) + BBandPass.ar(gen4, 1048,0.075) + BBandPass.ar(gen4, 2760,0.075);
+	ah4=BBandPass.ar(gen4, 751,0.075) + BBandPass.ar(gen4, 1460,0.075) + BBandPass.ar(gen4, 2841,0.075);
+	eh4=BBandPass.ar(gen4, 431,0.075) + BBandPass.ar(gen4, 2241,0.075) + BBandPass.ar(gen4, 2871,0.075);
+	ih4=BBandPass.ar(gen4, 329,0.075) + BBandPass.ar(gen4, 2316,0.075) + BBandPass.ar(gen4, 2796,0.075);
+	oh4=BBandPass.ar(gen4, 438,0.075) + BBandPass.ar(gen4, 953,0.075) + BBandPass.ar(gen4, 2835,0.075);
+	uh4=BBandPass.ar(gen4, 350,0.075) + BBandPass.ar(gen4, 1048,0.075) + BBandPass.ar(gen4, 2760,0.075);
 
-    //Male vowel charts
+	//Male vowel charts
 
-    ah5=BBandPass.ar(gen5, 608,0.075) + BBandPass.ar(gen5, 1309,0.075) + BBandPass.ar(gen5, 2466,0.075);
-    eh5=BBandPass.ar(gen5, 372,0.075) + BBandPass.ar(gen5, 1879,0.075) + BBandPass.ar(gen5, 2486,0.075);
-    ih5=BBandPass.ar(gen5, 290,0.075) + BBandPass.ar(gen5, 1986,0.075) + BBandPass.ar(gen5, 2493,0.075);
-    oh5=BBandPass.ar(gen5, 380,0.075) + BBandPass.ar(gen5, 907,0.075) + BBandPass.ar(gen5, 2415,0.075);
-    uh5=BBandPass.ar(gen5, 309,0.075) +BBandPass.ar(gen5, 961,0.075) + BBandPass.ar(gen5, 2366,0.075);
+	ah5=BBandPass.ar(gen5, 608,0.075) + BBandPass.ar(gen5, 1309,0.075) + BBandPass.ar(gen5, 2466,0.075);
+	eh5=BBandPass.ar(gen5, 372,0.075) + BBandPass.ar(gen5, 1879,0.075) + BBandPass.ar(gen5, 2486,0.075);
+	ih5=BBandPass.ar(gen5, 290,0.075) + BBandPass.ar(gen5, 1986,0.075) + BBandPass.ar(gen5, 2493,0.075);
+	oh5=BBandPass.ar(gen5, 380,0.075) + BBandPass.ar(gen5, 907,0.075) + BBandPass.ar(gen5, 2415,0.075);
+	uh5=BBandPass.ar(gen5, 309,0.075) +BBandPass.ar(gen5, 961,0.075) + BBandPass.ar(gen5, 2366,0.075);
 
-    ah6=BBandPass.ar(gen6, 608,0.075) + BBandPass.ar(gen6, 1309,0.075) + BBandPass.ar(gen6, 2466,0.075);
-    eh6=BBandPass.ar(gen6, 372,0.075) + BBandPass.ar(gen6, 1879,0.075) + BBandPass.ar(gen6, 2486,0.075);
-    ih6=BBandPass.ar(gen6, 290,0.075) + BBandPass.ar(gen6, 1986,0.075) + BBandPass.ar(gen6, 2493,0.075);
-    oh6=BBandPass.ar(gen6, 380,0.075) + BBandPass.ar(gen6, 907,0.075) + BBandPass.ar(gen6, 2415,0.075);
-    uh6=BBandPass.ar(gen6, 309,0.075) + BBandPass.ar(gen6, 961,0.075) + BBandPass.ar(gen6, 2366,0.075);
+	ah6=BBandPass.ar(gen6, 608,0.075) + BBandPass.ar(gen6, 1309,0.075) + BBandPass.ar(gen6, 2466,0.075);
+	eh6=BBandPass.ar(gen6, 372,0.075) + BBandPass.ar(gen6, 1879,0.075) + BBandPass.ar(gen6, 2486,0.075);
+	ih6=BBandPass.ar(gen6, 290,0.075) + BBandPass.ar(gen6, 1986,0.075) + BBandPass.ar(gen6, 2493,0.075);
+	oh6=BBandPass.ar(gen6, 380,0.075) + BBandPass.ar(gen6, 907,0.075) + BBandPass.ar(gen6, 2415,0.075);
+	uh6=BBandPass.ar(gen6, 309,0.075) + BBandPass.ar(gen6, 961,0.075) + BBandPass.ar(gen6, 2366,0.075);
 
-    ah7=BBandPass.ar(gen7, 608,0.075) + BBandPass.ar(gen7, 1309,0.075) + BBandPass.ar(gen7, 2466,0.075);
-    eh7=BBandPass.ar(gen7, 372,0.075) + BBandPass.ar(gen7, 1879,0.075) + BBandPass.ar(gen7, 2486,0.075);
-    ih7=BBandPass.ar(gen7, 290,0.075) + BBandPass.ar(gen7, 1986,0.075) + BBandPass.ar(gen7, 2493,0.075);
-    oh7=BBandPass.ar(gen7, 380,0.075) + BBandPass.ar(gen7, 907,0.075) + BBandPass.ar(gen7, 2415,0.075);
-    uh7=BBandPass.ar(gen7, 309,0.075) + BBandPass.ar(gen7, 961,0.075) + BBandPass.ar(gen7, 2366,0.075);
+	ah7=BBandPass.ar(gen7, 608,0.075) + BBandPass.ar(gen7, 1309,0.075) + BBandPass.ar(gen7, 2466,0.075);
+	eh7=BBandPass.ar(gen7, 372,0.075) + BBandPass.ar(gen7, 1879,0.075) + BBandPass.ar(gen7, 2486,0.075);
+	ih7=BBandPass.ar(gen7, 290,0.075) + BBandPass.ar(gen7, 1986,0.075) + BBandPass.ar(gen7, 2493,0.075);
+	oh7=BBandPass.ar(gen7, 380,0.075) + BBandPass.ar(gen7, 907,0.075) + BBandPass.ar(gen7, 2415,0.075);
+	uh7=BBandPass.ar(gen7, 309,0.075) + BBandPass.ar(gen7, 961,0.075) + BBandPass.ar(gen7, 2366,0.075);
 
-    ah8=BBandPass.ar(gen8, 608,0.075) + BBandPass.ar(gen8, 1309,0.075) + BBandPass.ar(gen8, 2466,0.075);
-    eh8=BBandPass.ar(gen8, 372,0.075) + BBandPass.ar(gen8, 1879,0.075) + BBandPass.ar(gen8, 2486,0.075);
-    ih8=BBandPass.ar(gen8, 290,0.075) + BBandPass.ar(gen8, 1986,0.075) + BBandPass.ar(gen8, 2493,0.075);
-    oh8=BBandPass.ar(gen8, 380,0.075) + BBandPass.ar(gen8, 907,0.075) + BBandPass.ar(gen8, 2415,0.075);
-    uh8=BBandPass.ar(gen8, 309,0.075) + BBandPass.ar(gen8, 961,0.075) + BBandPass.ar(gen8, 2366,0.075);
+	ah8=BBandPass.ar(gen8, 608,0.075) + BBandPass.ar(gen8, 1309,0.075) + BBandPass.ar(gen8, 2466,0.075);
+	eh8=BBandPass.ar(gen8, 372,0.075) + BBandPass.ar(gen8, 1879,0.075) + BBandPass.ar(gen8, 2486,0.075);
+	ih8=BBandPass.ar(gen8, 290,0.075) + BBandPass.ar(gen8, 1986,0.075) + BBandPass.ar(gen8, 2493,0.075);
+	oh8=BBandPass.ar(gen8, 380,0.075) + BBandPass.ar(gen8, 907,0.075) + BBandPass.ar(gen8, 2415,0.075);
+	uh8=BBandPass.ar(gen8, 309,0.075) + BBandPass.ar(gen8, 961,0.075) + BBandPass.ar(gen8, 2366,0.075);
 
-    //Summing them all
+	//Summing them all
 
-    a = [ah1+ah2+ah3+ah4+ah5+ah6+ah7+ah8];
-    b = [eh1+eh2+eh3+eh4+eh5+eh6+eh7+eh8];
-    c = [ih1+ih2+ih3+ih4+ih5+ih6+ih7+ih8];
-    d = [oh1+oh2+oh3+oh4+oh5+oh6+oh7+oh8];
-    e = [uh1+uh2+uh3+uh4+uh5+uh6+uh7+uh8];
+	a = [ah1+ah2+ah3+ah4+ah5+ah6+ah7+ah8];
+	b = [eh1+eh2+eh3+eh4+eh5+eh6+eh7+eh8];
+	c = [ih1+ih2+ih3+ih4+ih5+ih6+ih7+ih8];
+	d = [oh1+oh2+oh3+oh4+oh5+oh6+oh7+oh8];
+	e = [uh1+uh2+uh3+uh4+uh5+uh6+uh7+uh8];
 
-    //Panning and adding crossfading bwteeen vowels.
+	//Panning and adding crossfading bwteeen vowels.
 
-    pan1=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-1,1);
-    pan2=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-0.8,1);
-    pan3=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-0.6,1);
-    pan4=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-0.4,1);
-    pan5=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,0.4,1);
-    pan6=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,0.6,1);
-    pan7=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,0.8,1);
-    pan8=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,1,1);
+	pan1=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-1,1);
+	pan2=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-0.8,1);
+	pan3=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-0.6,1);
+	pan4=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,-0.4,1);
+	pan5=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,0.4,1);
+	pan6=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,0.6,1);
+	pan7=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,0.8,1);
+	pan8=Pan2.ar(LinSelectX.ar(vow, [a,b,c,d,e]+ngen,0).sum,1,1);
 	sig = pan1+pan2+pan3+pan4+pan5+pan6+pan7+pan8;
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_sinBass, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, hpf4 = 50, curve = (-4), envLevel1 = 0, envLevel2 = 40, envLevel3 = 32, envLevel4 = 50, envLevel5 = 0, envLevel6 = 60, envTime1 = 0.5, envTime2 = 0.3, envTime3 = 0.25, envTime4 = 1, envTime5 = 0.5, doneAction = 2;
-    var sig, freqEnv;
+	var sig, freqEnv;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
@@ -1070,168 +1070,299 @@ SynthDef(\Sd_sinBass, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, spe
 }).add;
 
 SynthDef(\Sd_feedBackos, { arg out = 0, amp = 0.3, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, fbPow = 0.999, baseFreq = 0.01, freq = 1, lpfFreq = 4000, doneAction = 2;
-    var i, o;
+	var i, o;
 	var sig;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
 
-    i = LocalIn.ar(2);
-    i = i + ((1 + i) ** fbPow);
+	i = LocalIn.ar(2);
+	i = i + ((1 + i) ** fbPow);
 	o = DelayC.ar(i, 1, (SinOsc.ar(baseFreq / (1..8)).exprange * freq));
-    o = LeakDC.ar(o);
-    o = Splay.ar(o).tanh;
-    LocalOut.ar(o);
-    sig = LPF.ar(o, lpfFreq) * 1/5;
-    sig = Pan2.ar(sig, pan, amp * globalEnv);
-    OffsetOut.ar(out, sig);
+	o = LeakDC.ar(o);
+	o = Splay.ar(o).tanh;
+	LocalOut.ar(o);
+	sig = LPF.ar(o, lpfFreq) * 1/5;
+	sig = Pan2.ar(sig, pan, amp * globalEnv);
+	OffsetOut.ar(out, sig);
 }).add;
 
 SynthDef(\Sd_nataskick, { arg out = 0, amp = 0.3, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, atk = 0.001, duration = 1, freq = 60, modfreqamt1 = 8, modfreqtime1 = 0.001, modfreqamt2 = 8, modfreqtime2 = 0.03, modfreqamt3 = 0.5, modfreqtime3 = 0.3, modfreqamt4 = 0.1, bpffreq1 = 8321, bpfrq1 = 0.3, bpffreq2 = 3321, bpfrq2 = 0.3, revtime = 1, earlyRef = 0.7, doneAction = 2;
-    var snd, velocity;
+	var snd, velocity;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
-// freq = freq.max(0.01).min(2);
+	// freq = freq.max(0.01).min(2);
 
-    velocity = duration.linlin(1, 0, 1, 0);
-    snd = SinOsc.ar(
-        freq
-        * (1 + (modfreqamt1 * Env.perc(0, modfreqtime1).ar * velocity))
-        * (1 + (modfreqamt2 * Env.perc(0, modfreqtime2).ar * velocity))
-        * (1 + (modfreqamt3 * Env.perc(0, modfreqtime3).ar * velocity))
-        * ([1, -1] * modfreqamt4).midiratio
-    );
-    snd = snd * (1 + (Env.perc(0, 0.03).ar * velocity));
-    snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), bpffreq1, bpfrq1) * Env.perc(0.001, 0.003).ar * 1.dbamp * velocity);
-    snd = snd.tanh;
-    snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), bpffreq2, bpfrq2) * Env.perc(0.03, 0.05).ar * -10.dbamp * velocity);
-    snd = snd * velocity.sqrt;
-    snd = snd + GVerb.ar(snd.sum * -30.dbamp, 30, revtime, earlyreflevel: earlyRef);
-    snd = snd * Env.perc(atk, duration).ar;
+	velocity = duration.linlin(1, 0, 1, 0);
+	snd = SinOsc.ar(
+		freq
+		* (1 + (modfreqamt1 * Env.perc(0, modfreqtime1).ar * velocity))
+		* (1 + (modfreqamt2 * Env.perc(0, modfreqtime2).ar * velocity))
+		* (1 + (modfreqamt3 * Env.perc(0, modfreqtime3).ar * velocity))
+		* ([1, -1] * modfreqamt4).midiratio
+	);
+	snd = snd * (1 + (Env.perc(0, 0.03).ar * velocity));
+	snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), bpffreq1, bpfrq1) * Env.perc(0.001, 0.003).ar * 1.dbamp * velocity);
+	snd = snd.tanh;
+	snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), bpffreq2, bpfrq2) * Env.perc(0.03, 0.05).ar * -10.dbamp * velocity);
+	snd = snd * velocity.sqrt;
+	snd = snd + GVerb.ar(snd.sum * -30.dbamp, 30, revtime, earlyreflevel: earlyRef);
+	snd = snd * Env.perc(atk, duration).ar;
 	OffsetOut.ar(out, DirtPan.ar(snd * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_chaosEngine, { arg out = 0, pan = 0, amp = 0.2, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, modPhaseFreq = 0.12345, modPhaseMul = 678, modPhaseAdd = 9, modAmpFreq = 101, modAmpMul = 0.2, modAmpAdd = 0.8, modOffsetFreq = 25, modOffsetWidth = 0.25, modOffsetMul = 0.125, modOffsetAdd = (-0.25), modFreqFreq = 50, freq = 10, doneAction = 2;
 
-    var sig, modPhase, modAmp, modOffset, modFreq;
+	var sig, modPhase, modAmp, modOffset, modFreq;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 
-    modPhase = Saw.kr(modPhaseFreq, modPhaseMul, modPhaseAdd);
-    modAmp = SinOsc.kr(modAmpFreq, modPhase, modAmpMul, modAmpAdd);
-    modOffset = Pulse.kr([modOffsetFreq, modOffsetFreq + 0.5], modOffsetWidth, modOffsetMul, modOffsetAdd);
-    modFreq = (modFreqFreq * SinOsc.kr([modFreqFreq, modFreqFreq + 1], 0, modAmp, modOffset));
+	modPhase = Saw.kr(modPhaseFreq, modPhaseMul, modPhaseAdd);
+	modAmp = SinOsc.kr(modAmpFreq, modPhase, modAmpMul, modAmpAdd);
+	modOffset = Pulse.kr([modOffsetFreq, modOffsetFreq + 0.5], modOffsetWidth, modOffsetMul, modOffsetAdd);
+	modFreq = (modFreqFreq * SinOsc.kr([modFreqFreq, modFreqFreq + 1], 0, modAmp, modOffset));
 
-    sig = SinOsc.ar(freq + modFreq, 0, 0.5);
+	sig = SinOsc.ar(freq + modFreq, 0, 0.5);
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_claudes, { arg out = 0, amp = 0.5, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 210, filtCutOff = 950, lpffreq = 2000, revMix = 0, dur = 0.16666666666667, doneAction = 2;
-    var sig, num = 10;
+	var sig, num = 10;
 
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(20).min(20000);
 
 	sig = num.collect {
-        var frq = freq * SinOsc.kr(LFNoise1.kr(dur).range(30, 1000), 0, LFNoise1.kr(dur).range(0.01, 8)).midiratio;
-        var sig = Select.ar(LFNoise0.kr(dur).range(0, 2).round,
-            [SinOsc.ar(frq, 0, 0.3), Saw.ar(frq, 0.3), Pulse.ar(frq, 0, 0.3)]);
+		var frq = freq * SinOsc.kr(LFNoise1.kr(dur).range(30, 1000), 0, LFNoise1.kr(dur).range(0.01, 8)).midiratio;
+		var sig = Select.ar(LFNoise0.kr(dur).range(0, 2).round,
+			[SinOsc.ar(frq, 0, 0.3), Saw.ar(frq, 0.3), Pulse.ar(frq, 0, 0.3)]);
 		var filtFreq = filtCutOff.min(3000).max(1) * LFNoise1.kr(dur).range(1.0, 5.0);
-        var filt = Select.ar(LFNoise0.kr(dur).range(0, 2).round,
-            [LPF.ar(sig, filtFreq), HPF.ar(sig, filtFreq), BPF.ar(sig, filtFreq)]
-        );
-        sig = CombL.ar(filt, 0.5, LFNoise1.kr(dur).range(0.02, 0.5), rrand(0.3, 2));
-        sig
-    };
+		var filt = Select.ar(LFNoise0.kr(dur).range(0, 2).round,
+			[LPF.ar(sig, filtFreq), HPF.ar(sig, filtFreq), BPF.ar(sig, filtFreq)]
+		);
+		sig = CombL.ar(filt, 0.5, LFNoise1.kr(dur).range(0.02, 0.5), rrand(0.3, 2));
+		sig
+	};
 
-    sig = Splay.ar(sig); // nb! levelComp: true, so if removed signal will be extremely loud!
-    sig = LPF.ar(sig, lpffreq);
-    sig = FreeVerb2.ar(sig[0], sig[1], revMix.range(0, 1.0), LFNoise1.kr(dur).range(0.2, 2));
+	sig = Splay.ar(sig); // nb! levelComp: true, so if removed signal will be extremely loud!
+	sig = LPF.ar(sig, lpffreq);
+	sig = FreeVerb2.ar(sig[0], sig[1], revMix.range(0, 1.0), LFNoise1.kr(dur).range(0.2, 2));
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
 SynthDef(\Sd_sillyVoice, { arg out = 0, amp = 0.5, pan = 0,
-    begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
+	begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
 	freq = 220,
-    vibratoSpeed = 6,
-    vibratoDepth = 4,
-    vwl = 0,
-    lag = 1,
-    doneAction = 2;
+	vibratoSpeed = 6,
+	vibratoDepth = 4,
+	vwl = 0,
+	lag = 1,
+	doneAction = 2;
 
-    var in, vibrato, va, ve, vi, vo, vu, snd;
-    var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var in, vibrato, va, ve, vi, vo, vu, snd;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	vibrato = SinOsc.kr(vibratoSpeed, mul: vibratoDepth);
-    in = Saw.ar(Lag.ar(freq, lag) + vibrato);
+	in = Saw.ar(Lag.ar(freq, lag) + vibrato);
 
-    va = BBandPass.ar(
-        in: in,
-        freq: [ 600, 1040, 2250, 2450, 2750 ],
-        bw: [ 0.1, 0.067307692307692, 0.048888888888889, 0.048979591836735, 0.047272727272727 ],
-        mul: [ 1, 0.44668359215096, 0.35481338923358, 0.35481338923358, 0.1 ]);
+	va = BBandPass.ar(
+		in: in,
+		freq: [ 600, 1040, 2250, 2450, 2750 ],
+		bw: [ 0.1, 0.067307692307692, 0.048888888888889, 0.048979591836735, 0.047272727272727 ],
+		mul: [ 1, 0.44668359215096, 0.35481338923358, 0.35481338923358, 0.1 ]);
 
-    ve = BBandPass.ar(
-        in: in,
-        freq: [ 400, 1620, 2400, 2800, 3100 ] ,
-        bw: [ 0.1, 0.049382716049383, 0.041666666666667, 0.042857142857143, 0.038709677419355 ],
-        mul: [ 1, 0.25118864315096, 0.35481338923358, 0.25118864315096, 0.12589254117942 ]);
+	ve = BBandPass.ar(
+		in: in,
+		freq: [ 400, 1620, 2400, 2800, 3100 ] ,
+		bw: [ 0.1, 0.049382716049383, 0.041666666666667, 0.042857142857143, 0.038709677419355 ],
+		mul: [ 1, 0.25118864315096, 0.35481338923358, 0.25118864315096, 0.12589254117942 ]);
 
-    vi = BBandPass.ar(
-        in: in,
-        freq: [ 250, 1750, 2600, 3050, 3340 ] ,
-        bw: [ 0.24, 0.051428571428571, 0.038461538461538, 0.039344262295082, 0.035928143712575 ],
-        mul: [ 1, 0.031622776601684, 0.15848931924611, 0.079432823472428, 0.03981071705535 ] );
+	vi = BBandPass.ar(
+		in: in,
+		freq: [ 250, 1750, 2600, 3050, 3340 ] ,
+		bw: [ 0.24, 0.051428571428571, 0.038461538461538, 0.039344262295082, 0.035928143712575 ],
+		mul: [ 1, 0.031622776601684, 0.15848931924611, 0.079432823472428, 0.03981071705535 ] );
 
-    vo = BBandPass.ar(
-        in: in,
-        freq:[ 400, 750, 2400, 2600, 2900 ] ,
-        bw: [ 0.1, 0.10666666666667, 0.041666666666667, 0.046153846153846, 0.041379310344828 ],
-        mul: [ 1, 0.28183829312645, 0.089125093813375, 0.1, 0.01 ]);
+	vo = BBandPass.ar(
+		in: in,
+		freq:[ 400, 750, 2400, 2600, 2900 ] ,
+		bw: [ 0.1, 0.10666666666667, 0.041666666666667, 0.046153846153846, 0.041379310344828 ],
+		mul: [ 1, 0.28183829312645, 0.089125093813375, 0.1, 0.01 ]);
 
-    vu = BBandPass.ar(
-        in: in,
-        freq: [ 350, 600, 2400, 2675, 2950 ],
-        bw: [ 0.11428571428571, 0.13333333333333, 0.041666666666667, 0.044859813084112, 0.040677966101695 ],
-        mul: [ 1, 0.1, 0.025118864315096, 0.03981071705535, 0.015848931924611 ]);
+	vu = BBandPass.ar(
+		in: in,
+		freq: [ 350, 600, 2400, 2675, 2950 ],
+		bw: [ 0.11428571428571, 0.13333333333333, 0.041666666666667, 0.044859813084112, 0.040677966101695 ],
+		mul: [ 1, 0.1, 0.025118864315096, 0.03981071705535, 0.015848931924611 ]);
 
-    snd = SelectX.ar(Lag.kr(vwl, lag), [va, ve, vi, vo, vu]);
-    snd = Mix.new(snd);
+	snd = SelectX.ar(Lag.kr(vwl, lag), [va, ve, vi, vo, vu]);
+	snd = Mix.new(snd);
 	OffsetOut.ar(out, DirtPan.ar(snd * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
-/*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
-    var sig;
+
+(
+SynthDef(\Sd_sf, {
+	arg combDecTime = 0.87780169785023, filterFreq = [ 95.257843732834, 1092.9450431466, 2090.6322425604, 3088.3194419742, 4086.0066413879, 58.884483242035], verbMixLfoMul = 0.65344390869141, verbMixBase = 0.62439071655273, verbDamp = 0.49267339795828, filterRQ= 0.88423060178757, lfnFreq = 2.5169273328781,  amp = 0.1, verbRoom = 0.32687248945236, verbMixLfoFreq = 0.52672609329224,  combDelTime = 0.50482958555222, excitationLfoFreq = 4.6370942592621, mulEnd = 1.3822771310806, mulSlope = 87.377484935522, excitation = 2.8778329193592,tensionStart = 0.33643479049206, lossSlope = 49.668849676847, lossStart = 0.93807110734582, tensionEnd = 0.45843720436096, lossEnd = 0.75090856331253,addStart = 0.9387298822403, addEnd = 0.81052476167679, mulStart = 0.81965047121048, addSlope = 0.87180473804474, tensionSlope = 5.8839141070843, out = 0, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 10, freq = 440, doneAction = 2;
+
+	var sig, src, q, mod;
 	var envLength = sustain * (end - begin) / speed;
-    var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-    var env = Env.asr;
-    var globalEnv = IEnvGen.ar(env, line);
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
-// freq = freq.max(0.01).min(2);
+	freq = freq.max(0.01).min(2);
+
+	// thisThread.randSeed = 100000000;
+
+	mod = MembraneCircle.ar(
+		LFPulse.ar(excitationLfoFreq, 0.0, 0.5, excitation, excitation / 2),
+		Phasor.kr(0.0, tensionSlope, tensionStart, tensionEnd, tensionEnd) ,
+		Phasor.kr(0.0, lossSlope, lossStart, lossEnd, lossEnd),
+		Phasor.kr(0.0, mulSlope, mulStart, mulEnd, mulEnd),
+		Phasor.kr(0.0, addSlope, addStart, addEnd, addEnd)
+	);
+
+	src = { |int|
+		RLPF.ar( // reprendre ici
+			0.6 ** int * 40 * Impulse.ar(0), // input
+			((4 ** LFCub.kr(
+				( 1 / 16 + lfnFreq) // LFNoise0 freq
+			) * 300 + filterFreq) * freq).max(20).min(14000), // freq
+			((mod % -1) * filterRQ).max(0).min(2) // 5e-3 + (filterRQ * 0.025) // rq
+		).sin * 2
+	} ! 8;
+
+	q = src * 0.125;
+
+	sig = CombC.ar(
+		q,
+		maxdelaytime: 2,
+		delaytime: combDelTime ,
+		decaytime: combDecTime,
+		mul: 1,
+		add: 0.0
+	);
+
+	sig = sig + Ringz.ar(
+		sig,
+		Line.kr(20 * filterFreq, 80 * filterFreq, 1.5 * verbMixLfoFreq, 0.4) - mod, // filterFreq, //
+		mod % 0.012,
+		0.12
+	);
+
+	2.do {
+		sig = FreeVerb2.ar(
+			sig[0], // in1
+			sig[1], // in2
+			(verbMixBase + SinOsc.ar(verbMixLfoFreq, 0, verbMixLfoMul, verbMixLfoMul / 2)).linlin(0,2,0.1,0.9), // mix
+			verbRoom, // room
+			verbDamp // damp
+		)
+	};
+
+	sig = Splay.ar(sig, 1);
+	// sig = sig * amp * 0.25;
+	sig = Limiter.ar(sig, 0.79, 0.25);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+)
+
+// via https://web.archive.org/web/20191104212834/https://www.nada.kth.se/utbildning/grukth/exjobb/rapportlistor/2010/rapporter10/szabo_adam_10131.pdf
+// 180224
+// accelerate ne fonctionne pas?
+(
+SynthDef(\Sd_hoover, {
+	arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, mix=0.75, detune = 0.75, freq = 523.3572, doneAction = 2;
+	var detuneCurve, centerGain, sideGain, center, detuneFactor, freqs, side, sig, envLength, line, env, globalEnv;
+		// var sig;
+
+	envLength = sustain * (end - begin) / speed;
+	line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	env = Env.asr;
+	globalEnv = IEnvGen.ar(env, line);
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+
+	detuneCurve = { |x|
+		(10028.7312891634*x.pow(11)) -
+		(50818.8652045924*x.pow(10)) +
+		(111363.4808729368*x.pow(9)) -
+		(138150.6761080548*x.pow(8)) +
+		(106649.6679158292*x.pow(7)) -
+		(53046.9642751875*x.pow(6)) +
+		(17019.9518580080*x.pow(5)) -
+		(3425.0836591318*x.pow(4)) +
+		(404.2703938388*x.pow(3)) -
+		(24.1878824391*x.pow(2)) +
+		(0.6717417634*x) +
+		0.0030115596
+	};
+	centerGain = { |x| (-0.55366 * x) + 0.99785 };
+	sideGain = { |x| (-0.73764 * x.pow(2)) + (1.2841 * x) + 0.044372 };
+
+	center = LFSaw.ar(freq, Rand());
+
+	detuneFactor = freq * detuneCurve.(detune);
+
+	freqs = [
+		(freq - (detuneFactor * 0.11002313)),
+		(freq - (detuneFactor * 0.06288439)),
+		(freq - (detuneFactor * 0.01952356)),
+		// (freq + (detuneFactor * 0)),
+		(freq + (detuneFactor * 0.01991221)),
+		(freq + (detuneFactor * 0.06216538)),
+		(freq + (detuneFactor * 0.10745242))
+	];
+	side = Mix.fill(6, { |n|
+		LFSaw.ar(freqs[n], Rand(0, 2))
+	});
+
+
+
+
+	sig = (center * centerGain.(mix)) + (side * sideGain.(mix));
+
+	sig = HPF.ar(sig ! 2, freq);
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+
+}).add;
+)
+
+
+/*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
+var sig;
+var envLength = sustain * (end - begin) / speed;
+var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+var env = Env.asr;
+var globalEnv = IEnvGen.ar(env, line);
+
+freq = max(0, freq * speed * (1 + (accelerate * line)));
+// freq = freq.max(0.01).min(2);
+
+OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;*/
 
 )
