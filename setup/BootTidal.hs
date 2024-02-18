@@ -71,6 +71,19 @@ let p = streamReplace tidal
     -- use it with multiple instances of degradeBy, offset the randomness
     degOffsetBy :: Pattern Time -> Pattern Double -> Pattern a -> Pattern a
     degOffsetBy n = tParam (_degradeByUsing ((n ~>) rand))
+    -- custom geikha functions
+    striateAt  str at f = slow   at $ striate (fast at $ str) f
+    chopAt     str at f = slow   at $ chop    (fast at $ str) f
+    sloopAt    str at f = loopAt at $ striate (fast at $ str) f
+    striateAt' str at f = striateAt (str |* at) (fmap toRational at) f
+    chopAt'    str at f = chopAt    (str |* at) (fmap toRational at) f
+    sloopAt'   str at f = sloopAt   (str |* at) (fmap toRational at) f
+    strat  = striateAt
+    chat   = chopAt
+    slat   = sloopAt
+    strat' = striateAt'
+    chat'  = chopAt'
+    slat'  = sloopAt'
     -- custom control for external SynthDef
     amp = pF "amp"
     atk = pF "atk"
@@ -1583,6 +1596,82 @@ let p = streamReplace tidal
     --
     vow = pF "vow"
     softGain = pF "softGain"
+    --
+    hpf4 = pF "hpf4"
+    -- greyhole
+    ghdeltime = pF "ghdeltime"
+    ghdamp = pF "ghdamp"
+    ghsize = pF "ghsize"
+    ghdiff = pF "ghdiff"
+    ghfb = pF "ghfb"
+    ghmoddepth = pF "ghmoddepth"
+    ghmodfreq = pF "ghmodfreq"
+    ghwet = pF "ghwet"
+    --
+    fbPow = pF "fbPow"
+    --
+    vibrato = pF "vibrato"
+    perc = pF "perc"
+    percf = pF "percf"
+    slidedelay = pF "slidedelay"
+    --
+    duration = pF "duration"
+    modfreqamt1 = pF "modfreqamt1"
+    modfreqtime1 = pF "modfreqtime1"
+    modfreqamt2 = pF "modfreqamt2"
+    modfreqtime2 = pF "modfreqtime2"
+    modfreqamt3 = pF "modfreqamt3"
+    modfreqtime3 = pF "modfreqtime3"
+    modfreqamt4 = pF "modfreqamt4"
+    bpffreq1 = pF "bpffreq1"
+    bpfrq1 = pF "bpfrq1"
+    bpffreq2 = pF "bpffreq2"
+    bpfrq2 = pF "bpfrq2"
+    earlyRef = pF "earlyRef"
+    -- Sd_chaosEngine
+    modPhaseFreq = pF "modPhaseFreq"
+    modPhaseMul = pF "modPhaseMul"
+    modPhaseAdd = pF "modPhaseAdd"
+    modAmpFreq = pF "modAmpFreq"
+    modAmpMul = pF "modAmpMul"
+    modAmpAdd = pF "modAmpAdd"
+    modOffsetFreq = pF "modOffsetFreq"
+    modOffsetWidth = pF "modOffsetWidth"
+    modOffsetMul = pF "modOffsetMul"
+    modOffsetAdd = pF "modOffsetAdd"
+    modFreqFreq = pF "modFreqFreq"
+    --
+    filtCutOff = pF "filtCutOff"
+    lpffreq = pF "lpffreq"
+    --
+    vibratoSpeed = pF "vibratoSpeed"
+    vibratoDepth = pF "vibratoDepth"
+    vwl = pF "vwl"
+    --
+    combDecTime = pF "combDecTime"
+    impulseFreq = pF "impulseFreq"
+    impulsePhase = pF "impulsePhase"
+    verbMixLfoMul = pF "verbMixLfoMul"
+    verbMixBase = pF "verbMixBase"
+    filterRQ = pF "filterRQ"
+    verbMixLfoFreq = pF "verbMixLfoFreq"
+    freqShiftDivArray = pF "freqShiftDivArray"
+    combDelTime = pF "combDelTime"
+    excitationLfoFreq = pF "excitationLfoFreq"
+    mulEnd = pF "mulEnd"
+    mulSlope = pF "mulSlope"
+    excitation = pF "excitation"
+    tensionStart = pF "tensionStart"
+    lossSlope = pF "lossSlope"
+    lossStart = pF "lossStart"
+    tensionEnd = pF "tensionEnd"
+    lossEnd = pF "lossEnd"
+    addStart = pF "addStart"
+    addEnd = pF "addEnd"
+    mulStart = pF "mulStart"
+    addSlope = pF "addSlope"
+    tensionSlope = pF "tensionSlope"
+    -- 
 :}
 
 :{
