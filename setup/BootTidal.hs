@@ -1671,7 +1671,20 @@ let p = streamReplace tidal
     mulStart = pF "mulStart"
     addSlope = pF "addSlope"
     tensionSlope = pF "tensionSlope"
-    -- 
+    --
+    freqEnvStart = pF "freqEnvStart"
+    verbMixLfo = pF "verbMixLfo"
+    decTime4 = pF "decTime4"
+    decTime1 = pF "decTime1"
+    ringzFreq4 = pF "ringzFreq4"
+    ringzFreq1 = pF "ringzFreq1"
+    ringzFreq2 = pF "ringzFreq2"
+    ringzFreq3 = pF "ringzFreq3"
+    decTime3 = pF "decTime3"
+    verbRoomLfo = pF "verbRoomLfo"
+    ringzMul = pF "ringzMul"
+    decTime2 = pF "decTime2"
+    decTimeDiv = pF "decTimeDiv"
 :}
 
 :{
