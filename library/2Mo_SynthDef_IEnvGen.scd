@@ -1348,6 +1348,35 @@ SynthDef(\Sd_hoover, {
 
 }).add;
 
+SynthDef(\Sd_kicklaserbeam, { arg out = 0, amp = 0.3, pan = 0.0, attack = 0.0001, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, release = 0.26, freq = 13007, freqenvL1 = 3.97, freqenvL2 = 5, freqenvL3 = 0, freqenvL4 = 2.97, freqenvT1 = 0.16, freqenvT2= 0.07, freqenvT3= 0.26, ampenvL1 = 1, ampenvL2 = 1, ampenvL3 = 0, ampenvL4 = 0, ampenvT1 = 0.02, ampenvT2 = 0.2, ampenvT3 = 0.1, hpfFreq = 50, hpfRq = 1, clickAtk = 0, clickRls = 0.1, clickSus = 1, clickLevScale = 10, clickEnvPow = 1, clickEnvNoiseAmp = 0.4, clickEnvInv = 0, clickFreq = 820, clickAmp = 0.3, doneAction = 2;
+
+	var sig, freqenv, ampenv, clickEnv;
+
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+
+	globalEnv = EnvGen.kr(Env.perc(attack, release), timeScale: sustain, doneAction: doneAction);
+	// frequency envelope
+	freqenv = EnvGen.ar(Env([freqenvL1, freqenvL2, freqenvL3, freqenvL4], [freqenvT1, freqenvT2, freqenvT3]));
+	// amplitude envelope
+	// no gate: fixed-time envelope, self-terminating.
+	ampenv = EnvGen.ar(Env([ampenvL1, ampenvL2, ampenvL3, ampenvL4], [ampenvT1, ampenvT2, ampenvT3].normalizeSum));
+	sig = LFTri.ar(freq * freqenv, 0, ampenv);
+	sig = BHiPass4.ar(sig, hpfFreq, hpfRq);
+
+	clickEnv = EnvGen.ar(Env.perc(clickAtk, clickRls), levelScale: clickLevScale, timeScale: clickSus).pow(clickEnvPow) * PinkNoise.ar(clickEnvNoiseAmp).range(0.1, 1).lag(0.02);
+
+	clickEnv = Select.ar(clickEnvInv, [clickEnv, clickEnv.neg]);
+
+	sig = sig + HPF.ar(clickEnv, clickFreq, clickAmp);
+	// OffsetOut.ar(out, Pan2.ar(snd, pan));
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+
+}).add;
 
 SynthDef(\Sd_kickhi, { arg out = 0, amp = 0.3, pan = 0, sustain = 1, envPow = 1, vcaLev1 = 0.5, vcaLev2 = 0.1, vcaLev3 = 0.01, vcaLev4 = 0.01, vcaLev5 = 0, vcaTime1 = 0.01, vcaTime2 = 0.5, vcaTime3 = 1.26, vcaTime4 = 0.1, vcaCurve1 = (-4), vcaCurve2 = (-2), vcaCurve3 = (-4), vcfLev1 = 122, vcfLev2 = 30, vcfLev3 = 33, vcfLev4 = 28, vcfTime1 = 0.05, vcfTime2 = 0.29, vcfTime3 = 1, vcfCurve1 = (-4), vcfCurve2 = (-5), begin = 0, end = 1, speed = 1, accelerate = 0, freq = 60, tu = 1, sinLev = 16, doneAction = 2;
 	var env0, env1, env1m, sig, globalEnv;
