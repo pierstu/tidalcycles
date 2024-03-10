@@ -1685,6 +1685,24 @@ let p = streamReplace tidal
     ringzMul = pF "ringzMul"
     decTime2 = pF "decTime2"
     decTimeDiv = pF "decTimeDiv"
+    -- portedPlugins
+    -- Sd_analogBd
+    infsustain = pF "infsustain"
+    accent = pF "accent"
+    attackfm = pF "attackfm"
+    selffm = pF "selffm"
+    snappy = pF "snappy"
+    pulsewidth = pF "pulsewidth"
+    waveform = pF "waveform"
+    formantfreq = pF "formantfreq"
+    carrierfreq = pF "carrierfreq"
+    phaseshift = pF "phaseshift"
+    waveshape = pF "waveshape"
+    sync = pF "sync"
+    syncfreq = pF "syncfreq"
+    form1freq = pF "form1freq"
+    form2freq = pF "form2freq"
+    offsetphase = pF "offsetphase"
 :}
 
 :{
