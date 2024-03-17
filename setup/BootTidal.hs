@@ -1703,6 +1703,14 @@ let p = streamReplace tidal
     form1freq = pF "form1freq"
     form2freq = pF "form2freq"
     offsetphase = pF "offsetphase"
+    firstharmonic = pF "firstharmonic"
+    randSeed = pF "randSeed"
+    amplitudes = pF "amplitudes"
+    structure = pF "structure"
+    brightness = pF "brightness"
+    damping = pF "damping"
+    position = pF "position"
+    loss = pF "loss"
 :}
 
 :{
