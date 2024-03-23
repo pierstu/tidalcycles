@@ -224,4 +224,315 @@ SynthDef("mi_clouds" ++ ~dirt.numChannels, { |out, cloudspitch=0, cloudspos=0, c
 	));
 }, [\ir]).add;
 
+~dirt.addModule('greyHole', { |dirtEvent|
+	dirtEvent.sendSynth('greyHole' ++ ~dirt.numChannels,
+		[
+			ghdeltime: ~ghdeltime,
+			ghdamp: ~ghdamp,
+			ghsize: ~ghsize,
+			ghdiff: ~ghdiff,
+			ghfb: ~ghfb,
+			ghmoddepth: ~ghmoddepth,
+			ghmodfreq: ~ghmodfreq,
+			ghwet: ~ghwet,
+			out: ~out
+		]
+	)
+}, {~ghdeltime.notNil});
+
+SynthDef("greyHole" ++ ~dirt.numChannels, { |out, ghdeltime = 2, ghdamp = 0, ghsize = 1, ghdiff = 0.707, ghfb = 0.7, ghmoddepth = 0.1, ghmodfreq = 2, ghwet = 1 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = Greyhole.ar(
+		dry,
+		delayTime: ghdeltime,
+		damp: ghdamp,
+		size: ghsize,
+		diff: ghdiff,
+		feedback: ghfb,
+		modDepth: ghmoddepth,
+		modFreq: ghmodfreq,
+	);
+	var sig = SelectX.ar(ghwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+// ajout 230324
+
+~dirt.addModule('anaPhaserMod', { |dirtEvent|
+	dirtEvent.sendSynth('anaPhaser' ++ ~dirt.numChannels,
+		[
+			phaserSkew: ~phaserSkew,
+			phaserMod: ~phaserMod,
+			phaserStages: ~phaserStages,
+			phaserwet: ~phaserwet,
+			out: ~out
+		]
+	)
+}, {~phaserSkew.notNil});
+
+SynthDef("anaPhaser" ++ ~dirt.numChannels, {|out, phaserSkew = 0, phaserMod = 0.5, phaserStages = 8, phaserwet = 1 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = AnalogPhaserMod.ar(
+		dry,
+		skew: phaserSkew,
+		modulation: phaserMod,
+		stages: phaserStages
+	);
+	var sig = SelectX.ar(phaserwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+~dirt.addModule('diodef', { |dirtEvent|
+	dirtEvent.sendSynth('diodef' ++ ~dirt.numChannels,
+		[
+			out: ~out,
+			diodeffreq: ~diodeffreq,
+			diodefres: ~diodefres,
+			diodefdrive: ~diodefdrive,
+			diodefwet: ~diodefwet
+		]
+	)
+}, {~diodeffreq.notNil});
+
+SynthDef("diodef" ++ ~dirt.numChannels, {|out, diodefwet = 1, diodeffreq = 500, diodefres = 0.1, diodefdrive = 0 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = VADiodeFilter.ar(
+		dry,
+		freq: diodeffreq,
+		res: diodefres,
+		overdrive: diodefdrive
+	);
+	var sig = SelectX.ar(diodefwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+~dirt.addModule('korgf', { |dirtEvent|
+	dirtEvent.sendSynth('korgf' ++ ~dirt.numChannels,
+		[
+			out: ~out
+			korgfwet: ~korgfwet,
+			korgffreq: ~korgffreq,
+			korgfres: ~korgfres,
+			korgfdrive: ~korgfdrive,
+			korgftype: ~korgftype
+		]
+	)
+}, {~korgfwet.notNil});
+
+SynthDef("korgf" ++ ~dirt.numChannels, {|out, korgffreq = 500, korgfres = 0.1, korgfdrive = 0, korgftype = 0, korgfwet = 1 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = VAKorg35.ar(
+		dry,
+		freq: korgffreq,
+		res: korgfres,
+		overdrive: korgfdrive,
+		type: korgftype
+	);
+	var sig = SelectX.ar(korgfwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+~dirt.addModule('ladderf', { |dirtEvent|
+	dirtEvent.sendSynth('ladderf' ++ ~dirt.numChannels,
+		[
+			ladderffreq: ~ladderffreq,
+			ladderres: ~ladderres,
+			ladderdrive: ~ladderdrive,
+			laddertype: ~laddertype,
+			ladderwet: ~ladderwet,
+			out: ~out
+		]
+	)
+}, {~ladderwet.notNil});
+
+SynthDef("ladderf" ++ ~dirt.numChannels, {|out, ladderffreq = 500, ladderres = 0.1, ladderdrive = 0.0, laddertype = 0, ladderwet = 1 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = VALadder.ar(
+		dry,
+		freq: ladderffreq,
+		res: ladderres,
+		overdrive: ladderdrive,
+		type: laddertype
+	);
+	var sig = SelectX.ar(ladderwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+~dirt.addModule('semfilter', { |dirtEvent|
+	dirtEvent.sendSynth('semfilter' ++ ~dirt.numChannels,
+		[
+			semwet: ~semwet,
+			semfreq: ~semfreq,
+			semres: ~semres,
+			semtrans: ~semtrans,
+			out: ~out
+		]
+	)
+}, {~semtrans.notNil});
+
+SynthDef("semfilter" ++ ~dirt.numChannels, {|out, semwet = 1, semfreq = 500, semres = 0.1, semtrans = 0|
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = VASEM12.ar(
+		dry,
+		freq: semfreq,
+		res: semres,
+		transition: semtrans
+	);
+	var sig = SelectX.ar(semwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+
+
+~dirt.addModule('vadimfilter', { |dirtEvent|
+	dirtEvent.sendSynth('vadimfilter' ++ ~dirt.numChannels,
+		[
+			vadimfreq: ~vadimfreq,
+			vadimres: ~vadimres,
+			vadimtype: ~vadimtype,
+			out: ~out
+		]
+	)
+}, {~vadimfreq.notNil});
+
+SynthDef("vadimfilter" ++ ~dirt.numChannels, {|out, vadimfreq = 500, vadimres = 1.0, vadimtype = 0, vadimwet = 1 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = VadimFilter.ar(
+		dry,
+		freq: vadimfreq,
+		resonance: vadimres,
+		type: vadimtype
+	);
+	var sig = SelectX.ar(vadimwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+
+
+
+~dirt.addModule('phasorModal', { |dirtEvent|
+	dirtEvent.sendSynth('phasorModal' ++ ~dirt.numChannels,
+		[
+			phasorModalWet: ~phasorModalWet,
+			phasorModalFreq: ~phasorModalFreq,
+			phasorModalDecay: ~phasorModalDecay,
+			phasorModalDamp: ~phasorModalDamp,
+			out: ~out
+		]
+	)
+}, {~phasorModalWet.notNil});
+
+SynthDef("phasorModal" ++ ~dirt.numChannels, {|out, phasorModalFreq = 100, phasorModalDecay = 0.25, phasorModalDamp = 1, phasorModalWet = 1|
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = PhasorModal.ar(
+		dry,
+		freq: phasorModalFreq,
+		decay: phasorModalDecay,
+		damp: phasorModalDamp,
+		amp: 0.5,
+		phase: 0
+	);
+	var sig = SelectX.ar(phasorModalWet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+
+~dirt.addModule('chowfilter', { |dirtEvent|
+	dirtEvent.sendSynth('chowfilter' ++ ~dirt.numChannels,
+		[
+			chowffreq: ~chowffreq,
+			chowq: ~chowq,
+			chowfgain: ~chowfgain,
+			chowfshape: ~chowfshape,
+			chowfsat: ~chowfsat,
+			chowwet: ~chowwet,
+			out: ~out
+		]
+	)
+}, {~chowwet.notNil});
+
+SynthDef("chowfilter" ++ ~dirt.numChannels, {|out, chowwet = 1, chowffreq = 500, chowq = 0.5, chowfgain = 1, chowfshape = 5, chowfsat = 3 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = NonlinearFilter.ar(
+		dry,
+		freq: chowffreq,
+		q: chowq,
+		gain: chowfgain,
+		shape: chowfshape,
+		saturation: chowfsat
+	);
+	var sig = SelectX.ar(chowwet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+
+~dirt.addModule('anaDist', { |dirtEvent|
+	dirtEvent.sendSynth('anaDist' ++ ~dirt.numChannels,
+		[
+			distDrive: ~distDrive,
+			distBias:~distBias,
+			distLogain: ~distLogain,
+			distHigain: ~distHigain,
+			distFreq: ~distFreq,
+			distOversample: ~distOversample,
+			distWet: ~distWet,
+			out: ~out
+		]
+	)
+}, {~distWet.notNil});
+
+SynthDef("anaDist" ++ ~dirt.numChannels, {|out, distDrive = 0.5, distBias = 0, distLogain = 0.1, distHigain = 0.1, distFreq = 600, distOversample = 0, distWet = 1|
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = AnalogVintageDistortion.ar(
+		dry,
+		drivegain: distDrive,
+		bias: distBias,
+		lowgain: distLogain,
+		highgain: distHigain,
+		shelvingfreq: distFreq,
+		oversample: 0,
+		// out: ~out
+	);
+	var sig = SelectX.ar(distWet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+~dirt.addModule('anaTape', { |dirtEvent|
+	dirtEvent.sendSynth('anaTape' ++ ~dirt.numChannels,
+		[
+			tapeBias: ~tapeBias,
+			tapeSat: ~tapeSat,
+			tapeDrive: ~tapeDrive,
+			tapeWet: ~tapeWet,
+			out: ~out
+		]
+	)
+}, {~tapeBias.notNil});
+
+SynthDef("anaTape" ++ ~dirt.numChannels, {|out, tapeBias = 0.5, tapeSat = 0.5, tapeDrive = 0.5, tapeWet = 1 |
+	var dry = In.ar(out, ~dirt.numChannels);
+	var wet = AnalogTape.ar(
+		dry,
+		bias: tapeBias,
+		saturation: tapeSat,
+		drive: tapeDrive,
+		oversample: 1,
+		mode: 0,
+		// out: ~out
+	);
+	var sig = SelectX.ar(tapeWet, [dry, wet]);
+	ReplaceOut.ar(out, sig);
+}, [\ir]).add;
+
+
+
 )
