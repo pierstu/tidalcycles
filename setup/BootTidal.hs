@@ -1711,6 +1711,75 @@ let p = streamReplace tidal
     damping = pF "damping"
     position = pF "position"
     loss = pF "loss"
+    impulseFreq2 = pF "impulseFreq2"
+    impulseFreq3 = pF "impulseFreq3"
+    coinLineDur = pF "coinLineDur"
+    impulseFreq1 = pF "impulseFreq1"
+    coinProbArray = pF "coinProbArray"
+    impulseFreq4 = pF "impulseFreq4"
+    srcSus = pF "srcSus"
+    planetDrone_effect_3 = pF "planetDrone_effect_3"
+    sineAdd = "sineAdd"
+    freqShift1 = "freqShift1"
+    --
+    -- portedPlugins fx
+    --
+    phaserSkew = pF "phaserSkew"
+    phaserMod = pF "phaserMod"
+    phaserStages = pF "phaserStages"
+    phaserWet = pF "phaserWet"
+    --
+    vadimwet = pF "vadimwet"
+    vadimfreq = pF "vadimfreq"
+    vadimres = pF "vadimres"
+    vadimtype = pF "vadimtype"
+    --
+    phasorModalWet = pF "phasorModalWet"
+    phasorModalFreq = pF "phasorModalFreq"
+    phasorModalDecay = pF "phasorModalDecay"
+    phasorModalDamp = pF "phasorModalDamp"
+    --
+    chowwet = pF "chowwet"
+    chowffreq = pF "chowffreq"
+    chowq = pF "chowq"
+    chowfgain = pF "chowfgain"
+    chowfshape = pF "chowfshape"
+    chowfsat = pF "chowfsat"
+    --
+    distWet = pF "distWet"
+    distDrive = pF "distDrive"
+    distBias = pF "distBias"
+    distLogain = pF "distLogain"
+    distHigain = pF "distHigain"
+    distFreq = pF "distFreq"
+    --
+    tapeWet = pF "tapeWet"
+    tapeBias = pF "tapeBias"
+    tapeSat = pF "tapeSat"
+    tapeDrive = pF "tapeDrive"
+    --
+    semwet = pF "semwet"
+    semfreq = pF "semfreq"
+    semres = pF "semres"
+    semtrans = pF "semtrans"
+    --
+    ladderwet = pF "ladderwet"
+    ladderffreq = pF "ladderffreq"
+    ladderres = pF "ladderres"
+    ladderdrive = pF "ladderdrive"
+    laddertype = pF "laddertype"
+    --
+    korgfwet = pF "korgfwet"
+    korgffreq = pF "korgffreq"
+    korgfres = pF "korgfres"
+    korgfdrive = pF "korgfdrive"
+    korgftype = pF "korgftype"
+    --
+    diodefwet = pF "diodefwet"
+    diodeffreq = pF "diodeffreq"
+    diodefres = pF "diodefres"
+    diodefdrive = pF "diodefdrive"
+    --
 :}
 
 :{
