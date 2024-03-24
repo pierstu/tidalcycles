@@ -1589,7 +1589,7 @@ SynthDef(\Sd_neoformant, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 }).add;
 
 // planet drone
-
+// prefix arrays with # <- nameControl syntax
 SynthDef(\Sd_so, {
 	arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 10, freq = 1, verbMixLfo =  0.70107585787773, decTime4 = 13.907386982441, decTime1 = 6.9938727498055, lpfFreq = 3976, ringzFreq4 = 7890.3197827339, ringzFreq1 = 43.246298016335, ringzFreq2 = 96.466201484, ringzFreq3 = 9004.5744515777, decTime3 = 25.021273517609, verbRoomLfo = 2.9249746382236, verbRoom = 0.55860961675644, ringzMul = #[ 4, 8, 2, 7 ], dist = 1, decTime2 = 20.645671010017, verbMix = 0.33222706317902, decTimeDiv = 7, doneAction = 2;
 	var sig;
@@ -1641,147 +1641,69 @@ SynthDef(\Sd_so, {
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
-// 230324: scritfabien retourne 0.0 pour les arrays ????
-SynthDef(\Sd_coinSo, {
-	arg amp = 0.3, verbMixLfo = 1.5295840680599, decTime4 = 25.527067196369, decTime1 = 12.332154476643, lpfFreq = 2411, ringzFreq4 = 9558.5417954922, ringzFreq1 = [ 10.397223116229, 11.181881109279, 9.6636902064914, 21.633382906303, 24.907856110012, 23.209463304445, 7.7475562477717, 14.492349904867, 5.4787081999337, 19.895183999854, 18.484598931604, 6.2513141430982, 3.8675665304262, 22.75508757869 ], ringzFreq2 = 1631.4908416271, impulseFreq2 = 8.7770864486694, impulseFreq3 = 2.1230124235153, coinLineDur = 45.509524345398, ringzFreq3 = 8103.2672632694, decTime3 = 30.205740892887, impulseFreq1 = 4.1526807785034, verbRoomLfo = 1.7741918504238, verbRoom = 0.36719068288803, coinProbArray = [ 6, 2, 7, 7 ], ringzMul = [ 7, 8, 3, 7 ], impulseFreq4 = 4.8472623825073, decTime2 = 3.8461717963219, verbMix = 0.6033511161804, decTimeDiv = 5, out = 0, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, doneAction = 2;
-
-	var sig;
-	var envLength = sustain * (end - begin) / speed;
-	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
-	var env = Env.asr;
-	var globalEnv = IEnvGen.ar(env, line);
-	freq = max(0, freq * speed * (1 + (accelerate * line)));
-	freq = freq.max(0.01).min(2);
-
-	sig = CoinGate.ar(
-		coinProbArray/10 * Line.kr(0,1,coinLineDur),
-		// [8,4,8,2]/10 * Line.kr(0,1,30),
-		T2A.ar(
-			Impulse.kr(
-				[
-					impulseFreq1 ,
-					impulseFreq2,
-					impulseFreq3,
-					impulseFreq4
-				]
-			) // impulse
-		) // t2a
-	); // coingate
-
-	sig = Ringz.ar(
-		Mix.ar(sig),
-		[
-			ringzFreq1,
-			[ringzFreq2, ringzFreq3 ],
-			ringzFreq3,
-			[ ringzFreq4, 8e3 + ringzFreq1]
-		] * freq, // freq
-		[
-			decTime1,
-			decTime2,
-			decTime3,
-			decTime4
-		] / decTimeDiv, // dec time
-		ringzMul // [4,2,8,2] // mul
-	).sin.sum.tanh!2;
-
-
-
-	sig = LPF.ar(
-		Mix.ar(sig) ,
-		lpfFreq
-	);
-
-	sig = FreeVerb.ar(
-		Mix.ar(sig),
-		mix:   LFTri.kr(
-			verbMixLfo, 0.0, verbMix, verbMix/2).linlin(0, 1 + verbMix, 0, 1),
-		room:  LFPulse.kr(verbRoomLfo, 0.0, 0.5, verbRoom, verbRoom/2),
-		damp:  0.15,
-		mul: 1.15,
-		// add: 0.0
-	);
-
-	// sig = sig * 0.6;
-	sig = Splay.ar(sig, 1);
-	sig = HPF.ar(sig, 140);
-	sig = sig * amp ;
-
-
-	sig = Limiter.ar(sig, 0.5);
-
-	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
-
-
-}).add;
-
-// ne fonctionne pas??
 SynthDef(\Sd_sa,{
 
-	// var freq = ~saPreset[\sineAdd] ;
-	arg sineAdd = 705.98, freqShift1 = 0.96, lpfFreq = 4643, srcSus =  [ 0.47988572208828, 0.446525963203 ],  verbMix = 0.67, verbRoom = 0.64, planetDrone_effect_3 = 0.0625, freqShiftDivArray = [ 4.3397153615952, 5.3397153615952, 6.3397153615952, 7.3397153615952, 8.3397153615952, 9.3397153615952, 10.339715361595, 11.339715361595, 12.339715361595, 13.339715361595 ], out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, doneAction = 2;
+	// var freq = ~saPreset[\sineLfo] ;
+	arg sineLfo = 705.98, shiftmul = 0.96, lpfFreq = 4643,  verbMix = 0.67, verbRoom = 0.64, planetDrone_effect_3 = 0.0625, freqShiftDiv = 1.25, out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, doneAction = 2;
 
 	var rt = 0.75;
-	var src = (PinkNoise.ar(1!2) - srcSus) ;
-	var sig;
+	var sig, i, item;
 	var envLength = sustain * (end - begin) / speed;
 	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
 	var env = Env.asr;
 	var globalEnv = IEnvGen.ar(env, line);
+	var srcSus = \srcSus.kr(#[ 0.47988572208828, 0.446525963203 ]);
+	var src = (PinkNoise.ar(1!2) - srcSus) ;
 
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	freq = freq.max(0.01).min(2);
 
 
-	// sig =
-	src = (4.do{src = BRF.ar(
+	4.do{src = BRF.ar(
 		src,
-		rrand(1900,3600).round(2)+(sineAdd * LFNoise0.ar(rt.rand!2)),
+		rrand(1900,3600).round(2)+(sineLfo * LFNoise0.ar(rt.rand!2)),
 		0.25
 	)
 	};
 	2.do{src = BRF.ar(
 		src,
-		rrand(100,600).round(8)+(sineAdd * LFNoise1.ar(rt.rand!2)),
+		rrand(100,600).round(8)+(sineLfo * LFNoise1.ar(rt.rand!2)),
 		0.14
 	)
 	};
 	4.do{src = BRF.ar(
 		src,
-		rrand(900,2600).round(16)+(sineAdd * LFNoise1.ar(rt.rand!4)),
+		rrand(900,2600).round(16)+(sineLfo * LFNoise1.ar(rt.rand!4)),
 		0.2
 	)
 	};
 	6.do{src = BRF.ar(
 		src,
-		rrand(250,7500).round(8)+(sineAdd * LFNoise1.ar(rt.rand!6)),
+		rrand(250,7500).round(8)+(sineLfo * LFNoise1.ar(rt.rand!6)),
 		0.11
 	)
 	};
 	4.do{src = BRF.ar(
 		src,
-		rrand(2500,5000).round(12)+(sineAdd * LFNoise1.ar(rt.rand!2)),
+		rrand(2500,5000).round(12)+(sineLfo * LFNoise1.ar(rt.rand!2)),
 		0.2
 	)
-	});
+	};
 	sig = FreqShift.ar(
 		Mix.ar(src),
 		Duty.ar(
 			Phasor.kr(0.0, 96000, 0.016, 0.006, 0.006),
 			0,
 			Diwhite(
-				sineAdd * 0.6,
-				sineAdd * 5
-				).round(sineAdd / 32)
+				sineLfo * 0.6,
+				sineLfo * 5
+			).round(sineLfo / 32)
 		) * freq,  // freq
 		0,  // phase
-		freqShift1 // mul
+		shiftmul// mul
 	) + src;
 
-
-
-
-	sig = CombC.ar(sig, 1, 1, 7);
+	sig = CombC.ar(sig, 1, 0.001, 7);
 
 	sig = Limiter.ar(
 		LPF.ar(
@@ -1792,7 +1714,12 @@ SynthDef(\Sd_sa,{
 	);
 	sig = FreqShift.ar(
 		sig,
-		abs(planetDrone_effect_3 * 8) / freqShiftDivArray // (4..16)
+		abs(planetDrone_effect_3 * 8) /
+		// ne réagit pas depuis tidal, est statique une fois interprété :
+		/*3.collect{ arg item, i;
+			freqShiftDivArrayStart + (/*i **/ freqShiftDivArrayStep)
+		}.debug('freqShift')*/
+		[ 5.8820016384125, 6.8820016384125, 7.8820016384125, 8.8820016384125, 9.8820016384125, 10.882001638412, 11.882001638412, 12.882001638412, 13.882001638412, 14.882001638412, 15.882001638412, 16.882001638412, 17.882001638412, 18.882001638412, 19.882001638412 ] * freqShiftDiv // (4..16)
 	);
 
 	sig = FreeVerb.ar(
@@ -1804,11 +1731,9 @@ SynthDef(\Sd_sa,{
 		mul: 1.0,
 		add: 0.0);
 
-
-
 	sig = Splay.ar(sig);
 	sig = HPF.ar(sig, 140);
-	sig = Limiter.ar(sig, 0.5);
+	// sig = Limiter.ar(sig, 1);
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 
 }).add;
