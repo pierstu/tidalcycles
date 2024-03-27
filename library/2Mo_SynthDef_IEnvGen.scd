@@ -1738,6 +1738,64 @@ SynthDef(\Sd_sa,{
 
 }).add;
 
+SynthDef(\Sd_dpp, { 
+	arg freqDivArrayFactor = 1, filterDiv = 1, verbMix = 0.60417634248734, filterFreq1 = 0.40796319246292, freqArrayFactor = 1, freqShift1 = 107, filterFreq3 = 2.346172015667, decayTime = 4.2137583494186, verbRoom = 0.1025664806366, filterFreq2 = 1.9133269786835, freqShiftLfo = 0.20844437479973, freqShift2 = 6.8919010162354, out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
+	
+	var sig ;
+	
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+	
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	
+	sig = Formlet.ar(
+		LFTri.ar([ 4.7083842054425, 3.6294683655345, 6.2311351695123, 5.7085082038451 ] * 99 + 99), // in
+		(LFTri.ar(([ 4.7083842054425, 3.6294683655345, 6.2311351695123, 5.7085082038451 ] * freqArrayFactor)
+			+ SinOsc.ar(
+				freq: filterFreq3 ,
+				phase: 0.0,
+				mul: abs(freqShift2 * 4),
+				add: 0.0)
+		)
+		+ (LFTri.ar(
+			0.05 + filterFreq1 ,
+			0.0,
+			9,
+			20 ) // 175 )
+		)
+		+ (filterFreq2)
+		* freq).max(20).min(16000), // freq
+		1 , // attacktime
+		LFTri.ar(([ 4.7083842054425, 3.6294683655345, 6.2311351695123, 5.7085082038451 ] * freqArrayFactor) / 6.011 + decayTime ) % 1 // decaytime
+	) / ([ 8.3826489753459, 8.8630836543838 ] * filterDiv);
+	
+	// sig = Mix.ar(sig);
+	
+	sig = FreqShift.ar(
+		Splay.ar(sig, 1),
+		freqShift1  + SinOsc.ar(
+			freq: freqShiftLfo,
+			phase: 0.0,
+			mul: freqShift2,
+			add: freqShift2 / 2 // 0.0
+		) / ([ 3.6302051122754, 6.1470895027859, 6.3492406334529, 3.1593567512027, 3.0058722467307 ]* freqDivArrayFactor)
+	); // freqshift
+	
+	sig =	FreeVerb.ar(
+		Mix.ar(sig),
+		0.1 + verbMix,  // mix
+		0.1 + verbRoom // room
+	); // freeverb
+	
+	
+	sig = Splay.ar(sig, 1);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+	
+}).add;
+
 /*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
 var sig;
 var envLength = sustain * (end - begin) / speed;
