@@ -1685,6 +1685,12 @@ let p = streamReplace tidal
     ringzMul = pF "ringzMul"
     decTime2 = pF "decTime2"
     decTimeDiv = pF "decTimeDiv"
+    --
+    freqDivArrayFactor = pF "freqDivArrayFactor"
+    freqShift1 = pF "freqShift1"
+    freqShiftLfo  = pF "freqShiftLfo"
+    filterDiv = pF "filterDiv"
+    freqArrayFactor = pF "freqArrayFactor"
     -- portedPlugins
     -- Sd_analogBd
     infsustain = pF "infsustain"
