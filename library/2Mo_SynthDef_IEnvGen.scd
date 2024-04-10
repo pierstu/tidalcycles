@@ -1717,7 +1717,7 @@ SynthDef(\Sd_sa,{
 		abs(planetDrone_effect_3 * 8) /
 		// ne réagit pas depuis tidal, est statique une fois interprété :
 		/*3.collect{ arg item, i;
-			freqShiftDivArrayStart + (/*i **/ freqShiftDivArrayStep)
+		freqShiftDivArrayStart + (/*i **/ freqShiftDivArrayStep)
 		}.debug('freqShift')*/
 		[ 5.8820016384125, 6.8820016384125, 7.8820016384125, 8.8820016384125, 9.8820016384125, 10.882001638412, 11.882001638412, 12.882001638412, 13.882001638412, 14.882001638412, 15.882001638412, 16.882001638412, 17.882001638412, 18.882001638412, 19.882001638412 ] * freqShiftDiv // (4..16)
 	);
@@ -1738,62 +1738,81 @@ SynthDef(\Sd_sa,{
 
 }).add;
 
-SynthDef(\Sd_dpp, { 
-	arg freqDivArrayFactor = 1, filterDiv = 1, verbMix = 0.60417634248734, filterFreq1 = 0.40796319246292, freqArrayFactor = 1, freqShift1 = 107, filterFreq3 = 2.346172015667, decayTime = 4.2137583494186, verbRoom = 0.1025664806366, filterFreq2 = 1.9133269786835, freqShiftLfo = 0.20844437479973, freqShift2 = 6.8919010162354, out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
-	
-	var sig ;
-	
+SynthDef(\Sd_sd, {
+	arg /*envs = 79,*/ dryLevel = -2.9293020057678, earlyRef = -1.627618971467, phasorSkew = 0.5, phasorStages = 8, random4 = 129.59043478966, tailLevel = 1.626927190423, hpfLfo = 0.15, phasorMod = 0.5, random3 = 1.0151849246025, hz = 118.84280915976, hpfFreq = 124, revMix = 0,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1000, doneAction = 2;
+
+	var sig, sig2, phaserSources, phaserCycle, envs;
 	var envLength = sustain * (end - begin) / speed;
 	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
 	var env = Env.asr;
 	var globalEnv = IEnvGen.ar(env, line);
-	
 	freq = max(0, freq * speed * (1 + (accelerate * line)));
 	// freq = freq.max(0.01).min(2);
-	
-	sig = Formlet.ar(
-		LFTri.ar([ 4.7083842054425, 3.6294683655345, 6.2311351695123, 5.7085082038451 ] * 99 + 99), // in
-		(LFTri.ar(([ 4.7083842054425, 3.6294683655345, 6.2311351695123, 5.7085082038451 ] * freqArrayFactor)
-			+ SinOsc.ar(
-				freq: filterFreq3 ,
-				phase: 0.0,
-				mul: abs(freqShift2 * 4),
-				add: 0.0)
+
+	thisThread.randSeed = 1000000;
+
+	envs = rrand(0, 79);
+
+	sig = EnvGen.ar(
+		Env(
+			({ (0.65.rand2 ** 3) } ! envs),
+			({ exprand(0.01, 0.2) } ! (envs - 1)),
+			0.05
 		)
-		+ (LFTri.ar(
-			0.05 + filterFreq1 ,
-			0.0,
-			9,
-			20 ) // 175 )
+	);
+
+	sig = ({
+		sig * Blip.ar(
+			freq * LFPulse.kr(random3) * [ 1, 1.0217046260834, 0.621127869665623 ],
+			random4 * sig * 9 % [9,7,5.5]
 		)
-		+ (filterFreq2)
-		* freq).max(20).min(16000), // freq
-		1 , // attacktime
-		LFTri.ar(([ 4.7083842054425, 3.6294683655345, 6.2311351695123, 5.7085082038451 ] * freqArrayFactor) / 6.011 + decayTime ) % 1 // decaytime
-	) / ([ 8.3826489753459, 8.8630836543838 ] * filterDiv);
-	
-	// sig = Mix.ar(sig);
-	
-	sig = FreqShift.ar(
-		Splay.ar(sig, 1),
-		freqShift1  + SinOsc.ar(
-			freq: freqShiftLfo,
-			phase: 0.0,
-			mul: freqShift2,
-			add: freqShift2 / 2 // 0.0
-		) / ([ 3.6302051122754, 6.1470895027859, 6.3492406334529, 3.1593567512027, 3.0058722467307 ]* freqDivArrayFactor)
-	); // freqshift
-	
-	sig =	FreeVerb.ar(
+	}!4).mean;
+
+	sig = HPF.ar(sig, SinOsc.kr(
+		hpfLfo ,
+		LFPulse.kr(0.51),
+		hpfFreq,
+		(hpfFreq * 1.32051282)
+	),
+	1.15);
+
+	phaserSources = [
+		sig,
+		SinOsc.ar(
+			LFNoise1.kr(phasorSkew),
+			SinOsc.ar(0.331)
+		)
+	]; // skew: SinOsc.kr(0.5),
+	phaserCycle = phaserSources.size * 0.25;
+
+	sig = AnalogPhaserMod.ar(
+		sig,
+		Select.kr(phaserCycle, phaserSources),
+		LFPulse.kr(phasorMod), // modulation: LFPulse.kr(0.1),
+		phasorStages
+	);
+
+	sig2 = GVerb.ar(
 		Mix.ar(sig),
-		0.1 + verbMix,  // mix
-		0.1 + verbRoom // room
-	); // freeverb
-	
-	
-	sig = Splay.ar(sig, 1);
+		roomsize: 100, // 200,
+		revtime:  23, // 385,
+		damping: 0.15, //0.5,
+		inputbw: 0.5,
+		spread: 20, // 50,
+		drylevel: dryLevel,
+		earlyreflevel:earlyRef,
+		taillevel: tailLevel
+	);
+
+	sig = LinSelectX.ar(
+		revMix,
+		[sig * 8.5, sig2 * 0.8]
+	);
+
+	sig = HPF.ar(sig, 70);
+
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
-	
 }).add;
 
 /*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
