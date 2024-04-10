@@ -1598,7 +1598,9 @@ let p = streamReplace tidal
     softGain = pF "softGain"
     --
     hpf4 = pF "hpf4"
+    ---
     -- greyhole
+    ---
     ghdeltime = pF "ghdeltime"
     ghdamp = pF "ghdamp"
     ghsize = pF "ghsize"
@@ -1647,7 +1649,9 @@ let p = streamReplace tidal
     vibratoSpeed = pF "vibratoSpeed"
     vibratoDepth = pF "vibratoDepth"
     vwl = pF "vwl"
-    --
+    ---
+    -- planet drone
+    ---
     combDecTime = pF "combDecTime"
     impulseFreq = pF "impulseFreq"
     impulsePhase = pF "impulsePhase"
@@ -1685,13 +1689,33 @@ let p = streamReplace tidal
     ringzMul = pF "ringzMul"
     decTime2 = pF "decTime2"
     decTimeDiv = pF "decTimeDiv"
-    --
-    freqDivArrayFactor = pF "freqDivArrayFactor"
-    freqShift1 = pF "freqShift1"
-    freqShiftLfo  = pF "freqShiftLfo"
-    filterDiv = pF "filterDiv"
-    freqArrayFactor = pF "freqArrayFactor"
+    ---
+    impulseFreq2 = pF "impulseFreq2"
+    impulseFreq3 = pF "impulseFreq3"
+    coinLineDur = pF "coinLineDur"
+    impulseFreq1 = pF "impulseFreq1"
+    coinProbArray = pF "coinProbArray"
+    impulseFreq4 = pF "impulseFreq4"
+    srcSus = pF "srcSus"
+    planetDrone_effect_3 = pF "planetDrone_effect_3"
+    sineLfo = pF "sineLfo"
+    shiftmul = pF "shiftmul"
+    freqShiftDiv = pF "freqShiftDiv"
+    ---
+    dryLevel = pF "dryLevel"
+    phasorSkew = pF "phasorSkew"
+    phasorStages = pF "phasorStages"
+    random4 = pF "random4"
+    tailLevel = pF "tailLevel"
+    hpfLfo = pF "hpfLfo"
+    phasorMod = pF "phasorMod"
+    random3 = pF "random3"
+    hz = pF "hz"
+    levelsFact = pF "levelsFact"
+    timesFact = pF "timesFact"
+    ---
     -- portedPlugins
+    --
     -- Sd_analogBd
     infsustain = pF "infsustain"
     accent = pF "accent"
@@ -1717,17 +1741,16 @@ let p = streamReplace tidal
     damping = pF "damping"
     position = pF "position"
     loss = pF "loss"
-    impulseFreq2 = pF "impulseFreq2"
-    impulseFreq3 = pF "impulseFreq3"
-    coinLineDur = pF "coinLineDur"
-    impulseFreq1 = pF "impulseFreq1"
-    coinProbArray = pF "coinProbArray"
-    impulseFreq4 = pF "impulseFreq4"
-    srcSus = pF "srcSus"
-    planetDrone_effect_3 = pF "planetDrone_effect_3"
-    sineAdd = "sineAdd"
-    freqShift1 = "freqShift1"
     --
+    -- Sd_oscbank
+    saw8 = pF "saw8"
+    square8 = pF "square8"
+    saw4 = pF "saw4"
+    square4 = pF "square4"
+    saw1 = pF "saw1"
+    --
+    -- Sd_rongs
+    f0 = pF "f0"
     -- portedPlugins fx
     --
     phaserSkew = pF "phaserSkew"
@@ -1786,7 +1809,7 @@ let p = streamReplace tidal
     diodefres = pF "diodefres"
     diodefdrive = pF "diodefdrive"
     --
-:}
+    :}
 
 :{
 let setI = streamSetI tidal
