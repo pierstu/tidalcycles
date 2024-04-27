@@ -1644,7 +1644,7 @@ SynthDef(\Sd_so, {
 SynthDef(\Sd_sa,{
 
 	// var freq = ~saPreset[\sineLfo] ;
-	arg sineLfo = 705.98, shiftmul = 0.96, lpfFreq = 4643,  verbMix = 0.67, verbRoom = 0.64, planetDrone_effect_3 = 0.0625, freqShiftDiv = 1.25, out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, doneAction = 2;
+	arg sineLfo = 705.98, shiftmul = 0.96, lpfFreq = 4643,  verbMix = 0.67, verbRoom = 0.64, freqShift = 2.0625, freqShiftDiv = 1.25, out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1, doneAction = 2;
 
 	var rt = 0.75;
 	var sig, i, item;
@@ -1714,7 +1714,7 @@ SynthDef(\Sd_sa,{
 	);
 	sig = FreqShift.ar(
 		sig,
-		abs(planetDrone_effect_3 * 8) /
+		abs(freqShift * 8) /
 		// ne réagit pas depuis tidal, est statique une fois interprété :
 		/*3.collect{ arg item, i;
 		freqShiftDivArrayStart + (/*i **/ freqShiftDivArrayStep)
@@ -1739,7 +1739,7 @@ SynthDef(\Sd_sa,{
 }).add;
 
 SynthDef(\Sd_sd, {
-	arg /*envs = 79,*/ dryLevel = -2.9293020057678, earlyRef = -1.627618971467, phasorSkew = 0.5, phasorStages = 8, random4 = 129.59043478966, tailLevel = 1.626927190423, hpfLfo = 0.15, phasorMod = 0.5, random3 = 1.0151849246025, hz = 118.84280915976, hpfFreq = 124, revMix = 0,
+	arg /*envs = 79,*/ dryLevel = -2.9293020057678, earlyRef = -1.627618971467, phasorSkew = 0.5, phasorStages = 8, random4 = 129.59043478966, tailLevel = 1.626927190423, hpfLfo = 0.15, phasorMod = 0.5, random3 = 1.0151849246025,  hpfFreq = 124, revMix = 0,
 	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1000, doneAction = 2;
 
 	var sig, sig2, phaserSources, phaserCycle, envs;
@@ -1764,7 +1764,7 @@ SynthDef(\Sd_sd, {
 
 	sig = ({
 		sig * Blip.ar(
-			freq * LFPulse.kr(random3) * [ 1, 1.0217046260834, 0.621127869665623 ],
+			freq * LFPulse.kr(random3) * [ 1, 1.3217046260834, 0.621127869665623 ],
 			random4 * sig * 9 % [9,7,5.5]
 		)
 	}!4).mean;
@@ -1813,6 +1813,376 @@ SynthDef(\Sd_sd, {
 	sig = HPF.ar(sig, 70);
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+
+SynthDef(\Sd_jpd2, {
+	arg serie1 = 0.35, serie2 = 0.85,
+	serie3 = 0.5, serie4 = 0.75, verbmix = 0.4, panpos = 0.5, panmul = 0.35,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 240, doneAction = 2;
+	var sig, snd, bohlen;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	thisThread.randSeed = 100000;
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	bohlen=[1, 27/25, 25/21, 9/7, 7/5, 75/49, 5/3, 9/5, 49/25, 15/7, 7/3, 63/25, 25/9, 3];
+	sig = {{snd = LFTri.ar((bohlen.choose/3) * freq);
+		4.do{
+			snd = BAllPass.ar(snd, PinkNoise.kr(11, 30 * [1, 3, 9/7, 9/5, 7/3, 25/9].choose + (serie1 * 15)), 0.01);
+			snd =BAllPass.ar(snd, PinkNoise.kr(23, 270 * [1, 3, 9].choose * bohlen.choose) + (serie2 * 275), 0.003);
+			snd =BAllPass.ar(snd, PinkNoise.kr(30, 120 * [3, 9, 3].choose * bohlen.choose) + (serie4 * 125), 0.073);
+			snd =((snd * LFTri.ar(bohlen.choose/7, 7, 3)) + WhiteNoise.ar(Lag.ar(Dust2.ar(SinOsc.kr(1, 25, 3), 1, PinkNoise.kr(0.001)), 0.02), 0)).tanh;
+			snd =LPF.ar(LeakDC.ar(snd, 0.996), 10000 + (serie3 * 4500)  )};
+		snd = (snd / 2)}!8};
+	sig = FreeVerb.ar(sig, verbmix, 1, 1);
+	sig = Mix.ar(sig);
+	sig = Pan2.ar(
+		sig,
+		pos:SinOsc.ar(
+			freq: 0.005 + (SinOsc.kr((panpos * 3), 0, 20, 50)).abs,
+			phase: 0.125,
+			mul: panmul * 0.75,
+			add: 0.15)
+	);
+	// sig = Limiter.ar(sig, 0.5);
+	sig = HPF.ar(sig, SinOsc.kr(1, 0, 0.5, 80));
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp * 0.5));
+}).add;
+
+
+
+SynthDef(\Sd_jpd, {
+	arg  freq1 = 1.5, freq2 = 2.75, freq3 = 1.2, freq4 = 1.1,  ghDelTime = 0.3,
+	filterFreq = 1500, filterRes = 0.23,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 140, doneAction = 2;
+	var amp_,hz_,sig;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	amp_ = Lag.ar(K2A.ar(amp), 0.02);
+	// hz_ = Lag.ar(K2A.ar(hz), hzlag);
+	hz_ = Lag.ar(K2A.ar(freq), 0.02);
+	sig = VarSaw.ar(
+		freq: hz_ * Array.fill(
+			3,
+			{arg freqI;
+				2 ** freqI * LinLin.kr(SinOsc.kr(LFNoise0.kr(1)),
+					freq1 ,
+					freq2 ,
+					freq3,
+					freq4
+				)
+		})  ,
+		mul: amp_ * Array.fill(3, {arg freqI; (1/2) ** freqI}),
+	);
+	sig = Mix.ar(sig);
+	sig = Greyhole.ar(
+		sig,
+		delayTime:0.25 + abs(ghDelTime)
+	);
+	sig = DFM1.ar(
+		sig,
+		filterFreq ,
+		filterRes
+	);
+	//sig = ComplexRes.ar(sig, freq: 100.0, decay: 0.2);
+	// sig = HPF.ar(sig, 110);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+
+
+SynthDef(\Sd_jb,{
+	arg freqPulse1 = 370, freqPulse2 = 387,  freqPulse3 = 411, freqPulse4 = 306,
+	pulseWidth1 = 150,  pulseWidth2 = 94, pulseWidth3 = 178,  pulseWidth4 = 43,
+	brf = 34, modOffset = 254, modAmount = 2.69,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 157.48465, doneAction = 2;
+
+	var sig, mix1, mix2, mix3, mix4;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = freq.explin(20, 20000, 0.01, 2); // .max(0.01).min(2);
+
+	mix1 = Pulse.ar(
+		freq: ((SinOsc.kr(50) + freqPulse1 + modOffset  + (SinOsc.ar(0.075) * modAmount)) * freq).max(20).min(20000),
+		width:  SinOsc.ar(0.005 * pulseWidth1) + 0.25,
+		mul: 1.7,
+	);
+	mix1 = BRF.ar(
+		mix1,
+		2000 + brf - (SinOsc.ar(0.15) * 1100),
+		0.5);
+	mix1 = Pan2.ar(
+		mix1,
+		SinOsc.ar(0.015) - 0.5);
+	mix2 = Pulse.ar(
+		freq: (LFPulse.kr(123) + freqPulse2 + modOffset  - (SinOsc.ar(0.05) * modAmount ) * freq).min(20000).max(20),
+		width: SinOsc.ar(0.012 * pulseWidth2 ) + 0.25,
+		mul: 1.8,
+	);
+	mix2 = BRF.ar(
+		mix2,
+		2000 + brf  - (SinOsc.ar(0.08) * 1100),
+		0.5
+	);
+	mix2 = Pan2.ar(
+		mix2,
+		SinOsc.ar(0.055)
+	);
+	mix3 = Pulse.ar(
+		freq: (LFSaw.kr(27) + freqPulse3  + modOffset + (SinOsc.ar(0.075) * modAmount ) * freq).min(20000).max(20),
+		width: SinOsc.ar(0.0005 * pulseWidth3 ) + 0.25,
+		mul: 1.9,
+	);
+	mix3 = BRF.ar(
+		mix3,
+		2000 + brf - (SinOsc.ar(0.02) * 1100),
+		0.5
+	);
+	mix3 = Pan2.ar(
+		mix3 ,
+		SinOsc.ar(0.15)-0.5
+	);
+	mix4 = Pulse.ar(
+		freq: (SinOscFB.kr(13) + freqPulse4  + modOffset  - (SinOsc.ar(0.05) * modAmount) * freq).min(20000).max(20),
+		width: SinOsc.ar(0.0005 * pulseWidth4 ) + 0.25,
+		mul: 2.0,
+	);
+	mix4 = BRF.ar(
+		mix4,
+		2000 + brf  - (SinOsc.ar(0.005) * 1100),
+		0.5
+	);
+
+	mix4 = Pan2.ar(
+		mix4 ,
+		SinOsc.ar(0.005));
+
+	sig = Mix.ar([
+		mix1,
+		mix2,
+		mix3,
+		mix4
+	]);
+
+	sig = DFM1.ar(sig, SinOsc.kr(0.0, 15, 0.5, 6200).abs, 0.35);
+
+	sig = Greyhole.ar(sig, delayTime: brf / 10);
+
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp * 0.5));
+
+
+}).add;
+
+
+SynthDef(\Sd_sn,{
+
+	arg freqMul2 = 21.257689658999, lfoPhase2 = 0.7797144651413, filterDecay = 0.13442561626434,
+	freqOffset = 3.2626762163639, verbRoom = 0.53601360321045, freqAdd = 0.31584845781326, lfoPhase1 = 0.72416956424713, verbMix = 0.55239865779877,
+	freqBase = 6.4624158263206, freqMul = 33.736344687939,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 120, doneAction = 2;
+
+	var sig, quickos;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+
+	sig = FreeVerb.ar(
+		quickos = 0;
+		(100..90).do{
+			|freqIter|
+			freqIter = freqIter / 2 + freqBase  + (1.0 + SinOsc.ar(
+				freqAdd ,
+				1.25,
+				freqMul
+			)
+			);
+			quickos = SinOsc.ar(
+				freqIter + [0 + (freqMul + SinOsc.ar(
+					freq: 0.03,
+					phase: 0.0,
+					mul: freqOffset,
+					add: 0.0)
+				),
+				1 + (freqMul2   - SinOsc.ar(
+					freq: 0.03,
+					phase: 0.0,
+					mul: freqOffset,
+					add: 0.0
+				)
+				)] * freq, // freq
+				quickos * LFTri.kr(0.75,1.25).range(1.2+lfoPhase1,
+					0.25 + lfoPhase2) // phase
+			)
+		};
+		quickos;,
+		mix:  abs(verbMix),
+		room: abs(verbRoom),
+		damp:  0.25,
+		mul: 1.0,
+		add: 0.0);
+
+	sig = Balance2.ar(
+		sig[0],
+		sig[1],
+		SinOsc.kr(1.5) * 0.5
+	);
+
+	sig = AllpassN.ar(
+		sig,
+		2.75,
+		filterDecay ,
+		abs(SinOsc.ar(
+			0.0258,
+			1.38,
+			0.12,
+			1.0 / (1.0 + abs(SinOsc.kr(filterDecay, 0.0,filterDecay * 250, filterDecay * 125))) // add
+		)
+		)
+	);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+
+
+}).add;
+
+
+SynthDef(\Sd_skk, {
+
+	arg earlyRef = 0.52961673587561, revTime = 0.81880112171173, dryLev = 0.76181447505951,
+	impulseFreq1 = 0.092333076000214, impulseFreq2 = 0.92188009023666, impulseFreq3 = 0.24880619049072, impulseFreq4 = 0.23297158479691, envCurve = -8,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 1440, doneAction = 2;
+
+	var sig;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr(curve: envCurve);
+	var globalEnv = IEnvGen.ar(env, line);
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	freq = freq.explin(20,20000,0.01,2);
+
+	// thisThread.randSeed = randSeed] ?? ({  10000000.rand.debug("randSeed") });
+	thisThread.randSeed = 100000;
+
+	sig = tanh(Impulse.kr(
+		freq: (freq * (impulseFreq1 * rrand(6.0,12))).min(20000).max(20),
+		phase: Line.kr(0.2, 0.0, 0.4)
+	).lag * Crackle.ar(LFSaw.kr(rrand(3.0, 7) + (impulseFreq2 * rrand(10.0, 20))).abs.lag * 1.8)
+	+
+	GVerb.ar([
+		Impulse.kr(
+			freq: ((impulseFreq3 * rrand(60,90)) * freq).min(20000).max(20),
+			phase: Line.kr(0.2, 0.0, 0.3)
+		) + Impulse.kr(
+			freq: rrand(1.0,6) + impulseFreq4 * (impulseFreq3 * rrand(1.0,10)),
+			phase: 0.5
+		)
+	].lag * Blip.ar(
+		((5.9 + (impulseFreq4 * rrand(30.0, 50))) * freq).min(20000).max(20),
+		7,
+		0.4)!2, 1, 1) * 5);
+
+	sig = GVerb.ar(
+		Mix.ar(sig),
+		roomsize: 2, // 26, foutre un dseq dessus
+		revtime: SinOsc.kr(LFPulse.kr(revTime), 0.0, 0.5, 0.65),
+		damping: 0.165,
+		inputbw: 0.46,
+		spread:  17, // 25,
+		drylevel:  SinOsc.kr(dryLev).abs , // -6 + (dryLev * rrand(30, 70)).debug("drylevel"),
+		earlyreflevel: LFPulse.kr(earlyRef, 0.0, Phasor.kr(0.0, 10.05, 0.25, 0.75)), // -10.47 + (planetDrone_effect_3 * rrand(50,80)),
+		taillevel: -10.15,
+		maxroomsize: 3, // 100,
+		mul: 0.125, // .0,
+		add: 0
+	);
+
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp * 0.06));
+
+}).add;
+
+
+
+SynthDef(\Sd_gutter, { arg out = 0, pan = 0, begin = 0, end = 1, speed =
+1, accelerate = 0, sustain = 1, freq = 621.58, doneAction = 2;
+     var amp, gamma, omega, c, dt, singlegain, smoothing, gains1, gains2,
+freqs1, qs1, freqs2, qs2, audioinput, size, sig;
+	var envLength = sustain * (end - begin) / speed;
+     var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+     var env = Env.asr;
+     var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	freq = A2K.kr(freq).explin(20, 20000, 0.01, 2); // (0.01).min(2);
+
+	thisThread.randSeed = 8; // 25; // 3;
+
+	size = rrand(4, 16);
+
+	amp = \amp.kr(0.4, 0.02, spec: ControlSpec(0.0, 1, step: 0.01, default:
+0.4));
+	gamma = \gamma.kr(0.1, 0.02, spec: ControlSpec(0.0, 10, step: 0.01,
+default: 0.1));
+	omega = \omega.kr(0.02, 0.02, spec: ControlSpec(0.0000001, 1, step:
+0.01, default: 0.02));
+	c = \c.kr(0.1, 0.02, spec: ControlSpec(0.0, 1, step: 0.01, default:
+0.1));
+	dt = \dt.kr(5, 0.02, spec: ControlSpec(0.01, 1000, step: 0.01, default:
+5));
+	singlegain = \singlegain.kr(1, 0.02, spec: ControlSpec(0.0, 1, step:
+0.01, default: 1));
+	smoothing = \smoothing.kr(0.5, 0.02, spec: ControlSpec(0.0, 7, step:
+0.01, default: 0.5));
+	gains1 = Array.rand(size, 0.0, 1) * \gains1.kr(1, 0.02, spec:
+ControlSpec(0.0, 2, step: 0.01, default: 1));
+	gains2 = Array.rand(size, 0.0, 1) * \gains2.kr(1, 0.02, spec:
+ControlSpec(0.0, 2, step: 0.01, default: 1));
+	freqs1 = Array.exprand(size, 20, 16000) * \freqs1.kr(1, 0.1, spec:
+ControlSpec(0.01, 2, step: 0.01, default: 1)) * freq;
+	qs1 = Array.rand(size, 10, 1000) * \qs1.kr(1, 0.02, spec:
+ControlSpec(0.0, 2, step: 0.01, default: 1));
+	freqs2 = Array.exprand(size, 20, 16000) * \freqs2.kr(1, 0.1, spec:
+ControlSpec(0.01, 2, step: 0.01, default: 1)) * freq;
+	qs2 = Array.rand(size, 10, 1000) * \qs2.kr(1, 0.02, spec:
+ControlSpec(0.0, 2, step: 0.01, default: 1));
+
+	audioinput = SinOsc.ar(SinOsc.ar(LFNoise2.ar(30)*100).exprange(100.0,
+2500.0));
+
+	sig = GutterSynth.ar(
+		gamma.max(0.0).min(10),
+		omega.max(0.0000001).min(1),
+		c.max(0.0).min(1),
+		dt.max(0.01).min(1000),
+		singlegain.max(0.0).min(1),
+		smoothing.max(0.0).min(7),
+		1, // togglefilters [0 1]
+		0, // distortionmethod [0 1 2 3 4] // at init
+		2, // oversampling [0 1 2 3 4]
+		0, // enableaudioinput [0 1]
+		audioinput,
+		gains1.max(0.0).min(1),
+		gains2.max(0.0).min(1),
+		freqs1.max(20).min(20000),
+		qs1.max(10).min(1000),
+		freqs2.max(20).min(20000),
+		qs2.max(10).min(1000)
+	);
+
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan,
+amp));
 }).add;
 
 /*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
