@@ -1,0 +1,93 @@
+-- 270424 wip
+d1 $
+stack [
+  someCyclesBy 0.33 (listen 0) $
+  someCyclesBy (1/6)
+  (mask "0 1 [0 1 0] 0") $
+  -- density (every 2 (slow "1 2 1") $ "1 3.5 1/7 1" ) $
+  -- (<| freq ("140 200 320 1209 <7984 ! 3767> 100 234" * 0.24)) $
+  (<| amp ("{[0.9 0.6]*<3 [3 4]>}%1.25" * 0.24)) $
+  -- (<| freq (every 2 ("1/7 -2/7 0" ~>)  $ "[140 200] 320 ! 1209 <7984 ! 3767> ! [100 234]" * 0.24)) $
+  s "Sd_skk"
+    # earlyRef 0.2961671352386
+    # revTime 0.880110502243
+    # dryLev 0.181447505951
+    # impulseFreq1 1.092333078384399
+    # impulseFreq2 (fromTo 0.92 312)
+    # impulseFreq3 1.24880619347095
+    # impulseFreq4 "8 12.3" -- 0.43297157883644
+    -- # amp 0.20000000298023
+    # begin 0.0
+    # end 1.0
+    # speed "1 <1 0.75>"
+    # accelerate 0.4
+    # sustain 0.7
+    -- # release 0.72
+    # envCurve "-8 -4 <[11 2] -9>"
+    -- # freq 1400.0
+    # freq ("140 200 320 1209 <7984 ! 3767> 100 234" * 0.24)
+    # gain 0.87
+    ,
+    -- listen 0 $
+    someCyclesBy (5.76/7) (listen "0 1 0") $
+    fast "<2 1> 0.5 1 0.5" $
+    (<| freq "{[1620 120] ! ~ [398 178] 3000 ~[~ 200]}%3.5")  $
+    s "Sd_sn"
+      # freqBase 6.4624156951904
+      # freqMul 33.736343383789
+      # freqMul2 "21.25 76.90 42.96 88  "
+      # freqOffset 3.2626762390137
+      # freqAdd 0.31584846973419
+      # lfoPhase1 0.7241695523262
+      # lfoPhase2 "0.1 0.77 4.46 5.14 1 "
+      # filterDecay 0.13442561030388
+      # verbMix (slow 3 $ range 0.1 0.44 tri)
+      # verbRoom 0.83601360321045
+      # amp 0.20000000298023
+      # begin 0.0
+      # end 1.0
+      # speed 1.0
+      # accelerate 0.0
+      # sustain 1.0
+      -- # freq 1620.0
+      ,
+      listen "{[0 1 ]0 [0 1] 0 [1 0] 1 0 [0 1] 0 }%3.5" $
+      fast "<2 [1 2] 1> <2 1 [2 1]>" $
+      (<| freq "140!3 ~ 90!3") $
+      s "Sd_jpd"
+        # freq1 " 6 "
+        # freq2 " 49 48"
+        # freq3 "2.0 "
+        # freq4 11.0
+        # ghDelTime 0.130000001192093
+        # filterFreq 5500.0
+        # filterRes 0.33000000417233
+        # amp 0.3
+        # begin 0.0
+        # end 1.0
+        # speed 1.0
+        # accelerate "0.0!5 40 0"
+        # sustain 0.3 -- 1.0
+        -- # freq 140.0
+      ,
+      s "Sd_gutter"
+        # begin 0.0
+        # end 1.0
+        # speed 1.0
+        # accelerate 0.0
+        # sustain 1.0
+        # freq 621.58001708984
+        # amp 0.9
+        # gamma 0.10000000149012
+        # omega 0.019999999552965
+        # c 0.10000000149012
+        # dt 5.0
+        # singlegain 1.0
+        # smoothing 0.5
+        # gains1 1.0
+        # gains2 1.0
+        # freqs1 1.0
+        # qs1 1.0
+        # freqs2 1.0
+        # qs2 1.0
+]
