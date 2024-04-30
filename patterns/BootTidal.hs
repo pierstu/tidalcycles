@@ -11,8 +11,7 @@ hSetEncoding stdout utf8
 -- fabien héberge superdirt :
 -- tidal <- startTidal (superdirtTarget {oLatency = 0.2, oAddress = "169.254.3.159", oPort = 57120}) (defaultConfig {cFrameTimespan = 1/20, cCtrlAddr = "0.0.0.0"})
 -- session jacktrip :
- tidal <- startTidal (superdirtTarget {oLatency = 0.2, oAddress = "127.0.0.1", oPort = 57120 }) (defaultConfig {cVerbose = True, cFrameTimespan = 1/20})
-
+ tidal <- startTidal (superdirtTarget {oLatency = 0.087, oAddress = "127.0.0.1", oPort = 57120 }) (defaultConfig {cVerbose = True, cFrameTimespan = 1/20, cQuantum = 4, cBeatsPerCycle = 4})
 :{
 let p = streamReplace tidal
     -- hush = streamHush tidal
@@ -72,6 +71,19 @@ let p = streamReplace tidal
     -- use it with multiple instances of degradeBy, offset the randomness
     degOffsetBy :: Pattern Time -> Pattern Double -> Pattern a -> Pattern a
     degOffsetBy n = tParam (_degradeByUsing ((n ~>) rand))
+    -- custom geikha functions
+    striateAt  str at f = slow   at $ striate (fast at $ str) f
+    chopAt     str at f = slow   at $ chop    (fast at $ str) f
+    sloopAt    str at f = loopAt at $ striate (fast at $ str) f
+    striateAt' str at f = striateAt (str |* at) (fmap toRational at) f
+    chopAt'    str at f = chopAt    (str |* at) (fmap toRational at) f
+    sloopAt'   str at f = sloopAt   (str |* at) (fmap toRational at) f
+    strat  = striateAt
+    chat   = chopAt
+    slat   = sloopAt
+    strat' = striateAt'
+    chat'  = chopAt'
+    slat'  = sloopAt'
     -- custom control for external SynthDef
     amp = pF "amp"
     atk = pF "atk"
@@ -1557,7 +1569,339 @@ let p = streamReplace tidal
     maxSeq = pF "maxSeq"
     dest = pF "dest"
     repeats = pF "repeats"
-:}
+    sinMod = pF "sinMod"
+    filtSpeed = pF "filtSpeed"
+    filtCenter = pF "filtCenter"
+    filtBw = pF "filtBw"
+    --
+    sin1Freq = pF "sin1Freq"
+    sin2Freq = pF "sin2Freq"
+    hpffreq = pF "hpffreq"
+    distAmt = pF "distAmt"
+    distMix = pF "distMix"
+    syncEgTop = pF "syncEgTop"
+    syncRatio = pF "syncRatio"
+    syncDcy = pF "syncDcy"
+    r = pF "r"
+    --
+    crvf1 = pF "crvf1"
+    crvf2 = pF "crvf2"
+    bw = pF "bw"
+    --
+    lfSrc1Sel = pF "lfSrc1Sel"
+    lfSrc1Rate = pF "lfSrc1Rate"
+    lfSrc2Sel = pF "lfSrc2Sel"
+    lfSrc2Rate = pF "lfSrc2Rate"
+    switchSrcRate = pF "switchSrcRate"
+    --
+    vow = pF "vow"
+    softGain = pF "softGain"
+    --
+    hpf4 = pF "hpf4"
+    ---
+    -- greyhole
+    ---
+    ghdeltime = pF "ghdeltime"
+    ghdamp = pF "ghdamp"
+    ghsize = pF "ghsize"
+    ghdiff = pF "ghdiff"
+    ghfb = pF "ghfb"
+    ghmoddepth = pF "ghmoddepth"
+    ghmodfreq = pF "ghmodfreq"
+    ghwet = pF "ghwet"
+    --
+    fbPow = pF "fbPow"
+    --
+    vibrato = pF "vibrato"
+    perc = pF "perc"
+    percf = pF "percf"
+    slidedelay = pF "slidedelay"
+    --
+    duration = pF "duration"
+    modfreqamt1 = pF "modfreqamt1"
+    modfreqtime1 = pF "modfreqtime1"
+    modfreqamt2 = pF "modfreqamt2"
+    modfreqtime2 = pF "modfreqtime2"
+    modfreqamt3 = pF "modfreqamt3"
+    modfreqtime3 = pF "modfreqtime3"
+    modfreqamt4 = pF "modfreqamt4"
+    bpffreq1 = pF "bpffreq1"
+    bpfrq1 = pF "bpfrq1"
+    bpffreq2 = pF "bpffreq2"
+    bpfrq2 = pF "bpfrq2"
+    earlyRef = pF "earlyRef"
+    -- Sd_chaosEngine
+    modPhaseFreq = pF "modPhaseFreq"
+    modPhaseMul = pF "modPhaseMul"
+    modPhaseAdd = pF "modPhaseAdd"
+    modAmpFreq = pF "modAmpFreq"
+    modAmpMul = pF "modAmpMul"
+    modAmpAdd = pF "modAmpAdd"
+    modOffsetFreq = pF "modOffsetFreq"
+    modOffsetWidth = pF "modOffsetWidth"
+    modOffsetMul = pF "modOffsetMul"
+    modOffsetAdd = pF "modOffsetAdd"
+    modFreqFreq = pF "modFreqFreq"
+    --
+    filtCutOff = pF "filtCutOff"
+    lpffreq = pF "lpffreq"
+    --
+    vibratoSpeed = pF "vibratoSpeed"
+    vibratoDepth = pF "vibratoDepth"
+    vwl = pF "vwl"
+    ---
+    -- planet drone
+    ---
+    combDecTime = pF "combDecTime"
+    impulseFreq = pF "impulseFreq"
+    impulsePhase = pF "impulsePhase"
+    verbMixLfoMul = pF "verbMixLfoMul"
+    verbMixBase = pF "verbMixBase"
+    filterRQ = pF "filterRQ"
+    verbMixLfoFreq = pF "verbMixLfoFreq"
+    freqShiftDivArray = pF "freqShiftDivArray"
+    combDelTime = pF "combDelTime"
+    excitationLfoFreq = pF "excitationLfoFreq"
+    mulEnd = pF "mulEnd"
+    mulSlope = pF "mulSlope"
+    excitation = pF "excitation"
+    tensionStart = pF "tensionStart"
+    lossSlope = pF "lossSlope"
+    lossStart = pF "lossStart"
+    tensionEnd = pF "tensionEnd"
+    lossEnd = pF "lossEnd"
+    addStart = pF "addStart"
+    addEnd = pF "addEnd"
+    mulStart = pF "mulStart"
+    addSlope = pF "addSlope"
+    tensionSlope = pF "tensionSlope"
+    --
+    freqEnvStart = pF "freqEnvStart"
+    verbMixLfo = pF "verbMixLfo"
+    decTime4 = pF "decTime4"
+    decTime1 = pF "decTime1"
+    ringzFreq4 = pF "ringzFreq4"
+    ringzFreq1 = pF "ringzFreq1"
+    ringzFreq2 = pF "ringzFreq2"
+    ringzFreq3 = pF "ringzFreq3"
+    decTime3 = pF "decTime3"
+    verbRoomLfo = pF "verbRoomLfo"
+    ringzMul = pF "ringzMul"
+    decTime2 = pF "decTime2"
+    decTimeDiv = pF "decTimeDiv"
+    ---
+    impulseFreq2 = pF "impulseFreq2"
+    impulseFreq3 = pF "impulseFreq3"
+    coinLineDur = pF "coinLineDur"
+    impulseFreq1 = pF "impulseFreq1"
+    coinProbArray = pF "coinProbArray"
+    impulseFreq4 = pF "impulseFreq4"
+    srcSus = pF "srcSus"
+    freqShift = pF "freqShift"
+    sineLfo = pF "sineLfo"
+    shiftmul = pF "shiftmul"
+    freqShiftDiv = pF "freqShiftDiv"
+    ---
+    dryLevel = pF "dryLevel"
+    phasorSkew = pF "phasorSkew"
+    phasorStages = pF "phasorStages"
+    random4 = pF "random4"
+    tailLevel = pF "tailLevel"
+    hpfLfo = pF "hpfLfo"
+    phasorMod = pF "phasorMod"
+    random3 = pF "random3"
+    hz = pF "hz"
+    levelsFact = pF "levelsFact"
+    timesFact = pF "timesFact"
+    ---
+    freqArray = pF "freqArray"
+    freqDivArray = pF "freqDivArray"
+    filterFreq1 = pF "filterFreq1"
+    freqShift1 = pF "freqShift1"
+    filterFreq3 = pF "filterFreq3"
+    filterFreq2 = pF "filterFreq2"
+    freqShiftLfo = pF "freqShiftLfo"
+    freqShift2 = pF "freqShift2"
+    ---
+    serie1 = pF "serie1"
+    serie2 = pF "serie2"
+    serie3 = pF "serie3"
+    serie4 = pF "serie4"
+    verbmix = pF "verbmix"
+    panpos = pF "panpos"
+    panmul = pF "panmul"
+    ---
+    ghDelTime = pF "ghDelTime"
+    filterRes = pF "filterRes"
+    ---
+    freqPulse1 = pF "freqPulse1"
+    freqPulse2 = pF "freqPulse2"
+    freqPulse3 = pF "freqPulse3"
+    freqPulse4 = pF "freqPulse4"
+    pulseWidth1 = pF "pulseWidth1"
+    pulseWidth2 = pF "pulseWidth2"
+    pulseWidth3 = pF "pulseWidth3"
+    pulseWidth4 = pF "pulseWidth4"
+    brf = pF "brf"
+    modOffset = pF "modOffset"
+    dryLev = pF "dryLev"
+    ---
+    freqMul2 = pF "freqMul2"
+    lfoPhase2 = pF "lfoPhase2"
+    filterDecay = pF "filterDecay"
+    freqOffset = pF "freqOffset"
+    lfoPhase1 = pF "lfoPhase1"
+    freqBase = pF "freqBase"
+    freqMul = pF "freqMul"
+    freqAdd = pF "freqAdd"
+    -- gutterSynth
+    gamma = pF "gamma"
+    omega = pF "omega"
+    singlegain = pF "singlegain"
+    smoothing = pF "smoothing"
+    gains1 = pF "gains1"
+    gains2 = pF "gains2"
+    freqs1 = pF "freqs1"
+    qs1 = pF "qs1"
+    freqs2 = pF "freqs2"
+    qs2 = pF "qs2"
+    ---
+    sine1Div1 = pF "sine1Div1"
+    sine1Div2 = pF "sine1Div2"
+    sine1Freq = pF "sine1Freq"
+    sine1FreqMod = pF "sine1FreqMod"
+    sine1Mul = pF "sine1Mul"
+    sine2Freq1 = pF "sine2Freq1"
+    sine2FreqMod = pF "sine2FreqMod"
+    sine2Mul = pF "sine2Mul"
+    sine2Freq2 = pF "sine2Freq2"
+    sine2Fb2 = pF "sine2Fb2"
+    srcADiv = pF "srcADiv"
+    freqDiv = pF "freqDiv"
+    freqShift2Mul = pF "freqShift2Mul"
+    roomLfoFreq = pF "roomLfoFreq"
+    revTimeLfoFreq = pF "revTimeLfoFreq"
+    ---
+    sineFreq1 = pF "sineFreq1"
+    sineFreq2 = pF "sineFreq2"
+    sineFreq3 = pF "sineFreq3"
+    sineLfo1 = pF "sineLfo1"
+    sineLfo2 = pF "sineLfo2"
+    lfNoiseFreq = pF "lfNoiseFreq"
+    roomsize1 = pF "roomsize1"
+    revtime1 = pF "revtime1"
+    roomsizeLfo = pF "roomsizeLfo"
+    revtimeLfo = pF "revtimeLfo"
+    dustDensity = pF "dustDensity"
+    roomsize2 = pF "roomsize2"
+    revtime2 = pF "revtime2"
+    ---
+    select1 = pF "select1"
+    select2 = pF "select2"
+    panMod = pF "panMod"
+    verbMod = pF "verbMod"
+    bpfreq = pF "bpfreq"
+    bpdb = pF "bpdb"
+    ---
+    freqFactor1 = pF "freqFactor1"
+    freqFactor2 = pF "freqFactor2"
+    num = pF "num"
+    -- portedPlugins
+    --
+    -- Sd_analogBd
+    infsustain = pF "infsustain"
+    accent = pF "accent"
+    attackfm = pF "attackfm"
+    selffm = pF "selffm"
+    snappy = pF "snappy"
+    pulsewidth = pF "pulsewidth"
+    waveform = pF "waveform"
+    formantfreq = pF "formantfreq"
+    carrierfreq = pF "carrierfreq"
+    phaseshift = pF "phaseshift"
+    waveshape = pF "waveshape"
+    sync = pF "sync"
+    syncfreq = pF "syncfreq"
+    form1freq = pF "form1freq"
+    form2freq = pF "form2freq"
+    offsetphase = pF "offsetphase"
+    firstharmonic = pF "firstharmonic"
+    randSeed = pF "randSeed"
+    amplitudes = pF "amplitudes"
+    structure = pF "structure"
+    brightness = pF "brightness"
+    damping = pF "damping"
+    position = pF "position"
+    loss = pF "loss"
+    --
+    -- Sd_oscbank
+    saw8 = pF "saw8"
+    square8 = pF "square8"
+    saw4 = pF "saw4"
+    square4 = pF "square4"
+    saw1 = pF "saw1"
+    --
+    -- Sd_rongs
+    f0 = pF "f0"
+    -- portedPlugins fx
+    --
+    phaserSkew = pF "phaserSkew"
+    phaserMod = pF "phaserMod"
+    phaserStages = pF "phaserStages"
+    phaserWet = pF "phaserWet"
+    --
+    vadimwet = pF "vadimwet"
+    vadimfreq = pF "vadimfreq"
+    vadimres = pF "vadimres"
+    vadimtype = pF "vadimtype"
+    --
+    phasorModalWet = pF "phasorModalWet"
+    phasorModalFreq = pF "phasorModalFreq"
+    phasorModalDecay = pF "phasorModalDecay"
+    phasorModalDamp = pF "phasorModalDamp"
+    --
+    chowwet = pF "chowwet"
+    chowffreq = pF "chowffreq"
+    chowq = pF "chowq"
+    chowfgain = pF "chowfgain"
+    chowfshape = pF "chowfshape"
+    chowfsat = pF "chowfsat"
+    --
+    distWet = pF "distWet"
+    distDrive = pF "distDrive"
+    distBias = pF "distBias"
+    distLogain = pF "distLogain"
+    distHigain = pF "distHigain"
+    distFreq = pF "distFreq"
+    --
+    tapeWet = pF "tapeWet"
+    tapeBias = pF "tapeBias"
+    tapeSat = pF "tapeSat"
+    tapeDrive = pF "tapeDrive"
+    --
+    semwet = pF "semwet"
+    semfreq = pF "semfreq"
+    semres = pF "semres"
+    semtrans = pF "semtrans"
+    --
+    ladderwet = pF "ladderwet"
+    ladderffreq = pF "ladderffreq"
+    ladderres = pF "ladderres"
+    ladderdrive = pF "ladderdrive"
+    laddertype = pF "laddertype"
+    --
+    korgfwet = pF "korgfwet"
+    korgffreq = pF "korgffreq"
+    korgfres = pF "korgfres"
+    korgfdrive = pF "korgfdrive"
+    korgftype = pF "korgftype"
+    --
+    diodefwet = pF "diodefwet"
+    diodeffreq = pF "diodeffreq"
+    diodefres = pF "diodefres"
+    diodefdrive = pF "diodefdrive"
+    --
+    :}
 
 :{
 let setI = streamSetI tidal
