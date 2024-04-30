@@ -2314,18 +2314,18 @@ SynthDef(\Sd_jee,{
 
 	sig = SinOsc.ar(
 		(sineFreq1
-		+ SinOsc.ar(
-			freq: sineLfo1 , // 0.03,
-			phase: 0.0,
-			mul: sineFreq3,
-			add: sineFreq3 / 2 // 0.0
-		) +
-		sineFreq2
-		+ SinOsc.ar(
-			freq: sineLfo2 , // 0.03,
-			phase: 0.0,
-			mul: sineFreq3,
-			add: sineFreq3 / 2 //0.0
+			+ SinOsc.ar(
+				freq: sineLfo1 , // 0.03,
+				phase: 0.0,
+				mul: sineFreq3,
+				add: sineFreq3 / 2 // 0.0
+			) +
+			sineFreq2
+			+ SinOsc.ar(
+				freq: sineLfo2 , // 0.03,
+				phase: 0.0,
+				mul: sineFreq3,
+				add: sineFreq3 / 2 //0.0
 		) * freq).min(20000).max(20), // range // freq
 		0, // phase
 		0.095 // mul
@@ -2427,6 +2427,61 @@ SynthDef(\Sd_jii, {
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
+
+SynthDef(\Sd_jz,{
+	arg freq = 140, freqFactor1 = 1.51, freqFactor2 = 3.81,  num = 5.279, delTime = 56.33, revMix = 0.85, out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, doneAction = 2;
+	var sig, sig2;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	thisThread.randSeed = 100;
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	sig = Saw.ar([freq * freqFactor1, freq * 1.1 * freqFactor2].min(20000).max(20));
+	8.do{
+		|iter| num = 2 ** (8 - iter + num);
+		sig = BRF.ar(
+			AllpassN.ar(
+				sig,
+				1,
+				0.1 / (12 - iter + delTime),
+				2
+			),
+			/*80 ** TRand.ar(0, 1, Impulse.ar(num/32, 1/2)).lag(1 / num) * 80,*/
+			80 ** Demand.ar(Impulse.ar(num/32, 1/2), 0, Dseq(Array.rand(rrand(8, 24), 0.0, 1), inf)).lag(1 / num) * 80,
+			0.35,
+			0.85
+		)
+	};
+	sig2 = GVerb.ar(
+		Splay.ar(sig),
+		roomsize: 100, // Phasor.kr(0.0, 912500, 100.0, 30.0), // 400,
+		revtime:  4, // Phasor.kr(0.0, 918250, 0.2, 4, 4), // 4,
+		damping: 0.065,
+		inputbw: 0.192, // 0.46,
+		spread: 16,
+		drylevel: 3, // -3,
+		earlyreflevel: 0.7, // -4.47,
+		taillevel:  0.25,
+		maxroomsize: 101
+	);
+	sig2 = FreeVerb2.ar(
+		sig2[0],
+		sig2[1],
+		0.15 ,// (Ndef.kr(\jzMod1).linlin(-1,1,0.3,0.65)), // Phasor.kr(0.0, 50, 0.5, 0.81), // mix
+		0.12, // room
+		0.15 // damp
+	);
+
+	sig = LinSelectX.ar(
+		revMix,
+		[sig, sig2 * 0.6]
+	);
+
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp * 0.5));
+}).add;
 
 
 /*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
