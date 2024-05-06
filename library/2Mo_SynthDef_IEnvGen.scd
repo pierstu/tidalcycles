@@ -2483,7 +2483,7 @@ SynthDef(\Sd_jz,{
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp * 0.5));
 }).add;
 
-
+// 060524 
 /*SynthDef(\Sd_template, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
 var sig;
 var envLength = sustain * (end - begin) / speed;
@@ -2497,4 +2497,228 @@ freq = max(0, freq * speed * (1 + (accelerate * line)));
 OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;*/
 
+// 060524 solo
+
+SynthDef(\Sd_jh,{
+	arg   panLfo = 1.4565196990967, 
+	freq1_1 = 1.6934319496155, 
+	freq1_2 = 3.5750915050507, 
+	freqFactor1_1 = 1.9044935464859, 
+	modFreq = 0.060987344384193, 
+	freqFactor1 = 0.12856451869011, 
+	fbLfo1 = 0.60225704908371, 
+	freq2_1 = 1.6643635296822, 
+	freq2_2 = 2.1858045578003, 
+	freqFactor2_1 = 1.4623861312866, 
+	freqAdd2_1 = 2.1889247775078, 
+	fbLfo2 = 0.167200922966, 
+	freqFactor2 = 2.8845697343349, 
+	phaserLfoSkew = 0.32457834482193, 
+	phaserLfoMod = 1.8739063501358, 
+	phaserStages = 31, 
+	sigMix = 0.5,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 60, doneAction = 2;
+	
+	
+	var sig1, sig2, sig;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+	
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	
+	thisThread.randSeed = 10000;
+	
+	sig1 = SinOscFB.ar(
+		[
+			freq * freq1_1
+			+
+			(SinOsc.ar(
+				modFreq,
+				LFNoise1.kr(freqFactor1_1).mod(2pi)
+			)
+			* (freqFactor1 * freqFactor1_1 )
+			) ,
+			freq * freq1_2
+			-
+			(SinOsc.ar(
+				modFreq,
+				LFNoise0.kr(freqFactor1_1 ).mod(pi)
+			)
+			* (freqFactor1)
+			)
+		].min(20000).max(20) , // freq
+		LFNoise2.kr(
+			Phasor.kr(0.0, 48000, fbLfo1, fbLfo1 * 4, fbLfo1 * 4 ),
+			0.5,
+			1
+		).mod(2pi) //+ 1/2 // feedback
+	);
+	
+	sig1 = Mix.ar(sig1);
+	
+	sig2 = SinOscFB.ar(
+		[
+			freq2_1
+			+
+			(SinOsc.ar(
+				modFreq * freqFactor2_1,
+				LFNoise0.kr(freqFactor2_1)
+			)
+			* (freqFactor2 + freqAdd2_1 )
+			) ,
+			freq2_2
+			-
+			(SinOsc.ar(modFreq)
+				* freqFactor2
+			)
+		], // freq
+		LFNoise2.kr(
+			fbLfo2,
+			0.5, // fbLfo2 * 2,
+			1 // fbLfo2 * 4
+		).mod(4pi) // + 1/2 // feedback
+	);
+	
+	sig2 = AnalogPhaserMod.ar(
+		sig1,
+		phaserLfoSkew,  // skew -1 à 1
+		phaserLfoMod, // modulation 0 à 1
+		phaserStages // 8 // stages 0 à 50
+	);
+	
+	
+	
+	
+	sig = LinSelectX.ar(
+		sigMix, //LFTri.kr(62).abs,
+		[sig1, sig2 * 1.2]
+	);	
+	
+	// Ndef('jh'): wrapped channels from 2 to 1 channels
+	sig= Splay.ar(sig , 1);
+	
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+
+SynthDef(\Sd_jff,{
+	arg modFreq = 1.35, 
+	modMul = 0.3, 
+	dustFreq1 = 5.84683664917946, 
+	dustFreq2 = 10.24021685361862, 
+	gendyMinFreq = 6, 
+	gendyMaxFreq = 16, 
+	gendyMaxFreqMod = 6.6386635303497, 
+	gendyMaxFreqModMul = 1.5669676065, 
+	klankFreqMul = 1, 
+	klankRingMul = 1, 
+	roomSize = 1.8979070186615, 
+	revTime = 5.5169875025749, 
+	revMix = 0.25,
+	combMix = 0.5,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
+	
+	var sig, sig1, sig2, sigVerb, mod;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+	
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	
+	
+	mod = SinOsc.ar(
+		freq: (modFreq),
+		phase: 0.0,
+		mul: modMul,
+		add: modMul / 2
+	);
+	
+	sig1 = Gendy1.ar(
+		/*0:	LINEAR.
+		1:	CAUCHY.
+		2:	LOGIST.
+		3:	HYPERBCOS.
+		4:	ARCSINE.
+		5:	EXPON.
+		6:	SINUS.*/
+		ampdist: 3, // 6,
+		durdist: 1, 
+		adparam: 1, // 3,
+		ddparam: Dust.ar(
+			density: [
+				dustFreq1,  dustFreq2 + SinOsc.ar(
+					freq: 12.5,
+					phase: 0.0,
+					mul: 0.15,
+					add: 0.30
+				)
+			],
+			mul: 0.5
+		),
+		minfreq: (gendyMinFreq * freq).min(20000).max(20),
+		maxfreq: abs(freq * gendyMaxFreq + SinOsc.ar(
+			freq: gendyMaxFreqMod, // 0.000525,
+			phase: 0.0,
+			mul: gendyMaxFreqModMul , // 360, // 3,
+			add: gendyMaxFreqModMul / 2 // 130 // 0.0
+		)).min(20000).max(20) , 
+		ampscale: 1,
+		durscale: LFTri.kr(1.0, 0.0, 0.5, 1),
+		initCPs: 18,
+		knum: LFTri.kr(12, 0, 6, 12).abs, 
+		mul: 0.015,
+		add: 0.0
+	);
+	
+	sig2 = CombC.ar(
+		sig1 * 0.05,
+		0.08 ,
+		mod.linlin(-1, 1, 0.01, 0.079)
+	);
+	
+	sig = LinSelectX.ar(
+		combMix,
+		[sig1 * 0.05, sig2 * 0.6]
+	);
+	
+	
+	sig = Klank.ar(
+		`[
+			[ 227.39, 140.07, 298.69, 220.25, 331.64 ] * klankFreqMul, 
+			nil,
+			[ 0.20, 0.106, 0.416, 0.226, 0.124 ] * klankRingMul 
+		] ,
+		sig
+	);
+	
+	
+	
+	
+	sigVerb = GVerb.ar(
+		Mix.ar(sig),
+		roomsize: roomSize,
+		revtime: revTime,
+		damping: 0.15, // 0.81,
+		inputbw: 0.15, // 0.97,
+		spread: 20, // 40,
+		drylevel: 1, // 0.5, // -0,
+		earlyreflevel: 0.17, // 0,
+		taillevel: 0.31, // -11,
+		maxroomsize: 10, // 170,
+		mul: 0.613 //0.008
+	);
+	
+	sig = LinSelectX.ar(
+		revMix,
+		[sig, sigVerb * 0.6]
+	);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+	
+	
+}).add;
 )
