@@ -1806,6 +1806,31 @@ let p = streamReplace tidal
     freqFactor1 = pF "freqFactor1"
     freqFactor2 = pF "freqFactor2"
     num = pF "num"
+    ---
+        ---
+    panLfo = pF "panLfo"
+    freq1_1 = pF "freq1_1"
+    freq1_2 = pF "freq1_2"
+    freqFactor1_1 = pF "freqFactor1_1"
+    fbLfo1 = pF "fbLfo1"
+    freq2_1 = pF "freq2_1"
+    freq2_2 = pF "freq2_2"
+    freqFactor2_1 = pF "freqFactor2_1"
+    freqAdd2_1 = pF "freqAdd2_1"
+    fbLfo2 = pF "fbLfo2"
+    sigMix = pF "sigMix"
+    ---
+    modMul = pF "modMul"
+    dustFreq1 = pF "dustFreq1"
+    dustFreq2 = pF "dustFreq2"
+    gendyMinFreq = pF "gendyMinFreq"
+    gendyMaxFreq = pF "gendyMaxFreq"
+    gendyMaxFreqMod = pF "gendyMaxFreqMod"
+    gendyMaxFreqModMul = pF "gendyMaxFreqModMul"
+    klankFreqMul = pF "klankFreqMul"
+    klankRingMul = pF "klankRingMul"
+    combMix = pF "combMix"
+    --
     -- portedPlugins
     --
     -- Sd_analogBd
