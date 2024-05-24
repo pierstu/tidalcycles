@@ -1696,7 +1696,7 @@ let p = streamReplace tidal
     impulseFreq1 = pF "impulseFreq1"
     coinProbArray = pF "coinProbArray"
     impulseFreq4 = pF "impulseFreq4"
-    srcSus = pF "srcSus"
+    srcSusFactor = pF "srcSusFactor"
     freqShift = pF "freqShift"
     sineLfo = pF "sineLfo"
     shiftmul = pF "shiftmul"
@@ -1807,30 +1807,24 @@ let p = streamReplace tidal
     freqFactor2 = pF "freqFactor2"
     num = pF "num"
     ---
-        ---
-    panLfo = pF "panLfo"
-    freq1_1 = pF "freq1_1"
-    freq1_2 = pF "freq1_2"
-    freqFactor1_1 = pF "freqFactor1_1"
-    fbLfo1 = pF "fbLfo1"
-    freq2_1 = pF "freq2_1"
-    freq2_2 = pF "freq2_2"
-    freqFactor2_1 = pF "freqFactor2_1"
-    freqAdd2_1 = pF "freqAdd2_1"
-    fbLfo2 = pF "fbLfo2"
-    sigMix = pF "sigMix"
+    bbpFreqOffset = pF "bbpFreqOffset"
+    bbpFreqBase = pF "bbpFreqBase"
+    bbpBwBase = pF "bbpBwBase"
     ---
-    modMul = pF "modMul"
-    dustFreq1 = pF "dustFreq1"
-    dustFreq2 = pF "dustFreq2"
-    gendyMinFreq = pF "gendyMinFreq"
-    gendyMaxFreq = pF "gendyMaxFreq"
-    gendyMaxFreqMod = pF "gendyMaxFreqMod"
-    gendyMaxFreqModMul = pF "gendyMaxFreqModMul"
-    klankFreqMul = pF "klankFreqMul"
-    klankRingMul = pF "klankRingMul"
-    combMix = pF "combMix"
-    --
+    maxFreqLfo = pF "maxFreqLfo"
+    minFreq = pF "minFreq"
+    minFreqLfo = pF "minFreqLfo"
+    ---
+    dstut = pF "dstut"
+    ---
+    envLevRatio = pF "envLevRatio"
+    curveFactor = pF "curveFactor"
+    delTimeFactor = pF "delTimeFactor"
+    timeScaleRatio = pF "timeScaleRatio"
+    verbWet = pF "verbWet"
+    fshiftDivFactor = pF "fshiftDivFactor"
+    fshiftFrac = pF "fshiftFrac"
+    ---
     -- portedPlugins
     --
     -- Sd_analogBd
