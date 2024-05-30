@@ -1591,7 +1591,7 @@ SynthDef(\Sd_neoformant, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 // planet drone
 // prefix arrays with # <- nameControl syntax
 SynthDef(\Sd_so, {
-	arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 10, freq = 1, verbMixLfo =  0.70107585787773, decTime4 = 13.907386982441, decTime1 = 6.9938727498055, lpfFreq = 3976, ringzFreq4 = 7890.3197827339, ringzFreq1 = 43.246298016335, ringzFreq2 = 96.466201484, ringzFreq3 = 9004.5744515777, decTime3 = 25.021273517609, verbRoomLfo = 2.9249746382236, verbRoom = 0.55860961675644, ringzMul = #[ 4, 8, 2, 7 ], dist = 1, decTime2 = 20.645671010017, verbMix = 0.33222706317902, decTimeDiv = 7, doneAction = 2;
+	arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 10, freq = 1, verbMixLfo =  0.70107585787773, decTime4 = 13.907386982441, decTime1 = 6.9938727498055, lpfFreq = 3976, ringzFreq4 = 7890.3197827339, ringzFreq1 = 43.246298016335, ringzFreq2 = 96.466201484, ringzFreq3 = 9004.5744515777, decTime3 = 25.021273517609, verbRoomLfo = 2.9249746382236, verbRoom = 0.55860961675644, ringzMul = 1, dist = 1, decTime2 = 20.645671010017, verbMix = 0.33222706317902, decTimeDiv = 7, doneAction = 2;
 	var sig;
 	var envLength = sustain * (end - begin) / speed;
 	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
@@ -1615,7 +1615,7 @@ SynthDef(\Sd_so, {
 			decTime3,
 			decTime4  // - Ndef.ar(\soMod1)
 		] / decTimeDiv, // dec time 10,
-		ringzMul * dist // mul
+		ringzMul * [ 4, 8, 2, 7 ] * dist // mul
 	).sin.sum.tanh ! 2;
 
 	sig = LPF.ar(
@@ -2933,6 +2933,197 @@ SynthDef(\Sd_dll, {
 	);
 
 	sig = HPF.ar(sig, 70);
+
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+
+}).add;
+
+
+// 300524
+
+
+SynthDef(\Sd_su, {
+	arg impulseRate3 = 3.5916145443916, del2 = 0.030725069999695, bpf1MaxFreq = 1276, dutyMaxLevel = 921.46335695982,
+	attackRate2 = 2.6036867797375, bpf3MaxFreq = 1068, attackRate3 = 0.00047512110471725, decayRate3 = 0.020023078918457, fbGain = 0.5,
+	bpf1LfoRate = 0.62046678066254, factorRate3 = 59, loc2FbFactor = 22.767423379421, delayTime = 0.020550796031952, verbMul2 = 0.52233266830444,
+	loc3FbFactor = 1.362118062973, verbMul1 = 0.93637094497681, attackRate = 8.7942997813225, locFbFactor = 0.83967577457428, factorRate = 0.85922640562057,
+	factorRate2 = 299, del3 = 0.58138495186965, bpf3LfoRate = 0.31931487083435, decayRate2 = 5.954227745533, impulseRate2 = 6.4026742875576,
+	bpf2LfoRate = 0.2919663131237, inputRate = 8.435743742519, decayRate = 7.2120881855488, bpf2MaxFreq = 586, verbMix = 0,
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 440, doneAction = 2;
+
+	var src, loc,
+	src2, loc2,
+	src3, loc3, sig, localIn, locFb, loc2Fb, loc3Fb, sigVerb;
+
+
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	thisThread.randSeed = 1000;
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+
+
+	src = Decay2.ar(
+		Dust.ar(inputRate), // in
+		LFNoise2.kr(attackRate).range(0.001,0.0001), // attackTime
+		LFNoise2.kr(decayRate).range(0.005, 0.05) // decayTime
+	)!2 * Saw.ar(
+		LFNoise2.kr(factorRate).exprange(40, 3000)
+	);
+
+	localIn = LocalIn.ar(6);
+
+	loc = BPF.ar(
+		localIn[0..1] + [src, 0],
+		(LFNoise0.kr(bpf1LfoRate).range(10, bpf1MaxFreq / 200).lag * freq).min(20000).max(20),
+		3.2
+	);
+
+	loc = GVerb.ar(
+		loc,
+		100,
+		4,
+		mul:verbMul1,
+		add:loc
+	);
+
+	loc = Compander.ar(
+		loc,
+		loc,
+		0.5,
+		1,
+		0.001
+	);
+
+	loc = (loc * 0.501).tanh;
+
+	loc = Compander.ar(
+		loc,
+		loc,
+		0.1,
+		1,
+		0.1
+	);
+
+	loc = DelayC.ar(
+		loc,
+		delayTime * 1.33 , // 1.25,
+		delayTime
+	);
+
+	locFb = loc.reverse * locFbFactor;
+
+	loc = loc + (loc * locFb).tanh;
+
+	src2 = Decay2.ar(
+		TDuty.ar(
+			impulseRate2 , // Impulse.kr(LFPulse.kr(impulseRate2)), // 1/4,
+			0,
+			Dseq(
+				[1, 0.5, 003, 0.1 + dutyMaxLevel ],
+				inf
+			)
+		),
+		LFNoise2.kr(attackRate2).range(0.001, 0.0001),
+		LFNoise2.kr(decayRate2).range(0.005, 0.05)
+	)!2 * Saw.ar(
+		LFNoise2.kr(factorRate2).exprange(40, 10000)
+	);
+
+	loc2 = BPF.ar(
+		localIn[2..3] + [src2, 0],
+		(LFNoise2.kr(bpf2LfoRate).range(40, bpf2MaxFreq / 200) * freq).max(20).min(20000),
+		3.2
+	);
+
+	sigVerb = GVerb.ar(
+		Select.ar(
+			LFPulse.kr(0.4),
+			[loc2, loc2 * 0.75]
+		),
+		100,
+		3, // 4,
+		mul: verbMul2,
+		add:loc2
+	);
+
+	loc2 = LinSelectX.ar(
+		verbMix,
+		[loc2, sigVerb]
+	);
+
+	loc2 = AnalogPhaser.ar(
+		loc2,
+		SinOsc.kr(1), // SinOsc.kr(0.1, 0.0, 0.5, 0.5),
+		SinOsc.kr(0.2),
+		0.5,
+		SinOsc.kr(0.25).abs,
+		8
+	);
+
+	loc2 = Compander.ar(
+		loc2,
+		loc2,
+		0.9,
+		1,
+		0.001
+	);
+
+	loc2 = (loc2 * 0.51).tanh;
+
+	loc2 = Compander.ar(
+		loc2,
+		loc2,
+		0.1,
+		1,
+		0.1
+	);
+
+	loc2 = DelayC.ar(
+		loc2,
+		del2 * 1.22,
+		del2
+	);
+
+	loc2Fb = loc2.reverse * loc2FbFactor;
+
+	loc2 = loc2 + (loc2 * loc2Fb);
+
+	src3 = Decay2.ar(
+		Impulse.ar(impulseRate3),
+		attackRate3,
+		decayRate3
+	) * SinOsc.ar(factorRate3);
+
+	loc3 = src3 + localIn[4..5];
+
+	loc3 = BPF.ar(
+		loc3,
+		(LFNoise2.kr(bpf3LfoRate).range(80, bpf3MaxFreq / 10000) * freq).min(20000).max(20), // maths bizarres // bpf3MaxFreq,
+		3.2
+	).softclip;
+
+	loc3 = DelayN.ar(
+		loc3,
+		del3 * 1.16,
+		[0, del3]
+	);
+
+	loc3Fb = loc3.reverse * loc3FbFactor;
+
+	loc3 = loc3 + (loc3 + loc3Fb).tanh;
+
+	LocalOut.ar(LPF.ar(locFb ++ loc2Fb ++ loc3Fb, 8008) * fbGain );
+
+	sig = (loc * 0.25) + (Compander.ar(loc2, loc2, 0.1, 1, 0.05) * 0.35);
+
+	sig = Mix.ar(Mix.ar(sig));
+
+	sig = HPF.ar(sig, 80);
 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 
