@@ -1825,6 +1825,33 @@ let p = streamReplace tidal
     fshiftDivFactor = pF "fshiftDivFactor"
     fshiftFrac = pF "fshiftFrac"
     ---
+    inputRate = pF "inputRate"
+    attackRate = pF "attackRate"
+    decayRate = pF "decayRate"
+    factorRate = pF "factorRate"
+    bpf1LfoRate = pF "bpf1LfoRate"
+    bpf1MaxFreq = pF "bpf1MaxFreq"
+    verbMul1 = pF "verbMul1"
+    locFbFactor = pF "locFbFactor"
+    impulseRate2 = pF "impulseRate2"
+    dutyMaxLevel = pF "dutyMaxLevel"
+    attackRate2 = pF "attackRate2"
+    decayRate2 = pF "decayRate2"
+    factorRate2 = pF "factorRate2"
+    bpf2LfoRate = pF "bpf2LfoRate"
+    bpf2MaxFreq = pF "bpf2MaxFreq"
+    verbMul2 = pF "verbMul2"
+    loc2FbFactor = pF "loc2FbFactor"
+    impulseRate3 = pF "impulseRate3"
+    attackRate3 = pF "attackRate3"
+    decayRate3 = pF "decayRate3"
+    factorRate3 = pF "factorRate3"
+    bpf3LfoRate = pF "bpf3LfoRate"
+    bpf3MaxFreq = pF "bpf3MaxFreq"
+    del3 = pF "del3"
+    loc3FbFactor = pF "loc3FbFactor"
+    fbGain = pF "fbGain"
+    ---
     -- portedPlugins
     --
     -- Sd_analogBd
