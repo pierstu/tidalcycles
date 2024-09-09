@@ -2052,6 +2052,10 @@ let p = streamReplace tidal
     rattlerel = pF "rattlerel"
     sweepatt = pF "sweepatt"
     sweeprel = pF "sweeprel"
+    --
+    lfRate = pF "lfRate"
+    lfPhase = pF "lfPhase"
+    selSnd = pF "selSnd"
     :}
 
 :{

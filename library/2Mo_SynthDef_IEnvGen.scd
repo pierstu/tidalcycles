@@ -1642,7 +1642,41 @@ SynthDef(\Sd_markSamFell,{ arg
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
+SynthDef(\Sd_gabor, { arg out = 0, amp = 0.3, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 1, sustain = 1,
+	freq = 14, doneAction = 2;
 
+	var trig = \trig.tr;
+
+	var freqEnv = EnvGen.kr(Env([1,2,1], [0.75, 0.01], \lin), trig);
+	var fltEnv = EnvGen.kr(Env([0.0125,1,0.025], [\fAtk.kr(0.1), \fRel.kr(0.1)], \exp), trig);
+
+
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+	var cutoff, amps, sig, numPartials, partials, freqs;
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	numPartials = 40;
+	partials = (1..numPartials);
+	freqs = freq * (partials + (partials * partials * 0.01));
+
+	cutoff = fltEnv * \fltRange.kr(16000);
+
+	amps = (
+		(freqs.log2 - cutoff.log2).squared
+		* \slope.kr(-5)
+	).dbamp;
+
+	sig = SinOsc.ar(freqs * freqEnv.midiratio, 0, amps).sum * -15.dbamp;
+
+	/*sig = Pan2.ar(sig, pan, amp);
+	Out.ar(out, sig);*/
+
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
 
 
 SynthDef(\Sd_additiveGabor, {
@@ -2025,6 +2059,104 @@ SynthDef(\Sd_circSegs, { arg
 }).add;
 
 
+SynthDef(\Sd_easelDeter, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 1, sustain = 1, freq = 150,
+	lfRate = 3.7, lfPhase = (-4), selSnd = 1,  doneAction = 2;
+	var sig, numInputs, numOutputs;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+
+	numInputs = 6;
+	numOutputs = 5;
+	sig = LocalIn.ar(numOutputs);
+
+
+	// Matrix-vector multiplication using multichannel expansion.
+	sig = sig * ({arg j;
+		{ arg i;
+			var offset = i;
+			if(i.odd, { offset = i.neg; });
+			LFGauss.ar((lfRate + (offset * j)).reciprocal, 0.1, (i + j + lfPhase.round) * pi).round;
+		} ! numInputs
+	} ! numOutputs);
+
+	sig = sig.sum;
+
+	// If additional modules are added, remember to update numInputs and numOutputs.
+	// numInputs should equal the maximum i in sig[i], plus one.
+	// numOutputs should equal the number of entries in the sig array.
+	sig = [
+		// Oscillator that reaches LFO range
+		SinOsc.ar(sig[0].linexp(-1, 1, 0.1, freq)),
+		// Oscillator in audio range only
+		// SinOsc.ar(sig[4].linexp(-1, 1, 100, 8000)),
+		SinOsc.ar(sig[4].linexp(-1,1,freq,12000)),
+		// Wavefolder with controllable gain
+		(sig[2] * sig[3].linexp(-1, 1, 1, 8)).fold2,
+		// Two filters with controllable cutoff and resonance
+		// MoogFF.ar(sig[4], sig[5].linexp(-1, 1, 10, 8000), sig[0].linlin(-1, 1, 0, 4)) * 3.dbamp,
+		MoogFF.ar(
+			sig[4],
+			sig[5].linexp(-1, 1, freq, 16000),
+			sig[0].linlin(-1, 1, 0, 4)
+		) ,
+		// MoogFF.ar(sig[1], sig[2].linexp(-1, 1, 10, 8000), sig[3].linlin(-1, 1, 0, 4)) * 3.dbamp,
+		MoogFF.ar(
+			sig[1],
+			sig[2].linexp(-1, 1, freq, 16000),
+			sig[3].linlin(-1, 1, 0, 4)
+		)
+		// FreeVerb.ar(sig[0], mix: 1),
+		// Five-step sequencer
+		// Demand.ar(Impulse.ar(sig[5].linexp(-1, 1, 0.1, 1000)), 0, Dseq([0.1, 0.5, 0.9, 0.3, 0.4]))
+	];
+
+	if(sig.size != numOutputs) {
+		Error("Please ensure numOutputs matches number of modules").throw;
+	};
+	sig = Sanitize.ar(sig);
+	LocalOut.ar(sig);
+
+	sig = Select.ar(selSnd.mod(7), sig ++ sig.sum);
+
+	sig = Limiter.ar(LeakDC.ar(sig));
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+f(\Sd_ulysse42, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
+	freq = 440,
+	mod1 = 0.2, mod2 = 0.71, doneAction = 2;
+	var sig, sig1, sig2, sig3, z1, z2, sinFrq;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	freq = freq.explin(20, 20000, 0.01, 2); // .max(0.01).min(2);
+
+
+
+	mod1 = mod1.linlin(0, 1, -10, 10);
+	sig1 = LFSaw.kr(0.062).range(-10, 10);
+	sig1 = sig1 + (mod2.linlin(0, 1, 0, 5) * (0..8));
+	sig2 = sig1.frac;
+	sig3 = 0.8 - sig2.moddif(0.5, 1);
+
+	z1 = gcd(sig1, mod1) + sig2;
+	z2 = lcm(sig1, mod1) + sig2;
+	sinFrq = (120 * ([z1, z2].flop.abs + 1));
+
+	sig = (SinOsc.ar(sinFrq * freq) * AmpComp.kr(sinFrq) * sig3).mean;
+	// sig = Pan2.ar(sig * env, pan, amp);
+	// OffsetOut.ar(out, sig);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
 
 /*SynthDef(\Sd_template, { arg
 out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
