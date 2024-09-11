@@ -2127,7 +2127,7 @@ SynthDef(\Sd_easelDeter, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
-f(\Sd_ulysse42, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
+SynthDef(\Sd_ulysse42, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
 	freq = 440,
 	mod1 = 0.2, mod2 = 0.71, doneAction = 2;
 	var sig, sig1, sig2, sig3, z1, z2, sinFrq;
@@ -2155,6 +2155,147 @@ f(\Sd_ulysse42, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1
 	sig = (SinOsc.ar(sinFrq * freq) * AmpComp.kr(sinFrq) * sig3).mean;
 	// sig = Pan2.ar(sig * env, pan, amp);
 	// OffsetOut.ar(out, sig);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+
+SynthDef(\Sd_mutantFric, { arg
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0,
+	spec1 = 0.00001, spec2 = 0.03, noiseFreq = 3, freq = 50, spring = 0.414, damp = 0.313, beltmass = 1, source = 0, hpfFreq = 150, gate = 1, sustain = 1, doneAction = 2;
+
+	var friction, sig;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+
+
+	friction = Array.fill(5, {
+		[spec1.max(0.00001), spec2.max(0.03)].asSpec.map(LFNoise2.kr(noiseFreq))
+	});
+	sig = Select.ar(source, [
+		LFTri.ar(freq),
+		LFPar.ar(freq),
+		LFCub.ar(freq),
+		LFSaw.ar(freq),
+		LFDNoise3.ar(freq),
+		LFDNoise0.ar(freq)
+	]);
+	sig = Friction.ar(sig, friction, Lag2.kr(spring), damp, friction*30000, beltmass);
+	sig = HPF.ar(sig, hpfFreq);
+	sig = Limiter.ar(sig, 0.5);
+	// OffsetOut.ar(out, Splay.ar(sig * amp));
+	OffsetOut.ar(out, DirtPan.ar(Splay.ar(sig * globalEnv), ~dirt.numChannels, pan, amp));
+}).add;
+
+
+
+SynthDef(\Sd_natwich, { arg
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
+	modFreq = 0.4, modAmount = 0.8, freq = 40, rlpfFreq = 4000, rlpfRq = 0.21, doneAction = 2;
+	var snd, fb, sig, mod1, mod2;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	// freq = freq.explin(20,16000,0.1,2);
+
+
+	mod1 = LFDNoise3.kr(modFreq, modAmount).range(0.1, 1.5);
+	mod2 = LFDNoise0.kr(modFreq, modAmount).range(0.1, 1.5);
+
+	fb = LocalIn.ar(1);
+	// snd = Saw.ar(freq * mod1 * (fb * 48).midiratio);
+	snd = Saw.ar(freq * mod1 * (fb * 1.2).midiratio);
+	// snd = RLPF.ar(snd, rlpfFreq * mod2 * (48 * (1 - fb)).midiratio, rlpfRq);
+	snd = RLPF.ar(snd, rlpfFreq * mod2 * (1.2 * (1 - fb)).midiratio, rlpfRq);
+	// snd = (snd * 3).fold2;
+	snd = (snd * 4).fold2;
+	sig = snd;
+	snd = Amplitude.ar(ToggleFF.ar(PulseDivider.ar(snd, 3 * (1 + (100 * fb)))), 0.03, 0.3);
+	LocalOut.ar(snd);
+	snd = Pan2.ar(sig, pan) * amp * globalEnv;
+	snd = Sanitize.ar(snd);
+	snd = snd + (NHHall.ar(snd, 3) * -10.dbamp);
+
+	// OffsetOut.ar(out, snd);
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+
+SynthDef(\Sd_clapping, {arg
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
+	envNoiseVol = 0, noiseAmp = 1, freq = 1120, rq=0.91, sinAmpStart = 1, sinAmpEnd = 0.01, sinAmpDur = 4, lpfFreq = 1400, hpfFreq = 120, delMix = 1, delTimeL = 0.03, delDecL = 0.031, delTimeR = 0.03016, delDecR = 0.06, doneAction=2;
+	var sig, noise, hpf1, hpf2, fx;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	lpfFreq = max(0, lpfFreq * speed * (1 + (accelerate * line)));
+	hpfFreq = max(0, hpfFreq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+	// freq = freq.explin(20, 20000, 0.01, 2); // .max(0.01).min(2);
+
+
+
+	noise = WhiteNoise.ar(noiseAmp)+SinOsc.ar([freq/2,freq/6 ], pi*0.5, XLine.kr(sinAmpStart, sinAmpEnd, sinAmpDur));
+	hpf1 = RLPF.ar(noise, lpfFreq, rq);
+	hpf2 = RHPF.ar(noise, hpfFreq, rq/4);
+
+	sig = Mix.ar(hpf1 + hpf2) * globalEnv;
+	fx = CombC.ar(sig, 0.5, delTimeL, delDecL)+CombC.ar(sig, 0.5, delTimeR, delDecR);
+	sig = (sig * (1 - delMix)) + (fx * delMix) ;
+	sig = Limiter.ar(sig);
+	// DetectSilence.ar(sig, doneAction: doneAction);
+	// OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+
+SynthDef(\Sd_cymbalicMcld, { |out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
+	attLowf = 0.5, relLowf = 5, lowNoiseLev = 0.1, attHif = 1, relHif = 3, hiNoiseLev = 0.1, attHi = 1, relHi = 2, hiLev = 0.25, attTh = 0.001, relTh = 0.001, freq = 440, doneAction = 2|
+	var lodriver, locutoffenv, hidriver, hicutoffenv, freqs, freq1, freq2, freq3, freq4, res, thwack, sig;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+
+	locutoffenv = EnvGen.kr(Env.perc(attLowf, relLowf)) * 20000 + 10;
+	lodriver = LPF.ar(WhiteNoise.ar(lowNoiseLev), locutoffenv);
+
+	hicutoffenv = 10001 - (EnvGen.kr(Env.perc(attHif, relHif)) * 10000);
+	hidriver = HPF.ar(WhiteNoise.ar(hiNoiseLev), hicutoffenv);
+	hidriver = hidriver * EnvGen.kr(Env.perc(attHi, relHi, hiLev));
+
+	thwack = EnvGen.kr(Env.perc(attTh,relTh));
+
+	// This bit will regenerate new freqs every time you evaluate the SynthDef!
+	//freqs  = {exprand(300, 20000)}.dup(100);
+	freq1 = freq * 1.425;
+	freq2 = freq * 6.729;
+	freq3 = freq * 17.78;
+	freq4 = freq * 1.08;
+	freqs = [freq1, freq2, freq3, freq4] /** LFNoise2.kr(0.002, 0.5, 0.5)*/;
+
+	res = Ringz.ar(
+		lodriver + hidriver + thwack,
+		freqs
+	).mean;
+	sig = (res * 1) + (lodriver * 2) + thwack;
+	sig = sig * 0.5;
+	sig = Limiter.ar(sig, 0.75);
+	// OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
