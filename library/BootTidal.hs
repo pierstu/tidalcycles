@@ -2056,6 +2056,8 @@ let p = streamReplace tidal
     lfRate = pF "lfRate"
     lfPhase = pF "lfPhase"
     selSnd = pF "selSnd"
+    --
+    sampleRate = pF "sampleRate"
     :}
 
 :{
