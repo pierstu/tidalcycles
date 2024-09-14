@@ -2129,8 +2129,8 @@ SynthDef(\Sd_easelDeter, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, 
 }).add;
 
 SynthDef(\Sd_ulysse42, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
-	freq = 440,
-	mod1 = 0.2, mod2 = 0.71, doneAction = 2;
+	freq = 124,
+	mod1 = 0.2, mod2 = 0.71, width = 1, doneAction = 2;
 	var sig, sig1, sig2, sig3, z1, z2, sinFrq;
 	var envLength = sustain * (end - begin) / speed;
 	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
@@ -2153,8 +2153,13 @@ SynthDef(\Sd_ulysse42, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, sp
 	z2 = lcm(sig1, mod1) + sig2;
 	sinFrq = (120 * ([z1, z2].flop.abs + 1));
 
+	// sinFrq = Mix.ar(sinFrq);
+	// sinFrq = Splay.ar(sinFrq);
+
 	sig = (SinOsc.ar(sinFrq * freq) * AmpComp.kr(sinFrq) * sig3).mean;
+	sig = Splay.ar(sig, width);
 	// sig = Pan2.ar(sig * env, pan, amp);
+	// sig = Mix.ar(sig);
 	// OffsetOut.ar(out, sig);
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
@@ -2468,6 +2473,155 @@ SynthDef(\Sd_additiveSin, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1,
 	/*sig = Pan2.ar(sig * globalEnv, pan, amp);
 
 	OffsetOut.ar(out, sig);*/
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+
+SynthDef(\Sd_sosTom, { arg
+	out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, curve = -6,
+	atk = 0.005, drumRel = 0.4, stickRel = 0.01, drumModeAmp = 0.25, freq = 250, timbreIndex = 0.77, clickAtk = 0, clickRls = 0.2, clickSus = 1, clickLevScale = 5, clickEnvPow = 1, clickEnvNoiseAmp = 0.3, clickFreq = 224, clickAmp = 0.5, doneAction = 2;
+
+	var drumMode, drumModeEnv, stick, stickEnv, sig, clickEnv;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+
+
+	clickEnv = EnvGen.ar(Env.perc(clickAtk, clickRls), levelScale: clickLevScale, timeScale: clickSus).pow(clickEnvPow) * PinkNoise.ar(clickEnvNoiseAmp).range(0.1, 1).lag(0.02);
+
+	drumModeEnv = Env.perc(
+		attackTime: atk,
+		releaseTime: drumRel,
+		level: 0.5,
+		curve: curve
+	).kr;
+
+	drumMode = PMOsc.ar(
+		carfreq: Saw.ar(freq: freq * 0.9),
+		modfreq: freq * 0.85,
+		pmindex: timbreIndex,
+		mul: drumModeEnv * 10
+	);
+
+	drumMode = drumMode + SinOsc.ar(freq: [freq, freq * 0.8], mul: drumModeEnv);
+
+	drumMode = Mix.ar(drumMode) * drumModeAmp;
+
+	stick = Crackle.ar(chaosParam: 2.01);
+
+	stickEnv = Env.perc(attackTime: atk, releaseTime: stickRel, level: 3, curve: curve).kr;
+
+	sig = Mix.ar(drumMode + stickEnv + HPF.ar(clickEnv, clickFreq, clickAmp)) * globalEnv;
+
+	sig = LeakDC.ar(sig * 0.5);
+	sig = Limiter.ar(sig, 0.6);
+	// OffsetOut.ar(out, Pan2.ar(sig, pan));
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan));
+}).add;
+
+
+SynthDef(\Sd_sosSnare, { arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, atk = 0.005, rls = 0.1, crv = (-4), atk1 = 0.05, rls1 = 0.6, crv1 = (-8), freq = 405,
+	//drumMode Controls
+	drumModeAmp = 0.25, timbreIndex = 0.385, modHarmonic = 0.452,
+	//snares controls
+	snareAmp = 40, nyquist = 1700, snareRez = 1000, ffreq = 40, rq = 0.1, bwr = 1,
+	doneAction = 2;
+
+	var drumMode, drumModeEnv, snares, snareEnv, sig;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+
+	// globalEnv = EnvGen.kr(Env.perc(attack, release, 1, curve), timeScale: sustain, doneAction: doneAction).pow(envPow);
+
+	drumModeEnv = Env.perc(attackTime: atk, releaseTime: rls, level: 0.5, curve: crv).kr;
+
+	drumMode = SinOsc.ar(freq: freq * 0.53, mul: drumModeEnv);
+
+	drumMode = drumMode + SinOsc.ar(freq: freq, mul: drumModeEnv);
+
+	drumMode = drumMode + PMOsc.ar(
+		carfreq: Saw.ar(freq * 0.85),
+		modfreq: freq * modHarmonic,
+		pmindex: timbreIndex,
+		mul: drumModeEnv // * 10
+	);
+
+	drumMode = Mix.ar(drumMode) * drumModeAmp;
+
+	snareEnv = Env.perc(attackTime: atk1, releaseTime: rls1, curve: crv1).kr;
+
+	snares = Latch.ar(WhiteNoise.ar(0.1), Impulse.ar(nyquist * 2));
+
+	snares = BRF.ar(in: snares, freq: ffreq, mul: snareEnv, rq: rq);
+
+	snares = Resonz.ar(in: snares, freq: snareRez, bwr: bwr, mul: snareAmp) ;
+
+	sig = Mix.new(drumMode + snares) * globalEnv * amp;
+
+	sig = LeakDC.ar(sig * 0.5);
+
+	//DetectSilence.ar(in: sig, doneAction: doneAction);
+	sig = Limiter.ar(sig);
+
+	// OffsetOut.ar(out, Pan2.ar(sig, pan));
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan));
+}).add;
+
+SynthDef(\Sd_hiSin, {arg out = 0, amp = 0.2, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1,
+	envL1 = 0, envL2 = 1, envL3 = 0.3, envL4 = 0, envT1 = 0.02, envT2 = 0.12, envT3 = 0.01, envLev = 15, envPow = 1, envDivDur = 1, theta = 0.5, rho = 0.8, a0 = 1, a1 = 0, a2 = 0, filterfreq = 1000, rq = 1.0, selectMod = 0, freq = 9000, sinAmp = 0.3, modFreq = 0.2, doneAction = 2;
+
+	var click, b1, b2, sig, mod;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+
+	// globalEnv = EnvGen.kr(Env.perc(attack, release, 1, curve), timeScale: sustain, doneAction: doneAction);
+	env = EnvGen.ar(Env.new([envL1, envL2, envL3, envL4], [envT1, envT2, envT3]), levelScale: envLev, timeScale: sustain / envDivDur).pow(envPow);
+	b1 = 2.0 * rho * cos(theta);
+	b2 = rho.squared.neg;
+	click = SOS.ar(env, a0, a1, a2, b1, b2);
+	click = RHPF.ar(click, filterfreq, rq);
+	mod = SelectX.kr(selectMod.mod(3), [LFNoise0.kr(modFreq), LFNoise1.kr(modFreq), LFNoise2.kr(modFreq)]);
+	sig = ((SinOsc.ar(freq, mul: sinAmp) * mod.range([0, 0.1], 1.0) * env) + click) ;
+	sig = Limiter.ar(sig);
+	// OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
+	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
+}).add;
+
+SynthDef(\Sd_haty48,{ arg out = 0, amp = 0.3, pan = 0, begin = 0, end = 1, speed = 1, accelerate = 0, sustain = 1, freq = 140,
+	envaL1 = 2.81, envaL2 = 0.91, envaL3 = 2.52, envaL4 = 0.85, envaL5 = 0, envaT1 = 0.01, envaT2 = 0.02, envaT3 = 0, envaT4 = 0, envaCrv = -3.54, envpL1 = 120, envpL2 = 16.936, envpL3 = 1279, envpL4 = 0, envpT1 = 0, envpT2 = 0.33, envpT3 = 0, envpT4 = 0.53, envpCrv = (-0.64), modFreq = 1, modAmt = 1.4, sinfAdd = 1.7, sinPhase = 0.28, sinpAdd = 1.7, sinAddAmp = 1, rf1Freq = 1238.8, rf1Rq = 0.26, rf2Freq = 765, rf2Rq = 0.62, hpfFreq = 3699, doneAction = 2;
+	var mod, enva, envp, sig;
+	var envLength = sustain * (end - begin) / speed;
+	var line = Line.ar(begin, end, envLength, doneAction: doneAction);
+	var env = Env.asr;
+	var globalEnv = IEnvGen.ar(env, line);
+
+	freq = max(0, freq * speed * (1 + (accelerate * line)));
+	// freq = freq.max(0.01).min(2);
+
+	freq = freq.explin(20, 20000, 0.01, 10); // .max(0.01).min(2);
+
+	// globalEnv = EnvGen.kr(Env.perc(attack, release, 1, curve), timeScale: sustain, doneAction: doneAction).pow(envPow);
+	enva = EnvGen.kr(Env([envaL1, envaL2, envaL3, envaL4, envaL5], [envaT1, envaT2, envaT3, envaT4], [envaCrv, envaCrv / 2, envaCrv.neg]), timeScale: sustain);
+	envp = EnvGen.kr(Env.circle([envpL1, envpL2, envpL3, envpL4], [envpT1, envpT2, envpT3, envpT4], [envpCrv, envpCrv * 2 , envpCrv.neg, envpCrv / 2]), timeScale: sustain);
+	mod = LFNoise0.ar(modFreq * envp.range(0.1, 4), modAmt * enva).range(1, modAmt);
+	sig = SinOsc.ar([envp, envp + sinfAdd] * freq, [sinPhase, (sinPhase + sinpAdd)], [1, sinAddAmp]);
+	// sig = Resonz.ar(sig, [rf1Freq, rf2Freq] * mod, [rf1Rq, rf2Rq], enva);
+	// sig = HPF.ar(sig, hpfFreq);
+	sig = (sig[0] + sig[1]);
+	sig = LeakDC.ar(sig);
+	// OffsetOut.ar(out, Pan2.ar(sig, pan, amp));
 	OffsetOut.ar(out, DirtPan.ar(sig * globalEnv, ~dirt.numChannels, pan, amp));
 }).add;
 
